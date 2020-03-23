@@ -47,7 +47,7 @@ What we don't know is whether any sensors are hosted on this platform, or an chi
 There's two options for finding any child platforms on this top-level platform:
 
 ```js
-getPlatform({isHostedBy: 'id-of-top-level-platform'})
+getPlatforms({isHostedBy: 'id-of-top-level-platform'})
 ```
 
 i.e. 
@@ -58,7 +58,7 @@ i.e.
 **or**
 
 ```js
-getPlatform({ancestorPlatform: {includes: 'id-of-top-level-platform'}})
+getPlatforms({ancestorPlatform: {includes: 'id-of-top-level-platform'}})
 ```
 
 i.e. 
