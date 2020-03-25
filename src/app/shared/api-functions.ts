@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import {isObject, isArray} from 'lodash';
 
 
 @Injectable({
@@ -22,7 +23,7 @@ export class ApiFunctionsService {
 
     const elements = [];
     Object.keys(where).forEach((key) => {
-      if (this.isObject(where[key])) {
+      if (isObject(where[key]) && !isArray(where[key])) {
         Object.keys(where[key]).forEach((modKey) => {
           if (modKey === 'in') {
             elements.push(`${key}__${modKey}=${where[key][modKey].join(',')}`);
@@ -30,6 +31,9 @@ export class ApiFunctionsService {
             elements.push(`${key}__${modKey}=${where[key][modKey]}`);
           }
         });
+      } else if (isArray(where[key])) {
+        // Make it a dot separated string, e.g. for ancestorPlatform
+        elements.push(`${key}=${where[key].join('.')}`);
       } else {
         elements.push(`${key}=${where[key]}`);
       }
@@ -42,10 +46,6 @@ export class ApiFunctionsService {
 
   }
 
-
-  isObject(x): boolean {
-    return x !== null && typeof x === 'object';
-  }
 
 
 }

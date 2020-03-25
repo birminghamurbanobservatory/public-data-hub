@@ -2,7 +2,7 @@ export class Observation {
   public id?: string;
   public madeBySensor?: string;
   public hasResult?: Result;
-  public isHostedBy?: string[];
+  public ancestorPlatform?: string[]; // has a hierachical structure, top level parent first.
   public inDeployment?: string[];
   public resultTime?: string;
   public hasFeatureOfInterest?: string;

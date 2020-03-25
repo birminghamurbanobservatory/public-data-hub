@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs';
 import {ApiFunctionsService} from '../shared/api-functions';
-import {Observation} from './observation';
+import {Observation} from './observation.class';
 import {environment} from './../../environments/environment';
 import {cloneDeep} from 'lodash';
 import {map} from 'rxjs/operators';
 import {Collection} from '../shared/collection';
 import {HttpClient} from '@angular/common/http';
+import {GetObservationsWhere} from './get-observations-where.class';
 
 @Injectable({
   providedIn: 'root'
@@ -19,8 +20,7 @@ export class ObservationService {
   ) { }
 
 
-  // TODO: There's some more 'where' properties to add in here
-  getObservations(where?: {observedProperty: string; discipline: string}): Observable<{data: Observation[]; meta: any}> {
+  getObservations(where?: GetObservationsWhere): Observable<{data: Observation[]; meta: any}> {
     const qs = this.apiFunctions.whereToQueryString(where);
     return this.http.get(`${environment.apiUrl}/observations${qs}`)
     .pipe(

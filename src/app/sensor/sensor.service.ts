@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {Sensor} from './sensor';
+import {Sensor} from './sensor.class';
 import {ApiFunctionsService} from '../shared/api-functions';
 import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';

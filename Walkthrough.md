@@ -13,12 +13,12 @@ Expect there to be a good 200-300 platforms across Birmingham by the end of the 
 
 ## Getting the top-level Platforms
 
-To get this list of top-level Platforms you will need to call the `getPlatforms()` function in the PlatformService.
+To get this list of top-level Platforms you will need to call the `getPlatforms()` function in the _PlatformService_.
 
 To get top-level platforms pass in a _where_ argument as follows:
 
 ```js
-getPlatforms({isHostedBy: {exists: false}}
+await getPlatforms({isHostedBy: {exists: false}}
 ```
 
 This makes the following HTTP request:
@@ -29,7 +29,7 @@ The response is in JSON format, specifically JSON-LD, but we can ignore the _lin
 
 The function returns an object of the form `{data: [], meta: {}}`. 
 
-The _data_ is an array of platform objects, as described in _platform.ts_. 
+The _data_ is an array of platform objects, as described in _platform.class.ts_. 
 
 The _meta_ object is a work in progress, but it will be used to handle pagination at some point.
 
@@ -47,7 +47,7 @@ What we don't know is whether any sensors are hosted on this platform, or an chi
 There's two options for finding any child platforms on this top-level platform:
 
 ```js
-getPlatforms({isHostedBy: 'id-of-top-level-platform'})
+await getPlatforms({isHostedBy: 'id-of-top-level-platform'})
 ```
 
 i.e. 
@@ -58,7 +58,7 @@ i.e.
 **or**
 
 ```js
-getPlatforms({ancestorPlatform: {includes: 'id-of-top-level-platform'}})
+await getPlatforms({ancestorPlatform: {includes: 'id-of-top-level-platform'}})
 ```
 
 i.e. 
@@ -72,27 +72,122 @@ I'm imagining that a user will click on a map marker, see the platform's details
 
 ## Getting sensors
 
-To get a platform's sensors you will need to call the `getSensors()` function in the SensorService. For example
+To get a platform's sensors you will need to call the `getSensors()` function in the _SensorService_. For example
 
 ```js
-getSensors({isHostedBy: 'weather-station-abc'})
+await getSensors({isHostedBy: 'weather-station-abc'})
 ```
 
 Which makes the following HTTP request
 
 `GET http://api.birminghamurbanobservatory.com/sensor/isHostedBy=weather-station-abc`
 
-This on gets sensors hosted directly on the platform specified. We could probably find a way of getting all the sensors descending from the top-level platform in one go if useful.
+This gets sensors hosted directly on the platform specified. We could probably find a way of getting all the sensors descending from the top-level platform in one go if useful.
 
-The object returned by the function is the same structure as `getPlatforms()`, but this time the _data_ array is an array of sensors. See _sensor.ts_ for a list of its properties.
+The object returned by the function is the same structure as `getPlatforms()`, but this time the _data_ array is an array of sensors. See _sensor.class.ts_ for a list of its properties.
 
 
-## Getting the last observation for each sensor
+## Getting the latest observations from these sensors
 
-TODO
+Now that we have a list of sensors, it's time to get the latest observations from these sensors.
+
+To get observations we use the `getObservations()` function in the _ObservationService_.
+
+The first argument of this _getObservations()_ function, the _where_ object has a LOT of properties we can set to filter the observations we get back. See the _get-observations-where.class.ts_ file for details.
+
+To save us having to get the latest observation for each sensor one at a time, the call we make should look something like:
+
+```js
+await getObservations({
+  onePer: 'timeseries',
+  ancestorPlatform: {
+    includes: 'id-of-top-level-platform',
+  },
+  flag: {
+    exists: false
+  }
+})
+```
+
+Which makes the HTTP request:
+
+`GET http://api.birminghamurbanobservatory.com/observations?onePer=timeseries&ancestorPlatform__includes=id-of-top-level-platform&flag__exists=false`
+
+`onePer: 'timeseries'` limits the response to one observations per timeseries. A timeseries is a series of observations with common properties, e.g. measured by the same sensor, whilst on the same platform, using the same measurement procedure, measuring the same observable property, etc etc. If, for example, the sensor was moved onto a different platform then a completely new timeseries would be created for it.
+
+The main reason I've done this is because some sensors measure more that one observable property, for example a rain gauge measures both _PrecipitationDepth_ and _PrecipitationRate_. I'd like to show both to the user. If I did `onePer: 'sensor'` then we would only get the observation for one these observable properties.
+
+The `ancestorPlatform: {includes: 'id-of-top-level-platform'}` bit ensures that we only get observations that have been collected by sensors whilst this platform.
+
+The `flag: {exists: false}` bit removes any observations that have been flagged as suspect.
+
+We'll need to process the server's response a bit to match up the observations with the correct sensor to show in the HTML.
+
+N.B. if this platform had previously hosted other sensors, that have since been removed, then the last observation from when these sensors were on the platform would also be included. You can simply filter these out on the client side. Alternatively you can add a _madeBySensor_ object to the _where_ argument. e.g.
+
+```js
+{
+  // ...
+  madeBySensor: {
+    in: ['sensor-1-id', 'sensor-2-id']
+  }
+}
+```
+
+This will ensure only observations from the specified sensors are returned.
 
 
 ## Showing a map of a specific observed property
+
+The above is great for seeing where all the platforms and sensors are and seeing their latest readings, but what users probably want to see is how temperature, air quality, rainfall, varies spatially across Birmingham.
+
+We need some obvious buttons or a dropdown that lets users select a specific observed property and see it mapped across Birmingham. The markers should no longer be the default Google Maps marker pin, but should instead be an actual value, e.g. 21, for 21°C when showing air temperature.
+
+The obvious variable to begin with is outdoor air temperature.
+
+We can use the same `getObservations()` function to get this data. The _where_ argument will be something like:
+
+```js
+await getObservations({
+  onePer: 'sensor'
+  discipline: {
+    includes: 'Meteorology'
+  },
+  observedProperty: 'AirTemperature',
+  flag: {
+    exists: false
+  },
+  resultTime: {
+    gte: '2020-03-09T10:31:38Z'
+  }
+})
+```
+
+Which makes the HTTP request:
+
+`GET http://api.birminghamurbanobservatory.com/observations?onePer=sensor&discipline__includes=Meteorology&observedProperty=AirTemperature&flag__exists=false&resultTime__gte=2020-03-09T10:31:38Z`
+
+The combination of the _discipline_ and _observedProperty_ ensures we only get observations of *AirTemperature* relevant to *Meteorology*, i.e. it'll exclude any indoor *AirTemperature* measurements.
+
+The `resultTime: {gte: '2020-03-09T10:31:38Z'}` sets a limit to how old the observations can be. This prevents us from showing a reading that's out of date. For example we might set this to time to be 30 minutes ago. At some point we'll want to add the ability for a user to go back in time to see observations over a specific short window in time, e.g. between 12:00 and 13:00 last tuesday. In which case we can add a `lt` property too, e.g.
+
+```js
+{
+  resultTime: {
+    gte: '2020-03-17T12:00:00Z',
+    lt: '2020-03-17T13:00:00Z'
+  }
+}
+```
+
+Each observation should have a _location_ object so we know where to plot it on the map.
+
+N.B. as yet there's still no ability to set a spatial bounding box for the request, but it shouldn't be too much of an issue as we'll just keep the default extent of the map the same (i.e. to show all of Birmingham), and if we plot an observation outside of the extent the user can always find it by manually zooming out.
+
+At some point we should at the ability to click on a marker and see more details, e.g. when it was recorded and by which sensor, but this feature can be added further down the line.
+
+
+## Getting historical observations to plot on a line graph
 
 TODO
 
