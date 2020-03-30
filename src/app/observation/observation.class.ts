@@ -6,7 +6,6 @@ export class Observation {
   public inDeployment?: string[];
   public resultTime?: string;
   public observedProperty?: string;
-  public unit?: string;
   public hasFeatureOfInterest?: string;
   public location?: Location;
   public usedProcedure?: string[];
@@ -15,6 +14,7 @@ export class Observation {
 
 class Result {
   value?: any;
+  unit?: string;
   flags?: string[];
 }
 
