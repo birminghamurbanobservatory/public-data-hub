@@ -5,10 +5,12 @@ export class Observation {
   public ancestorPlatform?: string[]; // has a hierachical structure, top level parent first.
   public inDeployment?: string[];
   public resultTime?: string;
+  public observedProperty?: string;
+  public unit?: string;
   public hasFeatureOfInterest?: string;
   public location?: Location;
-  public observedProperty?: string;
   public usedProcedure?: string[];
+  public discipline?: string[];
 }
 
 class Result {
