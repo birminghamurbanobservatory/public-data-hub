@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import {Observable} from 'rxjs';
-import {Platform} from './platform.class';
-import {HttpClient} from '@angular/common/http';
-import {ApiFunctionsService} from '../shared/api-functions';
-import {environment} from './../../environments/environment';
-import {cloneDeep} from 'lodash';
-import {map} from 'rxjs/operators';
-import {Collection} from '../shared/collection';
+import { Observable } from 'rxjs';
+import { Platform } from './platform.class';
+import { HttpClient } from '@angular/common/http';
+import { ApiFunctionsService } from '../shared/api-functions';
+import { environment } from './../../environments/environment';
+import { cloneDeep } from 'lodash';
+import { map } from 'rxjs/operators';
+import { Collection } from '../shared/collection';
 
 @Injectable({
   providedIn: 'root'
