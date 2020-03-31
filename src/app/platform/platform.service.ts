@@ -22,17 +22,17 @@ export class PlatformService {
    * Get Platforms
    * @param where - use {isHostedBy: {exists: false}} to get just the top level platforms. Use {ancestorPlatform: {includes: 'some-platform-id'}} to get all descendents of a platform.
    */
-  getPlatforms(where?: {isHostedBy: any; ancestorPlatform: any}): Observable<{data: Platform[]; meta: any}> {
+  getPlatforms(where?: { isHostedBy: any; ancestorPlatform?: any }): Observable<{ data: Platform[]; meta: any }> {
     const qs = this.apiFunctions.whereToQueryString(where);
     return this.http.get(`${environment.apiUrl}/platforms${qs}`)
-    .pipe(
-      map((platformCollection: Collection) => {
-        return {
-          data: platformCollection.member.map(this.formatPlatformForApp),
-          meta: platformCollection.meta
-        }
-      })
-    )
+      .pipe(
+        map((platformCollection: Collection) => {
+          return {
+            data: platformCollection.member.map(this.formatPlatformForApp),
+            meta: platformCollection.meta
+          }
+        })
+      )
   }
 
 
