@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import {Sensor} from './sensor.class';
-import {ApiFunctionsService} from '../shared/api-functions';
-import {Observable} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
-import {environment} from './../../environments/environment';
-import {cloneDeep} from 'lodash';
-import {map} from 'rxjs/operators';
+import { Sensor } from './sensor.class';
+import { ApiFunctionsService } from '../shared/api-functions';
+import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { environment } from './../../environments/environment';
+import { cloneDeep } from 'lodash';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -18,17 +18,17 @@ export class SensorService {
   ) { }
 
 
-  getSensors(where: {isHostedBy: string}): Observable<{data: Sensor[]; meta: any}> {
+  getSensors(where: { isHostedBy: string }): Observable<Sensor[]> {
     const qs = this.apiFunctions.whereToQueryString(where);
     return this.http.get(`${environment.apiUrl}/sensors${qs}`)
-    .pipe(
-      map((sensorCollection: any) => {
-        return sensorCollection.member;
-      }),
-      map((sensorsJsonLd: any) => {
-        return sensorsJsonLd.map(this.formatSensorForApp);
-      })
-    )
+      .pipe(
+        map((sensorCollection: any) => {
+          return sensorCollection.member;
+        }),
+        map((sensorsJsonLd: any) => {
+          return sensorsJsonLd.map(this.formatSensorForApp);
+        })
+      )
   }
 
   formatSensorForApp(asJsonLd): Sensor {
