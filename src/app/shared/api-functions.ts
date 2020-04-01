@@ -32,7 +32,7 @@ export class ApiFunctionsService {
           }
         });
       } else if (isArray(where[key])) {
-        // Make it a dot separated string, e.g. for ancestorPlatform
+        // Make it a dot separated string, e.g. for ancestorPlatforms
         elements.push(`${key}=${where[key].join('.')}`);
       } else {
         elements.push(`${key}=${where[key]}`);

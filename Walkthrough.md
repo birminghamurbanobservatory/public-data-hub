@@ -58,12 +58,12 @@ i.e.
 **or**
 
 ```js
-await getPlatforms({ancestorPlatform: {includes: 'id-of-top-level-platform'}})
+await getPlatforms({ancestorPlatforms: {includes: 'id-of-top-level-platform'}})
 ```
 
 i.e. 
 
-`GET http://api.birminghamurbanobservatory.com/platforms?ancestorPlatform__includes=id-of-top-level-platform`
+`GET http://api.birminghamurbanobservatory.com/platforms?ancestorPlatforms__includes=id-of-top-level-platform`
 
 The former ONLY gets direct descendants of the top level platform, the latter gets all descendants. It's rare to have more than 1 or 2 generations of platforms. 
 
@@ -100,7 +100,7 @@ To save us having to get the latest observation for each sensor one at a time, t
 ```js
 await getObservations({
   onePer: 'timeseries',
-  ancestorPlatform: {
+  ancestorPlatforms: {
     includes: 'id-of-top-level-platform',
   },
   flag: {
@@ -111,13 +111,13 @@ await getObservations({
 
 Which makes the HTTP request:
 
-`GET http://api.birminghamurbanobservatory.com/observations?onePer=timeseries&ancestorPlatform__includes=id-of-top-level-platform&flag__exists=false`
+`GET http://api.birminghamurbanobservatory.com/observations?onePer=timeseries&ancestorPlatforms__includes=id-of-top-level-platform&flag__exists=false`
 
 `onePer: 'timeseries'` limits the response to one observation per _timeseries_. Specifically the most recent one. A timeseries is a series of observations with common properties, e.g. measured by the same sensor, whilst on the same platform, using the same measurement procedure, measuring the same observable property, etc etc. If, for example, the sensor was moved onto a different platform then a completely new timeseries would be created for it.
 
 The main reason for getting on observation per _timeseries_ rather than per _sensor_ is because some sensors measure more that one observable property, for example a rain gauge measures both _PrecipitationDepth_ and _PrecipitationRate_. I'd like to show both to the user, rather than just whichever is the most recent.
 
-The `ancestorPlatform: {includes: 'id-of-top-level-platform'}` bit ensures that we only get observations that have been collected by sensors whilst hosted on this platform.
+The `ancestorPlatforms: {includes: 'id-of-top-level-platform'}` bit ensures that we only get observations that have been collected by sensors whilst hosted on this platform.
 
 The `flag: {exists: false}` bit removes any observations that have been flagged as suspect in quality.
 
@@ -150,7 +150,7 @@ We can use the same `getObservations()` function to get this data. The _where_ a
 ```js
 await getObservations({
   onePer: 'sensor'
-  discipline: {
+  disciplines: {
     includes: 'Meteorology'
   },
   observedProperty: 'AirTemperature',
@@ -165,9 +165,9 @@ await getObservations({
 
 Which makes the HTTP request:
 
-`GET http://api.birminghamurbanobservatory.com/observations?onePer=sensor&discipline__includes=Meteorology&observedProperty=AirTemperature&flag__exists=false&resultTime__gte=2020-03-09T10:31:38Z`
+`GET http://api.birminghamurbanobservatory.com/observations?onePer=sensor&disciplines__includes=Meteorology&observedProperty=AirTemperature&flag__exists=false&resultTime__gte=2020-03-09T10:31:38Z`
 
-The combination of the _discipline_ and _observedProperty_ ensures we only get observations of *AirTemperature* relevant to *Meteorology*, i.e. it'll exclude any indoor *AirTemperature* measurements.
+The combination of the _disciplines_ and _observedProperty_ ensures we only get observations of *AirTemperature* relevant to *Meteorology*, i.e. it'll exclude any indoor *AirTemperature* measurements.
 
 The `resultTime: {gte: '2020-03-09T10:31:38Z'}` sets a limit to how old the observations can be. This prevents us from showing a reading that's out of date. For example we might set this to time to be 30 minutes ago. 
 

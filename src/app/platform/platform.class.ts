@@ -5,7 +5,7 @@ export class Platform {
   ownerDeployment?: string;
   inDeployments?: string[];
   isHostedBy?: string;
-  ancestorPlatform?: string[];
+  ancestorPlatforms?: string[];
   static?: boolean;
   location?: Location;
   updateLocationWithSensor?: string;
@@ -16,6 +16,7 @@ export class Platform {
 class Location {
   id?: string;
   geometry?: Geometry;
+  centroid?: Centroid;
   validAt?: string;
   forMap?: LatLng;
 }
@@ -23,6 +24,12 @@ class Location {
 class Geometry {
   type?: string;
   coordinates?: any;
+}
+
+class Centroid {
+  lat?: number;
+  lng?: number;
+  height?: number;
 }
 
 class LatLng {

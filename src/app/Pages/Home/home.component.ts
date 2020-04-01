@@ -57,7 +57,7 @@ export class HomeComponent implements OnInit {
 
         // console.log(this.selectedPlatform);
 
-        this.platformService.getPlatforms({ ancestorPlatform: { includes: this.selectedPlatform.id } })
+        this.platformService.getPlatforms({ ancestorPlatforms: { includes: this.selectedPlatform.id } })
             .subscribe((response) => {
                 this.childPlatforms = response.data;
                 // console.log(this.childPlatforms);

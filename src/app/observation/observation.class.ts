@@ -2,14 +2,14 @@ export class Observation {
   public id?: string;
   public madeBySensor?: string;
   public hasResult?: Result;
-  public ancestorPlatform?: string[]; // has a hierachical structure, top level parent first.
+  public ancestorPlatforms?: string[]; // has a hierachical structure, top level parent first.
   public inDeployment?: string[];
   public resultTime?: string;
   public observedProperty?: string;
   public hasFeatureOfInterest?: string;
   public location?: Location;
-  public usedProcedure?: string[];
-  public discipline?: string[];
+  public usedProcedures?: string[];
+  public disciplines?: string[];
 }
 
 class Result {
