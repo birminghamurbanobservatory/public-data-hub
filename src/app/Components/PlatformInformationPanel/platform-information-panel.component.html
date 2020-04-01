@@ -1,0 +1,30 @@
+<div class="fixed left-0 top-0 bg-gray-50 w-1/4 h-screen z-50 p-4 shadow-md">
+
+    <div class="rounded shadow-sm bg-gray-200 p-2">
+        <h1>{{ platform.name }}</h1>
+        <p>{{ platform.description }}</p>
+
+        <dl>
+            <dt>Is static</dt>
+            <dd>{{ platform.static }}</dd>
+            <dt>Owner</dt>
+            <dd>{{ platform.ownerDeployment }}</dd>
+        </dl>
+    </div>
+
+    <div class="mt-2 rounded shadow-sm bg-gray-100 p-2" *ngFor="let child of childPlatforms">
+        <h1>{{ child.name }}</h1>
+        <p>{{ child.description }}</p>
+
+        <dl>
+            <dt>Is static</dt>
+            <dd>{{ child.static }}</dd>
+            <dt>Owner</dt>
+            <dd>{{ child.ownerDeployment }}</dd>
+        </dl>
+
+        <buo-sensor-card [platform]="child"></buo-sensor-card>
+    </div>
+
+
+</div>

@@ -17,9 +17,15 @@ class Location {
   id?: string;
   geometry?: Geometry;
   validAt?: string;
+  forMap?: LatLng;
 }
 
 class Geometry {
- type?: string;
- coordinates?: any;
+  type?: string;
+  coordinates?: any;
+}
+
+class LatLng {
+  lat: number;
+  lng: number;
 }
