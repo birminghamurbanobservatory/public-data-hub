@@ -1,7 +1,76 @@
-<div class="w-full h-full flex flex-col justify-center items-center bg-blue-200">
+<div>
+  <div class="bg-gray-800 pb-32">
 
-  <h1 class="font-sans text-2xl">Urban Observatory</h1>
+    <nav class="bg-gray-800">
+      <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="border-b border-gray-700">
+          <div class="flex items-center justify-between h-16 px-4 sm:px-0">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                Birmingham Urban Obs
+              </div>
+              <div class="hidden md:block">
+                <div class="ml-10 flex items-baseline">
+                  <a href="#"
+                    class="px-3 py-2 rounded-md text-sm font-medium text-white bg-gray-900 focus:outline-none focus:text-white focus:bg-gray-700">Home</a>
+                  <a href="#"
+                    class="ml-4 px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700">Team</a>
+                  <a href="#"
+                    class="ml-4 px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700">Projects</a>
+                  <a href="#"
+                    class="ml-4 px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700">Calendar</a>
+                  <a href="#"
+                    class="ml-4 px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700">Reports</a>
+                </div>
+              </div>
+            </div>
 
+            <div class="-mr-2 flex md:hidden">
+              <button (click)="toggle()"
+                class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:bg-gray-700 focus:text-white"
+                x-bind:aria-label="open ? 'Close main menu' : 'Main menu'" x-bind:aria-expanded="open">
+                <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                  <path :class="{'hidden': open, 'inline-flex': !open }" class="inline-flex" stroke-linecap="round"
+                    stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                  <path :class="{'hidden': !open, 'inline-flex': open }" class="hidden" stroke-linecap="round"
+                    stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div [ngClass]="{'block': navOpen, 'hidden': !navOpen}" class="hidden border-b border-gray-700 md:hidden">
+        <div class="px-2 py-3 sm:px-3">
+          <a href="#"
+            class="block px-3 py-2 rounded-md text-base font-medium text-white bg-gray-900 focus:outline-none focus:text-white focus:bg-gray-700">Mobile</a>
+          <a href="#"
+            class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700">Team</a>
+          <a href="#"
+            class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700">Projects</a>
+          <a href="#"
+            class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700">Calendar</a>
+          <a href="#"
+            class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700">Reports</a>
+        </div>
+
+      </div>
+    </nav>
+
+    <header class="py-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <buo-control-panel></buo-control-panel>
+
+      </div>
+    </header>
+  </div>
+  <main class="-mt-32">
+    <div class="max-w-7xl mx-auto pb-12 px-4 sm:px-6 lg:px-8">
+
+      <router-outlet></router-outlet>
+
+    </div>
+  </main>
 </div>
-
-<router-outlet></router-outlet>
