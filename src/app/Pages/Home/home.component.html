@@ -1,17 +1,8 @@
-<div class="w-full h-screen">
+<div class="relative w-full h-screen shadow-md">
 
     <buo-platform-information-panel [platform]="selectedPlatform" [childPlatforms]="childPlatforms" *ngIf="showPanel">
     </buo-platform-information-panel>
 
-    <div class="relative h-full w-full z-10">
-
-        <google-map height="100%" width="100%" [zoom]="zoom" [center]="center">
-
-            <map-marker *ngFor="let marker of platformMarkers" [position]="marker.position"
-                (mapClick)="showInformationPanel(marker)"></map-marker>
-
-        </google-map>
-
-    </div>
+    <buo-google-map></buo-google-map>
 
 </div>

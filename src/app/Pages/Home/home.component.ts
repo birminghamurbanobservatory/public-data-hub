@@ -1,6 +1,7 @@
 import { Component, OnInit, PlatformRef } from '@angular/core';
 import { PlatformService } from 'src/app/platform/platform.service';
 import { Platform } from 'src/app/platform/platform.class';
+import { GoogleMapService } from 'src/app/Components/GoogleMap/google-map.service';
 
 @Component({
     selector: 'buo-home-page',
@@ -13,16 +14,17 @@ export class HomeComponent implements OnInit {
     public selectedPlatform: Platform;
     public childPlatforms: Platform[];
 
-    public zoom = 11;
-    public center = { lat: 52.480100, lng: -1.896478 };
-    public platformMarkers = [];
+
 
     constructor(
+        private googleMapService: GoogleMapService,
         private platformService: PlatformService) { }
 
     ngOnInit(): void {
         this.platformService.getPlatforms({ isHostedBy: { exists: false } })
             .subscribe((platforms) => this.addMarkers(platforms.data));
+
+        this.googleMapService.selectedMarker.subscribe((marker) => this.showInformationPanel(marker));
     }
 
     /**
@@ -32,19 +34,22 @@ export class HomeComponent implements OnInit {
      */
     private addMarkers(platforms: Platform[]) {
 
-        platforms.forEach(platform => {
+        const markers = platforms.map(platform => {
 
-            this.platformMarkers.push({
+            return {
                 platform,
                 position: {
                     lat: platform.location.forMap.lat,
                     lng: platform.location.forMap.lng,
-                },
-            });
+                }
+            };
 
         });
 
-        this.showInformationPanel(this.platformMarkers[0]);
+        this.googleMapService.updateMarkers(markers);
+
+        // following line for ui dev
+        // this.showInformationPanel(this.platformMarkers[0]);
     }
 
     /**
