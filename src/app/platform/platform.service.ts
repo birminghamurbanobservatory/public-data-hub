@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { ApiFunctionsService } from '../shared/api-functions';
 import { environment } from './../../environments/environment';
 import { cloneDeep } from 'lodash';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { Collection } from '../shared/collection';
 
 @Injectable({
@@ -17,6 +17,20 @@ export class PlatformService {
     private http: HttpClient,
     private apiFunctions: ApiFunctionsService
   ) { }
+
+  /**
+   * Retrieves individual platform details from given id
+   *
+   * @param id : string of platform id
+   */
+  public getPlatform(id: string) {
+
+    return this.http.get(`${environment.apiUrl}/platforms/${id}`)
+      .pipe(
+        map((platform) => this.formatPlatformForApp(platform))
+      );
+
+  }
 
   /**
    * Get Platforms

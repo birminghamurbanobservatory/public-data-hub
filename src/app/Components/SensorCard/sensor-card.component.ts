@@ -12,6 +12,7 @@ import { map, tap } from 'rxjs/operators';
         <div *ngFor="let sensor of sensors$ | async">
             <h2>{{ sensor.name }}</h2>
             <p>{{ sensor.description }}</p>
+            <p>In deployment {{ sensor.ownerDeployment }}</p>
         </div>
     </div>`
 })

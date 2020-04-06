@@ -49,7 +49,7 @@ export class HomeComponent implements OnInit {
         this.googleMapService.updateMarkers(markers);
 
         // following line for ui dev
-        // this.showInformationPanel(this.platformMarkers[0]);
+        this.showInformationPanel(markers[0]);
     }
 
     /**
@@ -65,7 +65,7 @@ export class HomeComponent implements OnInit {
         this.platformService.getPlatforms({ ancestorPlatforms: { includes: this.selectedPlatform.id } })
             .subscribe((response) => {
                 this.childPlatforms = response.data;
-                // console.log(this.childPlatforms);
+                console.log(this.childPlatforms);
                 this.showPanel = true;
             });
 

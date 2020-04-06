@@ -1,0 +1,33 @@
+<header class="py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-0">
+        <h1 class="text-white text-xl font-bold">{{ platform?.name}}</h1>
+    </div>
+</header>
+
+<div class="relative w-full shadow-md bg-gray-50 p-4 rounded-sm">
+
+    Sensors
+
+    <div *ngFor="let sensor of sensors" class="rounded bg-blue-50 mb-4 p-4 ">
+        <h2>{{ sensor.name }}</h2>
+        <div>
+            <div class="bg-gray-50 p-6 flex flex-col">
+                <h3>{{ sensor.lastReading.observedProperty }}</h3>
+                <p class="text-3xl font-bold">
+                    {{ sensor.lastReading.hasResult.value }}
+                    <span class="text-sm font-thin">C</span>
+                </p>
+                <p>
+                    <i class="far fa-clock"></i>
+                    {{ formatTime(sensor.lastReading.resultTime) }}
+                </p>
+                <p>
+                    <i class="far fa-calendar"></i>
+                    {{ formatDate(sensor.lastReading.resultTime) }}
+                </p>
+
+            </div>
+        </div>
+    </div>
+
+</div>
