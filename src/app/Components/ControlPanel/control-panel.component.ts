@@ -16,14 +16,14 @@ export class ControlPanelComponent {
         private googleMapService: GoogleMapService,
     ) { }
 
-    public show(info: string) {
+    public show(property: string) {
 
         this.observationService.getObservations({
             onePer: 'sensor',
             disciplines: {
                 includes: 'Meteorology'
             },
-            observedProperty: 'AirTemperature',
+            observedProperty: property,
             flags: {
                 exists: false
             },
