@@ -14,8 +14,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     private destroy$: Subject<boolean> = new Subject<boolean>();
     public showPanel = false;
-    public selectedPlatform: Platform;
-    public childPlatforms: Platform[];
+    public platformDetail;
 
     constructor(
         private googleMapService: GoogleMapService,
@@ -59,7 +58,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.googleMapService.updateMarkers(markers);
 
         // following line for ui dev
-        // this.showInformationPanel(markers[0]);
+        this.showInformationPanel(markers[0]);
     }
 
     /**
@@ -69,12 +68,10 @@ export class HomeComponent implements OnInit, OnDestroy {
      */
     public showInformationPanel(marker) {
 
-        this.selectedPlatform = marker.platform;
-
-        this.platformService.getPlatforms({ ancestorPlatforms: { includes: this.selectedPlatform.id } })
+        this.platformService.getPlatform(marker.platform.id, { nest: true })
             .subscribe((response) => {
-                this.childPlatforms = response.data;
-                console.log(this.childPlatforms);
+                console.log(response);
+                this.platformDetail = response;
                 this.showPanel = true;
             });
 

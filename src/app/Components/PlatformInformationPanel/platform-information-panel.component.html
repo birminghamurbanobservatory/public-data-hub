@@ -12,7 +12,8 @@
         </dl>
     </div>
 
-    <div *ngFor="let child of childPlatforms">
+    <!-- this might be platform or sensor, need to check -->
+    <div *ngFor="let child of platform.hosts">
         <a [routerLink]="['/platform-detail', child.id]">
             <div class="mt-2 rounded shadow-sm bg-gray-100 p-2">
                 <h1>{{ child.name }}</h1>

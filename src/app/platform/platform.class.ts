@@ -1,7 +1,10 @@
+import { Sensor } from 'src/app/sensor/sensor.class';
+
 export class Platform {
   id?: string;
   name: string;
   description?: string;
+  hosts?: Platform[] | Sensor[];
   ownerDeployment?: string;
   inDeployments?: string[];
   isHostedBy?: string;

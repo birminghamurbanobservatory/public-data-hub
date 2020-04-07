@@ -11,7 +11,4 @@ export class PlatformInformationPanelComponent {
     // the selected platform information
     @Input() platform;
 
-    // child platforms of the selected platform
-    @Input() childPlatforms;
-
 }

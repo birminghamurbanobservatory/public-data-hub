@@ -23,9 +23,11 @@ export class PlatformService {
    *
    * @param id : string of platform id
    */
-  public getPlatform(id: string) {
+  public getPlatform(id: string, where?: { nest?: boolean }) {
 
-    return this.http.get(`${environment.apiUrl}/platforms/${id}`)
+    const qs = this.apiFunctions.whereToQueryString(where);
+
+    return this.http.get(`${environment.apiUrl}/platforms/${id}${qs}`)
       .pipe(
         map((platform) => this.formatPlatformForApp(platform))
       );
