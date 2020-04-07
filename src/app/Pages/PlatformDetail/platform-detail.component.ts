@@ -7,7 +7,8 @@ import { SensorService } from 'src/app/sensor/sensor.service';
 import { Sensor } from 'src/app/sensor/sensor.class';
 import { Platform } from 'src/app/platform/platform.class';
 import { ObservationService } from 'src/app/observation/observation.service';
-import { format, parseISO } from 'date-fns';
+
+import * as moment from 'moment';
 
 @Component({
     selector: 'buo-platform-detail',
@@ -64,10 +65,10 @@ export class PlatformDetailComponent implements OnInit {
     }
 
     public formatDate(date) {
-        return format(parseISO(date), 'dd/LL/yy');
+        return moment(date).format('DD/MM/YY');
     }
 
     public formatTime(date) {
-        return format(parseISO(date), 'H:mm');
+        return moment(date).format('HH:mm');
     }
 }
