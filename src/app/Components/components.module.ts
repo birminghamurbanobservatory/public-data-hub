@@ -8,6 +8,7 @@ import { ControlPanelComponent } from './ControlPanel/control-panel.component';
 import { GoogleMapComponent } from './GoogleMap/google-map.component';
 import { PlatformInformationPanelComponent } from './PlatformInformationPanel/platform-information-panel.component';
 import { SensorCardComponent } from './SensorCard/sensor-card.component';
+import { TimeSeriesGraphComponent } from './TimeSeriesGraph/time-series-graph.component';
 
 @NgModule({
 
@@ -22,6 +23,7 @@ import { SensorCardComponent } from './SensorCard/sensor-card.component';
         GoogleMapComponent,
         PlatformInformationPanelComponent,
         SensorCardComponent,
+        TimeSeriesGraphComponent,
     ],
 
     exports: [
@@ -29,8 +31,8 @@ import { SensorCardComponent } from './SensorCard/sensor-card.component';
         GoogleMapComponent,
         PlatformInformationPanelComponent,
         SensorCardComponent,
+        TimeSeriesGraphComponent,
     ]
 
 })
-
 export class ComponentsModule { }
