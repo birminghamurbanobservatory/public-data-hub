@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { GoogleMapService } from './google-map.service';
 import { Observable, BehaviorSubject } from 'rxjs';
 
@@ -49,7 +49,7 @@ export class GoogleMapComponent implements OnInit {
 
     /**
      * Click event listener for the map markers
-     * 
+     *
      * @param marker : clicked map marker
      */
     public markerClicked(marker) {
