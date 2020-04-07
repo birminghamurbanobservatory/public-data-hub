@@ -40,56 +40,26 @@ The location of each platform is held in the _geometry_ property, which takes th
 
 ## Showing Platform details
 
-When a user clicks on a map marker for a Platform that Platform's details should be display on the left-hand third of the screen (or below the map on mobile devices). E.g. we can show its name, when it was created, what deployment(s) it is in. We'll have all this information from the `getPlatform()` call.
+When a user clicks on a map marker for a Platform that Platform's details should be display on the left-hand third of the screen (or below the map on mobile devices). E.g. we can show its name, when it was created, what deployment(s) it is in. We'll have all this information from the `getPlatforms()` call.
 
-What we don't know is whether any sensors are hosted on this platform, or an child platforms with their own sensors. E.g. a weather station platform might host several sensors: a thermometer, wind vane, etc.
+What we don't know is whether any sensors are hosted on this platform, or any child platforms with their own sensors. E.g. a weather station platform might host several sensors: a thermometer, wind vane, etc.
 
-There's two options for finding any child platforms on this top-level platform:
-
-```js
-await getPlatforms({isHostedBy: 'id-of-top-level-platform'})
-```
-
-i.e. 
-
-`GET http://api.birminghamurbanobservatory.com/platforms?isHostedBy=id-of-top-level-platform`
-
-
-**or**
+To get this information we'll use the `getPlatform()` function, by default this would get the information we already have about the platform, however by providing the options object `{nest: true}` the response will also include all the platforms and sensors hosted on this top level platform. 
 
 ```js
-await getPlatforms({ancestorPlatforms: {includes: 'id-of-top-level-platform'}})
+await getPlatform('id-of-top-level-platform', {nest: true})
 ```
 
-i.e. 
+This makes the HTTP request:
 
-`GET http://api.birminghamurbanobservatory.com/platforms?ancestorPlatforms__includes=id-of-top-level-platform`
+`GET http://api.birminghamurbanobservatory.com/platforms/id-of-top-level-platform?nest=true`
 
-The former ONLY gets direct descendants of the top level platform, the latter gets all descendants. It's rare to have more than 1 or 2 generations of platforms. 
-
-I'm imagining that a user will click on a map marker, see the platform's details on the left-hand detail component, it will load any descendant platforms allowing you to traverse the platform tree. And for each platform it will show its sensors and the last observation it made.
-
-
-## Getting sensors
-
-To get a platform's sensors you will need to call the `getSensors()` function in the _SensorService_. For example
-
-```js
-await getSensors({isHostedBy: 'weather-station-abc'})
-```
-
-Which makes the following HTTP request
-
-`GET http://api.birminghamurbanobservatory.com/sensor/isHostedBy=weather-station-abc`
-
-This gets sensors hosted directly on the platform specified. We could probably find a way of getting all the sensors descending from the top-level platform in one go if useful.
-
-The object returned by the function is the same structure as `getPlatforms()`, but this time the _data_ array is an array of sensors. See _sensor.class.ts_ for a list of its properties.
+The returned platform will have a property called `hosts`, which is an array of all the direct descendants of this top level platform. These descendants could be platforms or sensors. You can differentiate between them using the `@type` property. Descendant platforms could themselves have their own `hosts` array, and so on, in a nested structure. 
 
 
 ## Getting the latest observations from these sensors
 
-Now that we have a list of sensors, it's time to get the latest observations from these sensors.
+Now that we know which sensors are hosted (directly or indirectly) on the top level platform, it's time to get the latest observations from these sensors.
 
 To get observations we use the `getObservations()` function in the _ObservationService_.
 
@@ -103,7 +73,7 @@ await getObservations({
   ancestorPlatforms: {
     includes: 'id-of-top-level-platform',
   },
-  flag: {
+  flags: {
     exists: false
   }
 })
@@ -111,7 +81,7 @@ await getObservations({
 
 Which makes the HTTP request:
 
-`GET http://api.birminghamurbanobservatory.com/observations?onePer=timeseries&ancestorPlatforms__includes=id-of-top-level-platform&flag__exists=false`
+`GET http://api.birminghamurbanobservatory.com/observations?onePer=timeseries&ancestorPlatforms__includes=id-of-top-level-platform&flags__exists=false`
 
 `onePer: 'timeseries'` limits the response to one observation per _timeseries_. Specifically the most recent one. A timeseries is a series of observations with common properties, e.g. measured by the same sensor, whilst on the same platform, using the same measurement procedure, measuring the same observable property, etc etc. If, for example, the sensor was moved onto a different platform then a completely new timeseries would be created for it.
 
@@ -119,7 +89,7 @@ The main reason for getting on observation per _timeseries_ rather than per _sen
 
 The `ancestorPlatforms: {includes: 'id-of-top-level-platform'}` bit ensures that we only get observations that have been collected by sensors whilst hosted on this platform.
 
-The `flag: {exists: false}` bit removes any observations that have been flagged as suspect in quality.
+The `flags: {exists: false}` bit removes any observations that have been flagged as suspect in quality.
 
 We'll need to process the server's response a bit to match up the observations with the correct sensor to show in the HTML.
 
@@ -154,7 +124,7 @@ await getObservations({
     includes: 'Meteorology'
   },
   observedProperty: 'AirTemperature',
-  flag: {
+  flags: {
     exists: false
   },
   resultTime: {
@@ -165,7 +135,7 @@ await getObservations({
 
 Which makes the HTTP request:
 
-`GET http://api.birminghamurbanobservatory.com/observations?onePer=sensor&disciplines__includes=Meteorology&observedProperty=AirTemperature&flag__exists=false&resultTime__gte=2020-03-09T10:31:38Z`
+`GET http://api.birminghamurbanobservatory.com/observations?onePer=sensor&disciplines__includes=Meteorology&observedProperty=AirTemperature&flags__exists=false&resultTime__gte=2020-03-09T10:31:38Z`
 
 The combination of the _disciplines_ and _observedProperty_ ensures we only get observations of *AirTemperature* relevant to *Meteorology*, i.e. it'll exclude any indoor *AirTemperature* measurements.
 
