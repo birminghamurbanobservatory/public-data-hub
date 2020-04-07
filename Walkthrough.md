@@ -38,7 +38,7 @@ Also as it stands, there's no way to filter the platforms spatially, so just get
 The location of each platform is held in the _geometry_ property, which takes the same form as a GeoJSON _geometry_ property. So be aware that this might be a Polygon or LineString rather than a Point. I'm thinking that for now we should show everything on the map as points. Which means I either need to store/serve the central points on the backend or we calculate them on the fly on the frontend. The [@turf/centre](https://www.npmjs.com/package/@turf/center) package can do this.
 
 
-## Showing Platform details
+## Showing Sensors (and other Platforms) hosted on each top-level platform
 
 When a user clicks on a map marker for a Platform that Platform's details should be display on the left-hand third of the screen (or below the map on mobile devices). E.g. we can show its name, when it was created, what deployment(s) it is in. We'll have all this information from the `getPlatforms()` call.
 
