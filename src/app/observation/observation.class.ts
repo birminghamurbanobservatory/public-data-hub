@@ -5,17 +5,23 @@ export class Observation {
   public ancestorPlatforms?: string[]; // has a hierachical structure, top level parent first.
   public inDeployment?: string[];
   public resultTime?: string;
-  public observedProperty?: string;
+  public observedProperty?: ObservedProperty;
   public hasFeatureOfInterest?: string;
   public location?: Location;
   public usedProcedures?: string[];
-  public disciplines?: string[];
+  public disciplines?: Discipline[];
 }
 
 class Result {
   value?: any;
-  unit?: string;
+  unit?: Unit;
   flags?: string[];
+}
+
+class Unit {
+  '@id': string;
+  label: string;
+  symbol: string;
 }
 
 class Location {
@@ -27,4 +33,14 @@ class Location {
 class Geometry {
   type?: string;
   coordinates?: any;
+}
+
+class ObservedProperty {
+  '@id': string;
+  label: string;
+}
+
+class Discipline {
+  '@id': string;
+  label: string; 
 }
