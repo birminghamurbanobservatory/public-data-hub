@@ -4,7 +4,7 @@ export class Platform {
   id?: string;
   name: string;
   description?: string;
-  hosts?: Platform[] | Sensor[];
+  hosts?: Platform[] | undefined;
   ownerDeployment?: string;
   inDeployments?: string[];
   isHostedBy?: string;

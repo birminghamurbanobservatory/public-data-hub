@@ -6,9 +6,11 @@ import { GoogleMapsModule } from '@angular/google-maps';
 
 import { ControlPanelComponent } from './ControlPanel/control-panel.component';
 import { GoogleMapComponent } from './GoogleMap/google-map.component';
-import { PlatformInformationPanelComponent } from './PlatformInformationPanel/platform-information-panel.component';
+import { DeploymentPanelComponent } from './DeploymentPanel/deployment-panel.component';
 import { SensorCardComponent } from './SensorCard/sensor-card.component';
 import { TimeSeriesGraphComponent } from './TimeSeriesGraph/time-series-graph.component';
+import { PlatformCardComponent } from './PlatformCard/platform-card.component';
+import { ChildPlatformsComponent } from './ChildPlatforms/child-platforms.component';
 
 @NgModule({
 
@@ -19,17 +21,21 @@ import { TimeSeriesGraphComponent } from './TimeSeriesGraph/time-series-graph.co
     ],
 
     declarations: [
+        ChildPlatformsComponent,
         ControlPanelComponent,
+        DeploymentPanelComponent,
         GoogleMapComponent,
-        PlatformInformationPanelComponent,
+        PlatformCardComponent,
         SensorCardComponent,
         TimeSeriesGraphComponent,
     ],
 
     exports: [
+        ChildPlatformsComponent,
         ControlPanelComponent,
+        DeploymentPanelComponent,
         GoogleMapComponent,
-        PlatformInformationPanelComponent,
+        PlatformCardComponent,
         SensorCardComponent,
         TimeSeriesGraphComponent,
     ]

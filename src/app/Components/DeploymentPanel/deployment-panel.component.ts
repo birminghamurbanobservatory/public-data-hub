@@ -3,10 +3,10 @@ import { SensorService } from 'src/app/sensor/sensor.service';
 import { Platform } from 'src/app/platform/platform.class';
 
 @Component({
-    selector: 'buo-platform-information-panel',
-    templateUrl: './platform-information-panel.component.html',
+    selector: 'buo-deployment-panel',
+    templateUrl: './deployment-panel.component.html',
 })
-export class PlatformInformationPanelComponent {
+export class DeploymentPanelComponent {
 
     // the selected platform information
     @Input() platform;

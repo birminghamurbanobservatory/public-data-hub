@@ -7,3 +7,6 @@ https://github.com/angular/components/blob/master/src/google-maps/README.md
 Good guide to the google-maps api:  
 https://timdeschryver.dev/blog/google-maps-as-an-angular-component
 
+### Online Docs  
+https://stoplight.io/p/docs/gh/birminghamurbanobservatory/docs/reference/REST-API.v1.yaml  
+

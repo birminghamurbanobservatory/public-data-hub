@@ -70,7 +70,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
         this.platformService.getPlatform(marker.platform.id, { nest: true })
             .subscribe((response) => {
-                console.log(response);
+                // console.log(response);
                 this.platformDetail = response;
                 this.showPanel = true;
             });
