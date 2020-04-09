@@ -3,6 +3,18 @@
 
 How I see the initial version of this public web application working/looking.
 
+## Useful Links
+
+[API Entry Point](https://api.birminghamurbanobservatory.com/)
+
+[API Docs](https://stoplight.io/p/docs/gh/birminghamurbanobservatory/docs) - under construction
+
+[Vocabulary Documentation](https://api.birminghamurbanobservatory.com/vocab/uo) generated on the fly from the common Urban Observatory Vocabulary.
+
+[Urban Observatory Issues page](https://github.com/urbanobservatory/standards/issues) - where additions/modifications to the common Urban Observatory API standard are discussed. 
+
+[Newcastle's Data Portal](https://newcastle.urbanobservatory.ac.uk/)
+
 ## Landing
 
 Upon landing on at the website (probably hosted at https://app.birminghamurbanobservatory.com or https://data.birminghamurbanobservatory.com) the user will see a Google Map with its extent set to Birmingham. 
