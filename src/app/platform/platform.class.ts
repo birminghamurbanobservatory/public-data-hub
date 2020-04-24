@@ -10,7 +10,8 @@ export class Platform {
   isHostedBy?: string;
   ancestorPlatforms?: string[];
   static?: boolean;
-  location?: Location;
+  location?: Location; // could be a polygon
+  centroid?: Location; // will always be a point
   updateLocationWithSensor?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -19,9 +20,12 @@ export class Platform {
 class Location {
   id?: string;
   geometry?: Geometry;
-  centroid?: Centroid;
-  validAt?: string;
+  properties: LocationProperties;
   forMap?: LatLng;
+}
+
+class LocationProperties {
+  validAt?: string;
 }
 
 class Geometry {

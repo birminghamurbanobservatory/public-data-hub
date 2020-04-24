@@ -60,15 +60,12 @@ export class PlatformService {
     delete forApp['@context']; // get rid of the JSON-LD context
     forApp.id = forApp['@id']; // Remove the @ from the id so easier to reference in code.
 
-    switch (forApp.location.geometry.type) {
-
-      case 'Point':
-        forApp.location.forMap = {
-          lat: forApp.location.geometry.coordinates[1],
-          lng: forApp.location.geometry.coordinates[0]
-        };
-        break;
-
+    if (forApp.centroid) {
+      // The centroid is always a point geometry
+      forApp.centroid.forMap = {
+        lat: forApp.centroid.geometry.coordinates[1],
+        lng: forApp.centroid.geometry.coordinates[0]
+      }
     }
 
     return forApp;

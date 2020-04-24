@@ -58,8 +58,8 @@ export class HomeComponent implements OnInit, OnDestroy {
                 // todo: change to id if ui becomes sluggish 
                 platform, 
                 position: {
-                    lat: platform.location.forMap.lat,
-                    lng: platform.location.forMap.lng,
+                    lat: platform.centroid.forMap.lat,
+                    lng: platform.centroid.forMap.lng,
                 }
             };
 

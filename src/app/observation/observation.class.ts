@@ -27,7 +27,11 @@ class Unit {
 class Location {
   public id?: string;
   public geometry?: Geometry;
-  public validAt?: string;
+  public properties: LocationProperties;
+}
+
+class LocationProperties {
+  validAt?: string;
 }
 
 class Geometry {
