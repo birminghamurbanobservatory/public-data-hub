@@ -1,9 +1,12 @@
-import { Component, OnInit, PlatformRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PlatformService } from 'src/app/platform/platform.service';
 import { Platform } from 'src/app/platform/platform.class';
 import { GoogleMapService } from 'src/app/Components/GoogleMap/google-map.service';
-import { tap, take, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { SensorService } from 'src/app/sensor/sensor.service';
+import { ObservationService } from 'src/app/observation/observation.service';
+import { Observation } from 'src/app/observation/observation.class';
 
 @Component({
     selector: 'buo-home-page',
@@ -14,11 +17,16 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     private destroy$: Subject<boolean> = new Subject<boolean>();
     public showPanel = false;
-    public platformDetail;
+    public showModal = false;
+    public platformDetail: Platform;
+    public explorePlatform: Platform;
+    public latestObservations: Observation[] = [];
 
     constructor(
         private googleMapService: GoogleMapService,
-        private platformService: PlatformService
+        private platformService: PlatformService,
+        private sensorService: SensorService,
+        private observationService: ObservationService,
     ) { }
 
     ngOnInit(): void {
@@ -38,7 +46,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     /**
      * Iterates through the platforms adding a map marker for each
-     *
+     * Adds the platform detail to each marker, so save a query
+     * 
      * @param platforms : array of platforms
      */
     private addMarkers(platforms: Platform[]) {
@@ -46,7 +55,8 @@ export class HomeComponent implements OnInit, OnDestroy {
         const markers = platforms.map(platform => {
 
             return {
-                platform,
+                // todo: change to id if ui becomes sluggish 
+                platform, 
                 position: {
                     lat: platform.location.forMap.lat,
                     lng: platform.location.forMap.lng,
@@ -68,13 +78,26 @@ export class HomeComponent implements OnInit, OnDestroy {
      */
     public showInformationPanel(marker) {
 
-        this.platformService.getPlatform(marker.platform.id, { nest: true })
-            .subscribe((response) => {
-                // console.log(response);
-                this.platformDetail = response;
-                this.showPanel = true;
-            });
+        // at the moment detail passed through the marker
+        this.platformDetail = marker.platform;
+        this.showPanel = true;
 
+        this.observationService.getObservations({
+            onePer: 'sensor',
+            ancestorPlatforms: {
+              includes: this.platformDetail.id,
+            },
+            flags: {
+              exists: false
+            }
+          })
+          .subscribe((response) => this.latestObservations = response.data);
+    }
+
+    public showPlatformModal(obs) {
+        console.log(obs);
+
+        this.showModal = true;
     }
 
 }

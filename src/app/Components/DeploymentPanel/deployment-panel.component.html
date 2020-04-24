@@ -6,7 +6,80 @@
         </h3>
     </div>
 
-    <buo-platform-card [platform]="platform"></buo-platform-card>
+    <div class="px-4 py-5">
+        <dl class="grid grid-cols-1 col-gap-4 row-gap-4">
+    
+            <div>
+                <dt class="text-sm leading-5 font-medium text-indigo-600">
+                    Platform
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900">
+                    {{ platform.name }}
+                </dd>
+            </div>
+    
+            <div>
+                <dt class="text-sm leading-5 font-medium text-indigo-600">
+                    Description
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900">
+                    {{ platform.description ? platform.description : '-' }}
+                </dd>
+            </div>
+    
+            <div>
+                <dt class="text-sm leading-5 font-medium text-indigo-600">
+                    Deployment
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900">
+                    {{ platform.ownerDeployment }}
+                </dd>
+            </div>
+    
+            <div>
+                <dt class="text-sm leading-5 font-medium text-indigo-600">
+                    Static/Mobile
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900">
+                    {{ platform.static ? 'This is a static platform' : 'This is a mobile platform' }}
+                </dd>
+            </div>
+        </dl>
+    </div>
 
+    <div class="px-4 py-3 border-b border-gray-200">
+        <h3 class="leading-6 font-medium text-gray-700">
+            Observations
+        </h3>
+    </div>
+
+    <ul *ngFor="let obs of observations">
+        <li class="border-b border-gray-200">
+            <a (click)="showPlatform(obs)" href="#" class="block hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition duration-150 ease-in-out">
+
+                <div class="flex items-center px-4 py-4">
+                    <div class="min-w-0 flex-1 flex items-center">
+                    
+                        <div class="min-w-0 flex-1 flex">
+                            <div class="flex-1 flex flex-col">
+                                <div class="text-sm leading-5 font-medium text-indigo-500 truncate capitalize">{{ obs.observedProperty.label }}</div>
+                                <div class="mt-2 flex items-center text-sm leading-5 text-gray-500">
+                                    <i class="far fa-clock"></i>
+                                    <span class="ml-1 truncate">{{ resultTime(obs.resultTime) }}</span>
+                                </div>
+                            </div>
+                            <div class="mr-4 flex items-center justify-end">
+                                <span class="text-3xl font-light text-gray-500">{{ obs.hasResult.value }}</span> <sup class="font-bold text-xs text-gray-400">{{ obs.hasResult.unit.symbol }}</sup>
+                            </div>
+                        </div>
+                        <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+            </a>
+        </li>
+
+    </ul>
 
 </div>

@@ -1,6 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { SensorService } from 'src/app/sensor/sensor.service';
-import { Platform } from 'src/app/platform/platform.class';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Observation } from 'src/app/observation/observation.class';
+import * as moment from 'moment';
 
 @Component({
     selector: 'buo-deployment-panel',
@@ -10,5 +10,17 @@ export class DeploymentPanelComponent {
 
     // the selected platform information
     @Input() platform;
+
+    @Input() observations: Observation[];
+
+    @Output() showModal: EventEmitter<any> = new EventEmitter();
+
+    public resultTime(time) {
+        return moment(time).fromNow();
+    }
+
+    public  showPlatform(obs) {
+        this.showModal.emit(obs);
+    }
 
 }

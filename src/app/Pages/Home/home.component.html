@@ -8,9 +8,12 @@
 
 <div class="relative w-full h-screen shadow-md">
 
-    <buo-deployment-panel [platform]="platformDetail" *ngIf="showPanel">
-    </buo-deployment-panel>
+    <buo-deployment-panel [platform]="platformDetail" 
+                          [observations]="latestObservations" 
+                          (showModal)="showPlatformModal($event)"
+                          *ngIf="showPanel"></buo-deployment-panel>
 
     <buo-google-map></buo-google-map>
 
+    <buo-platform-modal [show]="showModal" (close)="showModal = false" [platform]="explorePlatform"></buo-platform-modal>
 </div>
