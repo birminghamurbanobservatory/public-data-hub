@@ -171,6 +171,139 @@ N.B. as yet there's still no ability to set a spatial bounding box for the reque
 At some point we should add the ability to click on a marker and see more details, e.g. when it was recorded and by which sensor, but this feature can be added further down the line.
 
 
+## Modal with more information about an observation
+
+When a user clicks on an observation in the side bar, or on an observation shown on the map (i.e. when showing a single observed property on the map) a modal appears showing more detail about that observation.
+
+Here's an example of an observation object:
+
+```json
+{
+  "@id": "4958-57-2020-04-27T11:18:46.000Z",
+  "@type": "Observation",
+  "resultTime": "2020-04-27T11:18:46.000Z",
+  "hasResult": {
+    "value": 0.2,
+    "unit": {
+      "@id": "Millimetre",
+      "label": "millimetre",
+      "symbol": "mm"
+    }
+  },
+  "madeBySensor": "netatmo-05-00-00-05-b8-bc-rain",
+  "observedProperty": {
+    "@id": "PrecipitationDepth",
+    "label": "precipitation depth"
+  },
+  "hasFeatureOfInterest": "EarthAtmosphere",
+  "inDeployments": [
+    "netatmo-gatekeepers"
+  ],
+  "ancestorPlatforms": [
+    "forestdale-primary-school",
+    "netatmo-05-00-00-05-b8-bc-p9z"
+  ],
+  "location": {
+    "type": "Feature",
+    "id": "7164feea-d076-4ffa-8d48-c09643656f43",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        -2.004847526550293,
+        52.4073600769043
+      ]
+    },
+    "properties": {
+      "validAt": "2020-02-13T20:30:32.007Z"
+    }
+  },
+  "disciplines": [
+    {
+      "@id": "Meteorology",
+      "label": "meteorology"
+    },
+    {
+      "@id": "Hydrology",
+      "label": "hydrology"
+    }
+  ],
+  "phenomenonTime": {
+    "hasBeginning": "2020-04-27T11:08:43.000Z",
+    "hasEnd": "2020-04-27T11:18:46.000Z"
+  },
+  "usedProcedures": [
+    "BhamUrbanObsPrecipDepthDerivation"
+  ]
+}
+```
+
+Here's what we should be showing in the modal:
+
+1. The `value`, `unit.symbol` and `observedProperty.label` just as we did in the side bar. Further down the line the unit and the observedProperty could either have a tooltip or be a hyperlink to more information about them. E.g. a hyperlink could point to these [docs](https://api.birminghamurbanobservatory.com/vocab/uo/#PrecipitationDepth) about what PrecipitationDepth is. Or once I add the api endpoint `/observable-properties/PrecipitationDepth` we can get the comment/description from there to use as the tooltip.
+   
+2. Show the `resultTime` as an absolute value rather than *time ago*. If an observation has a `phenomenonTime` object (like this example) then also show the `hasBeginning` and `hasEnd`. For something like *PrecipitationDepth* this details over what timeframe the amount of rain was collected. For a maximum *AirTemperature* observation the value is the max temperature recorded between the `hasBeginning` and `hasEnd`, with the `resultTime` showing the exact time within this timeframe that the max temp was recorded. 
+
+3. Get the names of the `ancestorPlatforms` so we can show the hierarchy. 
+   
+You can get the details of each platform as separate requests:
+
+- https://api.birminghamurbanobservatory.com/platforms/forestdale-primary-school
+- https://api.birminghamurbanobservatory.com/platforms/netatmo-05-00-00-05-b8-bc-p9z
+
+Or in one go:
+
+- https://api.birminghamurbanobservatory.com/platforms?id__in=forestdale-primary-school,netatmo-05-00-00-05-b8-bc-p9z
+
+Although, at the time of writing the latter wasn't implement yet. It will be soon.
+
+N.B. the top grandparent platform comes first in the `ancestorPlatforms` array, and the bottom child platform is last (i.e. the one the actual sensor that made the observation is hosted on).
+
+4. We can get more details about the sensor that made the observation from: 
+
+- https://api.birminghamurbanobservatory.com/sensors/netatmo-05-00-00-05-b8-bc-rain
+
+Although we'd only want to show the `name`, and possibly the `description`.
+
+I'm thinking about creating a database of **metadata** records, with each record having certain tags, e.g. the id of platform it applies to, and/or the particular sensor, and/or deployment. Then we'll be able to get any relevant metadata for a given observation. For example a record with a tag relating to *forestdale-primary-school* could be "a large tree was cut down here on the 21st May 2019". I think we should be showing metadata like this in this modal. Obviously this needs implementing on the server first.
+
+5. Show how far back these observations go. To be specific we want to get the earliest observation of this particular `observedProperty` from the top level platform (i.e. the first platform in the `ancestorPlatforms` array). The request will look like this
+
+- https://api.birminghamurbanobservatory.com/observations?observedProperty=PrecipitationDepth&ancestorPlatforms__includes=forestdale-primary-school&limit=1&sortBy=resultTime&sortOrder=asc
+
+N.B. This should do for now, although later we might need to include the usedProcedures as a query parameter too.
+
+You should now have the human-friendly name for the platform so I'd phrase this as:
+
+"Observations of precipitation depth from Forestdale Primary School date back to 23rd Nov 2018 at 10:58"
+
+Bear in mind that sometimes the top level platform won't always be a place, it could be the WM-Air van, or a weather station we've not specifically hosted on anything, e.g. because it's in the middle of a field. This phrasing should work for these too.
+
+6. Given that we have the location, we may wish to show a small zoomed in map of where the observation was made. This will be more pertinent for mobile platforms. Take the WM-Air van as an example, the location of this platform on the map could be the University, because it's now parked up, however the last PM10 reading was made when it was still on Broad Street, therefore our little map should be showing Broad Street.
+
+7. Show the name and description of the deployment(s). You can get this information like this:
+
+- https://api.birminghamurbanobservatory.com/platforms/deployments/netatmo-gatekeepers
+
+8. Show what disciplines it's relevant too. Perhaps as icons.
+
+9. There's work still to be done on the server regarding the `hasFeatureOfInterest` property, eventually you should be able to go to:
+
+- https://api.birminghamurbanobservatory.com/features-of-interest
+
+to get some more information about this feature of interest.
+
+10. We need to display the usedProcedures, again this needs more work on the server side to provide a name and description for each usedProcedure, rather than just showing the IDs. For now we might be able to get away with something like:
+
+```html
+<div *ngIf="observation.usedProcedures.includes('maximum')">
+  <p>This is an observation of the maximum value between {{observation.phenomenonTime.hasBeginning | date}} and {{observation.phenomenonTime.hasEnd | date}}</p>
+</div>
+```
+
+
+
+   
+
 ## Getting historical observations to plot on a line graph
 
 TODO
