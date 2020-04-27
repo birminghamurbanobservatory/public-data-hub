@@ -254,11 +254,9 @@ Or in one go:
 
 - https://api.birminghamurbanobservatory.com/platforms?id__in=forestdale-primary-school,netatmo-05-00-00-05-b8-bc-p9z
 
-Although, at the time of writing the latter wasn't implement yet. It will be soon.
-
 N.B. the top grandparent platform comes first in the `ancestorPlatforms` array, and the bottom child platform is last (i.e. the one the actual sensor that made the observation is hosted on).
 
-4. We can get more details about the sensor that made the observation from: 
+1. We can get more details about the sensor that made the observation from: 
 
 - https://api.birminghamurbanobservatory.com/sensors/netatmo-05-00-00-05-b8-bc-rain
 
