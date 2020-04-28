@@ -12,6 +12,8 @@ import {Observation} from 'src/app/observation/observation.class';
 
 export class ControlPanelComponent {
 
+    @Output() reset: EventEmitter<any> = new EventEmitter();
+
     constructor(
         private observationService: ObservationService,
         private googleMapService: GoogleMapService,
@@ -81,13 +83,13 @@ export class ControlPanelComponent {
             };
 
             return {
+                // to add the observation here or platform id
                 position: {
                     lat: reading.location.geometry.coordinates[1],
                     lng: reading.location.geometry.coordinates[0],
                 },
 
                 options: {
-                    clickable: false,
                     label: {
                         text: `${Math.round(reading.hasResult.value)}`,
                         color: iconTextColor

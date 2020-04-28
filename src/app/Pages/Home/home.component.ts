@@ -4,7 +4,6 @@ import { Platform } from 'src/app/platform/platform.class';
 import { GoogleMapService } from 'src/app/Components/GoogleMap/google-map.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { SensorService } from 'src/app/sensor/sensor.service';
 import { ObservationService } from 'src/app/observation/observation.service';
 import { Observation } from 'src/app/observation/observation.class';
 
@@ -15,33 +14,59 @@ import { Observation } from 'src/app/observation/observation.class';
 
 export class HomeComponent implements OnInit, OnDestroy {
 
+    /**
+     * So we can kill our subscriptions on component destruction
+     */
     private destroy$: Subject<boolean> = new Subject<boolean>();
+    
+    /**
+     * Whether the Deployment Panel is visible
+     */    
     public showPanel = false;
+    
+    /**
+     * Whether the platform detail model is visable
+     */
     public showModal = false;
+    
+    /**
+     * Top level platform user has selected to view
+     */
     public platformDetail: Platform;
+    
+    /**
+     * 
+     */
     public explorePlatform: Platform;
+    
+    /**
+     * Latest observations for top level platform
+     */
     public latestObservations: Observation[] = [];
 
     constructor(
         private googleMapService: GoogleMapService,
         private platformService: PlatformService,
-        private sensorService: SensorService,
         private observationService: ObservationService,
     ) { }
 
     ngOnInit(): void {
 
-        this.platformService.getPlatforms({ isHostedBy: { exists: false } })
-            .subscribe((platforms) => this.addMarkers(platforms.data));
+        this.setPlatforms();
 
         this.googleMapService.selectedMarker
             .pipe(takeUntil(this.destroy$))
-            .subscribe((marker) => this.showInformationPanel(marker));
+            .subscribe((marker) => this.showDeploymentPanel(marker));
     }
 
     ngOnDestroy(): void {
         this.destroy$.next(true);
         this.destroy$.unsubscribe();
+    }
+
+    public setPlatforms() {
+        this.platformService.getPlatforms({ isHostedBy: { exists: false } })
+            .subscribe((platforms) => this.addMarkers(platforms.data));
     }
 
     /**
@@ -55,8 +80,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         const markers = platforms.map(platform => {
 
             return {
-                // todo: change to id if ui becomes sluggish 
-                platform, 
+                platform, // change this to the platform id, so can work with other map icon clicks. 
                 position: {
                     lat: platform.centroid.forMap.lat,
                     lng: platform.centroid.forMap.lng,
@@ -67,8 +91,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
         this.googleMapService.updateMarkers(markers);
 
-        // following line for ui dev
-        this.showInformationPanel(markers[0]);
+        //this.showDeploymentPanel(markers[0]); // line for ui dev only, delete!
     }
 
     /**
@@ -76,7 +99,7 @@ export class HomeComponent implements OnInit, OnDestroy {
      *
      * @param marker : Google Maps Map Marker
      */
-    public showInformationPanel(marker) {
+    public showDeploymentPanel(marker) {
 
         // at the moment detail passed through the marker
         this.platformDetail = marker.platform;

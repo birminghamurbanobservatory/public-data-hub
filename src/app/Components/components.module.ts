@@ -9,7 +9,7 @@ import { GoogleMapComponent } from './GoogleMap/google-map.component';
 import { DeploymentPanelComponent } from './DeploymentPanel/deployment-panel.component';
 import { TimeSeriesGraphComponent } from './TimeSeriesGraph/time-series-graph.component';
 import { PlatformModalComponent } from './PlatformModal/platform-modal.component';
-
+import { TooltipModule } from 'ng2-tooltip-directive';
 
 @NgModule({
 
@@ -17,6 +17,7 @@ import { PlatformModalComponent } from './PlatformModal/platform-modal.component
         CommonModule,
         RouterModule,
         GoogleMapsModule,
+        TooltipModule,
     ],
 
     declarations: [
