@@ -1,7 +1,7 @@
 <header class="py-6">
     <div class="max-w-full mx-auto px-4 sm:px-0">
 
-        <buo-control-panel (reset)="setPlatforms()"></buo-control-panel>
+        <buo-control-panel (reset)="setPlatforms()" (closePanel)="showPanel = false"></buo-control-panel>
 
     </div>
 </header>
@@ -10,10 +10,10 @@
 
     <buo-deployment-panel [platform]="platformDetail" 
                           [observations]="latestObservations" 
-                          (showModal)="showPlatformModal($event)"
+                          (closePanel)="showPanel = false"
                           *ngIf="showPanel"></buo-deployment-panel>
 
     <buo-google-map></buo-google-map>
 
-    <buo-platform-modal [show]="showModal" (close)="showModal = false" [platform]="explorePlatform"></buo-platform-modal>
+    <buo-platform-modal></buo-platform-modal>
 </div>

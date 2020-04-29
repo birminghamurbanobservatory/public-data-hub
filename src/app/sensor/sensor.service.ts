@@ -31,6 +31,10 @@ export class SensorService {
       )
   }
 
+  getSensor(id: string) {
+    return this.http.get(`${environment.apiUrl}/sensors/${id}`);
+  }
+
   formatSensorForApp(asJsonLd): Sensor {
     const forApp = cloneDeep(asJsonLd);
     delete forApp['@context']; // get rid of the JSON-LD context

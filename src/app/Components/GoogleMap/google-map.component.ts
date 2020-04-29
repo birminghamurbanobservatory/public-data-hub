@@ -7,7 +7,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
     template: `
         <div class="relative h-full w-full z-10">
 
-            <google-map height="100%" width="100%" [zoom]="zoom" [center]="center$ | async">
+            <google-map height="100%" width="100%" [zoom]="zoom" [center]="center$ | async" [options]="options">
 
                 <map-marker 
                     *ngFor="let marker of markers$ | async" 
@@ -35,6 +35,13 @@ export class GoogleMapComponent implements OnInit {
      * As BS so can change map center when marker clicked
      */
     public center$ = new BehaviorSubject({ lat: 52.480100, lng: -1.896478 });
+
+    /**
+     * G Map options
+     */
+    public options = {
+        mapTypeId: 'terrain'
+    }
 
     /**
      * Observable array of markers

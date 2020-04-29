@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MapMarker } from '@angular/google-maps';
+import { MapMarker } from '../../Interfaces/map-marker.interface';
 
 import { BehaviorSubject, Subject } from 'rxjs';
 
@@ -14,11 +14,11 @@ export class GoogleMapService {
     private selectedMarkerSource = new Subject();
     public selectedMarker = this.selectedMarkerSource.asObservable();
 
-    public updateMarkers(markers: any) {
+    public updateMarkers(markers: MapMarker[]) {
         this.mapMarkersSource.next(markers);
     }
 
-    public selectMarker(marker) {
+    public selectMarker(marker: MapMarker) {
         this.selectedMarkerSource.next(marker);
     }
 }

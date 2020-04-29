@@ -2,10 +2,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PlatformService } from 'src/app/platform/platform.service';
 import { Platform } from 'src/app/platform/platform.class';
 import { GoogleMapService } from 'src/app/Components/GoogleMap/google-map.service';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, filter, tap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ObservationService } from 'src/app/observation/observation.service';
 import { Observation } from 'src/app/observation/observation.class';
+import { MapMarker } from '../../Interfaces/map-marker.interface';
 
 @Component({
     selector: 'buo-home-page',
@@ -25,19 +26,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     public showPanel = false;
     
     /**
-     * Whether the platform detail model is visable
-     */
-    public showModal = false;
-    
-    /**
      * Top level platform user has selected to view
      */
     public platformDetail: Platform;
-    
-    /**
-     * 
-     */
-    public explorePlatform: Platform;
     
     /**
      * Latest observations for top level platform
@@ -55,7 +46,10 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.setPlatforms();
 
         this.googleMapService.selectedMarker
-            .pipe(takeUntil(this.destroy$))
+            .pipe(
+                takeUntil(this.destroy$),
+                filter((value: MapMarker) => value.type === 'platform')
+                )
             .subscribe((marker) => this.showDeploymentPanel(marker));
     }
 
@@ -77,10 +71,11 @@ export class HomeComponent implements OnInit, OnDestroy {
      */
     private addMarkers(platforms: Platform[]) {
 
-        const markers = platforms.map(platform => {
+        const markers: MapMarker[] = platforms.map(platform => {
 
             return {
-                platform, // change this to the platform id, so can work with other map icon clicks. 
+                type: 'platform',
+                id: platform.id,
                 position: {
                     lat: platform.centroid.forMap.lat,
                     lng: platform.centroid.forMap.lng,
@@ -91,36 +86,34 @@ export class HomeComponent implements OnInit, OnDestroy {
 
         this.googleMapService.updateMarkers(markers);
 
-        //this.showDeploymentPanel(markers[0]); // line for ui dev only, delete!
+        // this.showDeploymentPanel(markers[0]); // line for ui dev only, delete!
     }
 
     /**
      * Handles the click event when user selects a platform
-     *
+     * Note: marker.platform is the ID of a platform
+     * 
      * @param marker : Google Maps Map Marker
      */
-    public showDeploymentPanel(marker) {
+    public showDeploymentPanel(marker: MapMarker) {
 
-        // at the moment detail passed through the marker
-        this.platformDetail = marker.platform;
-        this.showPanel = true;
+        this.platformService.getPlatform(marker.id)
+            .subscribe((response) => {
+                this.platformDetail = response
+                this.showPanel = true;
+            });
+
 
         this.observationService.getObservations({
             onePer: 'sensor',
             ancestorPlatforms: {
-              includes: this.platformDetail.id,
+              includes: marker.id,
             },
             flags: {
               exists: false
             }
           })
           .subscribe((response) => this.latestObservations = response.data);
-    }
-
-    public showPlatformModal(obs) {
-        console.log(obs);
-
-        this.showModal = true;
     }
 
 }

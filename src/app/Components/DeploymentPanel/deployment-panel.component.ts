@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Observation } from 'src/app/observation/observation.class';
 import * as moment from 'moment';
+import { PlatformModalService } from '../PlatformModal/platform-modal.service';
 
 @Component({
     selector: 'buo-deployment-panel',
@@ -13,14 +14,20 @@ export class DeploymentPanelComponent {
 
     @Input() observations: Observation[];
 
-    @Output() showModal: EventEmitter<any> = new EventEmitter();
+    @Output() closePanel: EventEmitter<any> = new EventEmitter();
+
+
+    constructor(
+        private platformModalService: PlatformModalService,
+    ) {}
 
     public resultTime(time) {
         return moment(time).fromNow();
     }
 
-    public  showPlatform(obs) {
-        this.showModal.emit(obs);
+    public showPlatform(obs) {
+        console.log(obs.id);
+        this.platformModalService.observationSelected(obs.id);
     }
 
 }

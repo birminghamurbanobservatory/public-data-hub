@@ -36,6 +36,17 @@ export class ObservationService {
 
   }
 
+  /**
+   * Fetch a single observation
+   * 
+   * @param id : an observation id
+   */
+  getObsersvation(id: string) {
+    return this.http.get(`${environment.apiUrl}/observations/${id}`)
+      .pipe(
+        map((response) => this.formatObservationForApp(response))
+      )
+  }
 
   formatObservationForApp(asJsonLd): Observation {
     const forApp = cloneDeep(asJsonLd);
