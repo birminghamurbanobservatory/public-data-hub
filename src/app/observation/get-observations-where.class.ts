@@ -6,6 +6,9 @@ export class GetObservationsWhere {
   public resultTime?: ResultTime;
   public ancestorPlatforms?: any; // ['parent', 'child'] for exact match or {includes: 'platform-1'} to match a single platform anywhere in the platform "tree".
   public flags?: Flags;
+  public limit?: number;
+  public sortBy?: string;
+  public sortOrder?: string;
 }
 
 

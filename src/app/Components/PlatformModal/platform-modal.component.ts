@@ -1,8 +1,8 @@
-import { Component, Input, Output, EventEmitter, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { PlatformModalService } from './platform-modal.service';
 import { Observation } from 'src/app/observation/observation.class';
 import { Subject, forkJoin } from 'rxjs';
-import { takeUntil, switchMap, tap, mergeMap, concatMap, mergeMapTo } from 'rxjs/operators';
+import { takeUntil, switchMap, tap, mergeMap, map} from 'rxjs/operators';
 import { ObservationService } from 'src/app/observation/observation.service';
 import * as moment from 'moment';
 import { SensorService } from 'src/app/sensor/sensor.service';
@@ -17,6 +17,7 @@ export class PlatformModalComponent implements OnInit {
     public showModal: Boolean = false;
     public observation: Observation;
     public sensor: Sensor;
+    public firstObservation: Observation;
     private destroy$: Subject<boolean> = new Subject<boolean>();
 
     constructor(
@@ -26,31 +27,42 @@ export class PlatformModalComponent implements OnInit {
         ) {}
 
     ngOnInit(): void {
-        this.observationService.getObsersvation('628-94-2020-04-29T05:55:57.000Z')
+
+        // can delete query as only for UI
+        this.observationService.getObsersvation('XX9lyJN8rhp0Fkz')
         .pipe(
-            // tap(v => console.log(v)),
             mergeMap(
-                (obs) => this.sensorService.getSensor(obs.madeBySensor),
-                (observation, sensor) => {
-                    return { observation, sensor };
+                (obs: Observation) => forkJoin({
+                    sensor: this.sensorService.getSensor(obs.madeBySensor),
+                    earliest: this.observationService.getFirstObservation(obs.observedProperty["@id"], obs.ancestorPlatforms[0]),
+                }), (observation, forkJoin) => {
+                    return { observation, ...forkJoin }
                 })
             )
         .subscribe((result) => {
             this.observation = result.observation;
+            this.firstObservation = result.earliest;
             this.sensor = result.sensor;
             this.showModal = true;
             console.log(result);
         });
 
+        // this is one ugly and complex query! :-/ One to refactor...
         this.platformModalService.observation
             .pipe(
                 takeUntil(this.destroy$),
                 switchMap((id: string) => this.observationService.getObsersvation(id)),
-                mergeMap((obs) => this.sensorService.getSensor(obs.madeBySensor))
+                mergeMap(
+                    (obs: Observation) => forkJoin({
+                        sensor: this.sensorService.getSensor(obs.madeBySensor),
+                        earliest: this.observationService.getFirstObservation(obs.observedProperty["@id"], obs.ancestorPlatforms[0]),
+                    }), (observation, forkJoin) => {
+                        return { observation, ...forkJoin }
+                    })
             )
             .subscribe((result) => {
-                console.log(result)
-                this.observation = result;
+                this.observation = result.observation;
+                this.sensor = result.sensor;
                 this.showModal = true;
             });
     }
@@ -69,7 +81,11 @@ export class PlatformModalComponent implements OnInit {
         this.showModal = false;
     }
 
+    resultDate(time) {
+        return moment(time).format('Do MMMM YYYY')
+    }
+
     resultTime(time) {
-        return moment(time).format('Do MMMM YYYY, HH:mm:ss')
+        return moment(time).format('HH:mm:ss')
     }
 }
