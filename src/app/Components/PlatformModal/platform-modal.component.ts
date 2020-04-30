@@ -29,7 +29,7 @@ export class PlatformModalComponent implements OnInit {
     ngOnInit(): void {
 
         // can delete query as only for UI
-        this.observationService.getObsersvation('XX9lyJN8rhp0Fkz')
+        this.observationService.getObsersvation('geXNVmAV9COBSa')
         .pipe(
             mergeMap(
                 (obs: Observation) => forkJoin({

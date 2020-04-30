@@ -196,9 +196,7 @@ Here's an example of an observation object:
     "label": "precipitation depth"
   },
   "hasFeatureOfInterest": "EarthAtmosphere",
-  "inDeployments": [
-    "netatmo-gatekeepers"
-  ],
+  "hasDeployment": "netatmo-gatekeepers",
   "ancestorPlatforms": [
     "forestdale-primary-school",
     "netatmo-05-00-00-05-b8-bc-p9z"

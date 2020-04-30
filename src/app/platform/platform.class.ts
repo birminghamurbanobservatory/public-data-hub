@@ -6,7 +6,7 @@ export class Platform {
   description?: string;
   hosts?: Platform[] | undefined;
   ownerDeployment?: string;
-  inDeployments?: string[];
+  inDeployment?: string;
   isHostedBy?: string;
   ancestorPlatforms?: string[];
   static?: boolean;
