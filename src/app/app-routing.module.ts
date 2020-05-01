@@ -10,6 +10,10 @@ const routes: Routes = [
     path: 'platform-detail',
     loadChildren: () => import('./Pages/PlatformDetail/platform-detail.module').then(m => m.PlatformDetailModule),
   },
+  {
+    path: 'observe',
+    loadChildren: () => import('./Pages/ObservedProprty/observed-property.module').then(m => m.ObservedPropertyModule)
+  }
 ];
 
 @NgModule({
