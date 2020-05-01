@@ -1,12 +1,13 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { PlatformModalService } from './platform-modal.service';
 import { Observation } from 'src/app/observation/observation.class';
-import { Subject, forkJoin } from 'rxjs';
-import { takeUntil, switchMap, tap, mergeMap, map} from 'rxjs/operators';
+import { Subject, forkJoin, concat, of, from } from 'rxjs';
+import { takeUntil, switchMap, tap, mergeMap, map, flatMap, concatMap, toArray} from 'rxjs/operators';
 import { ObservationService } from 'src/app/observation/observation.service';
-import * as moment from 'moment';
 import { SensorService } from 'src/app/sensor/sensor.service';
+import * as moment from 'moment';
 import { Sensor } from 'src/app/sensor/sensor.class';
+import { PlatformService } from 'src/app/platform/platform.service';
 
 @Component({
     selector: 'buo-platform-modal',
@@ -18,12 +19,14 @@ export class PlatformModalComponent implements OnInit {
     public observation: Observation;
     public sensor: Sensor;
     public firstObservation: Observation;
+    public deployment$;
     private destroy$: Subject<boolean> = new Subject<boolean>();
 
     constructor(
         private platformModalService: PlatformModalService,
         private observationService: ObservationService,
         private sensorService: SensorService,
+        private platformService: PlatformService,
         ) {}
 
     ngOnInit(): void {
@@ -39,32 +42,25 @@ export class PlatformModalComponent implements OnInit {
                     return { observation, ...forkJoin }
                 })
             )
-        .subscribe((result) => {
-            this.observation = result.observation;
-            this.firstObservation = result.earliest;
-            this.sensor = result.sensor;
-            this.showModal = true;
-            console.log(result);
-        });
 
-        // this is one ugly and complex query! :-/ One to refactor...
-        this.platformModalService.observation
-            .pipe(
-                takeUntil(this.destroy$),
-                switchMap((id: string) => this.observationService.getObservation(id)),
-                mergeMap(
-                    (obs: Observation) => forkJoin({
-                        sensor: this.sensorService.getSensor(obs.madeBySensor),
-                        earliest: this.observationService.getFirstObservation(obs.observedProperty["@id"], obs.ancestorPlatforms[0]),
-                    }), (observation, forkJoin) => {
-                        return { observation, ...forkJoin }
-                    })
-            )
+        this.platformModalService.observationInfo()
+            .pipe(takeUntil(this.destroy$))
             .subscribe((result) => {
                 this.observation = result.observation;
+                this.firstObservation = result.earliest;
                 this.sensor = result.sensor;
+
+                
+                this.deployment$ = from(this.observation.ancestorPlatforms)
+                .pipe(
+                    concatMap(id => this.platformService.getPlatform(id)),
+                    toArray(),
+                );
+
                 this.showModal = true;
             });
+
+            
     }
 
     ngOnDestroy(): void {
