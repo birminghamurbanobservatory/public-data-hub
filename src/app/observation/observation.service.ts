@@ -40,7 +40,7 @@ export class ObservationService {
    * 
    * @param id : an observation id
    */
-  getObsersvation(id: string) {
+  getObservation(id: string) {
     return this.http.get(`${environment.apiUrl}/observations/${id}`)
       .pipe(
         map((response) => this.formatObservationForApp(response))

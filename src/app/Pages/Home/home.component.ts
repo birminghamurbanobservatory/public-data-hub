@@ -60,7 +60,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     public setPlatforms() {
         this.platformService.getPlatforms({ isHostedBy: { exists: false } })
-            .subscribe((platforms) => this.addMarkers(platforms.data));
+            .subscribe(({data: platforms}) => {
+                this.addMarkers(platforms)
+            });
     }
 
     /**
@@ -71,7 +73,11 @@ export class HomeComponent implements OnInit, OnDestroy {
      */
     private addMarkers(platforms: Platform[]) {
 
-        const markers: MapMarker[] = platforms.map(platform => {
+        const platformsWithACentroid = platforms.filter((platform) => {
+            return Boolean(platform.centroid);
+        })
+
+        const markers: MapMarker[] = platformsWithACentroid.map(platform => {
 
             return {
                 type: 'platform',
