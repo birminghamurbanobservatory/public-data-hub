@@ -29,7 +29,7 @@ export class PlatformModalComponent implements OnInit {
     ngOnInit(): void {
 
         // can delete query as only for UI
-        this.observationService.getObsersvation('geXNVmAV9COBSa')
+        this.observationService.getObservation('amPqZwaVDHX6sN')
         .pipe(
             mergeMap(
                 (obs: Observation) => forkJoin({
@@ -51,7 +51,7 @@ export class PlatformModalComponent implements OnInit {
         this.platformModalService.observation
             .pipe(
                 takeUntil(this.destroy$),
-                switchMap((id: string) => this.observationService.getObsersvation(id)),
+                switchMap((id: string) => this.observationService.getObservation(id)),
                 mergeMap(
                     (obs: Observation) => forkJoin({
                         sensor: this.sensorService.getSensor(obs.madeBySensor),
