@@ -43,7 +43,7 @@ export class PlatformModalComponent implements OnInit {
                 })
             )
 
-        this.platformModalService.observationInfo()
+        // this.platformModalService.observationInfo()
             .pipe(takeUntil(this.destroy$))
             .subscribe((result) => {
                 this.observation = result.observation;
