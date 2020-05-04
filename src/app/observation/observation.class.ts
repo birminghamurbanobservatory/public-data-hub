@@ -1,3 +1,7 @@
+import { ObservedProperty } from '../Interfaces/observed-property.interface';
+import { Unit } from '../Interfaces/unit.interface';
+import { Discipline } from '../Interfaces/disciplines.interface';
+
 export class Observation {
   public id?: string;
   public madeBySensor?: string;
@@ -10,18 +14,13 @@ export class Observation {
   public location?: Location;
   public usedProcedures?: string[];
   public disciplines?: Discipline[];
+  public inTimeseries?: []
 }
 
 class Result {
   value?: any;
   unit?: Unit;
   flags?: string[];
-}
-
-class Unit {
-  '@id': string;
-  label: string;
-  symbol: string;
 }
 
 class Location {
@@ -37,14 +36,4 @@ class LocationProperties {
 class Geometry {
   type?: string;
   coordinates?: any;
-}
-
-class ObservedProperty {
-  '@id': string;
-  label: string;
-}
-
-class Discipline {
-  '@id': string;
-  label: string; 
 }
