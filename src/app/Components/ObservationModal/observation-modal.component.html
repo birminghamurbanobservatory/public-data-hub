@@ -60,7 +60,7 @@
               Sensor name
             </dt>
             <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {{ sensor.name }}
+              {{ timeseries.madeBySensor.name }}
             </dd>
           </div>
 
@@ -69,7 +69,7 @@
               Sensor description
             </dt>
             <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {{ sensor.description }}
+              {{ timeseries.madeBySensor.description }}
             </dd>
           </div>
 
@@ -142,9 +142,8 @@
             </dt>
             <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
               <ul>
-                <li *ngFor="let p of deployment$ | async; index as i; last as isLast" [ngClass]="[i > 0 ? 'ml-' + i*2 : '']">
-                  <i *ngIf="!isLast" class="far fa-folder-open"></i>
-                  <i *ngIf="isLast" class="far fa-folder"></i>
+                <li *ngFor="let p of timeseries.ancestorPlatforms; index as i; last as isLast" [ngClass]="[i > 0 ? 'ml-' + i*2 : '']">
+                  <i class="far" [ngClass]="[isLast ? 'fa-folder' : 'fa-folder-open']"></i>
                   <span class="ml-1">{{ p.name }}</span>
                 </li>   
               </ul>

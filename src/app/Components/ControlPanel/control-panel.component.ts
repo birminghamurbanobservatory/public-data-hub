@@ -6,7 +6,7 @@ import { IconService } from 'src/app/Services/icons/icon.service';
 import { MapMarker } from '../../Interfaces/map-marker.interface';
 import { filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { PlatformModalService } from '../PlatformModal/platform-modal.service';
+import { ObservationModalService } from '../ObservationModal/observation-modal.service';
 
 @Component({
     selector: 'buo-control-panel',
@@ -25,7 +25,7 @@ export class ControlPanelComponent implements OnInit, OnDestroy {
         private observationService: ObservationService,
         private googleMapService: GoogleMapService,
         private iconService: IconService,
-        private platformModalService: PlatformModalService,
+        private observationModalService: ObservationModalService,
     ) { }
 
     ngOnInit(): void {
@@ -35,7 +35,7 @@ export class ControlPanelComponent implements OnInit, OnDestroy {
                 filter((value: MapMarker) => value.type === 'observation'),
                 takeUntil(this.destroy$),
             )
-            .subscribe((marker: MapMarker) => this.platformModalService.observationSelected(marker.id));
+            .subscribe((marker: MapMarker) => this.observationModalService.observationSelected(marker.id));
             
     }
 

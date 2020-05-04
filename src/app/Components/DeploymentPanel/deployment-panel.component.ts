@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Observation } from 'src/app/observation/observation.class';
 import * as moment from 'moment';
-import { PlatformModalService } from '../PlatformModal/platform-modal.service';
+import { ObservationModalService } from '../ObservationModal/observation-modal.service';
 
 @Component({
     selector: 'buo-deployment-panel',
@@ -18,7 +18,7 @@ export class DeploymentPanelComponent {
 
 
     constructor(
-        private platformModalService: PlatformModalService,
+        private observationModalService: ObservationModalService,
     ) {}
 
     public resultTime(time) {
@@ -27,7 +27,7 @@ export class DeploymentPanelComponent {
 
     public showPlatform(obs) {
         console.log(obs.id);
-        this.platformModalService.observationSelected(obs.id);
+        this.observationModalService.observationSelected(obs.id);
     }
 
 }

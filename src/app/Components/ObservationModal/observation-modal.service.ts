@@ -5,20 +5,20 @@ import { switchMap, mergeMap} from 'rxjs/operators';
 
 import { Observation } from 'src/app/observation/observation.class';
 import { ObservationService } from 'src/app/observation/observation.service';
-import { SensorService } from 'src/app/sensor/sensor.service';
 import { Sensor } from 'src/app/sensor/sensor.class';
+import { TimeSeriesService } from 'src/app/Services/timeseries/timeseries.service';
 
 @Injectable({
     providedIn: 'root',
 })
-export class PlatformModalService {
+export class ObservationModalService {
 
     private observationSource = new Subject();
     public observation = this.observationSource.asObservable();
 
     constructor(
         private observationService: ObservationService,
-        private sensorService: SensorService,
+        private timeseriesService: TimeSeriesService,
     ) {}
 
     /**
@@ -30,15 +30,14 @@ export class PlatformModalService {
         this.observationSource.next(id);
     }
 
-    // this is one ugly and complex query! :-/ One to refactor...
-    public observationInfo(): Observable<{ sensor: Sensor; earliest: Observation; observation: Observation; }> {
+    public observationInfo(): Observable<{ observation: Observation; timeseries; earliest: Observation; }> {
         
         return this.observation
             .pipe(
                 switchMap((id: string) => this.observationService.getObservation(id)),
                 mergeMap(
                     (obs: Observation) => forkJoin({
-                        sensor: this.sensorService.getSensor(obs.madeBySensor),
+                        timeseries: this.timeseriesService.getTimeseriesById(obs.inTimeseries),
                         earliest: this.observationService.getFirstObservation(obs.observedProperty["@id"], obs.ancestorPlatforms[0]),
                     }), (observation, forkJoin) => {
                         return { observation, ...forkJoin }
