@@ -4,6 +4,7 @@ import { Chart } from 'chart.js';
 import { ObservationService } from 'src/app/observation/observation.service';
 
 import * as moment from 'moment';
+import { TimeSeriesService } from 'src/app/Services/timeseries/timeseries.service';
 
 @Component({
     selector: 'buo-time-series-graph',
@@ -14,33 +15,46 @@ import * as moment from 'moment';
 })
 export class TimeSeriesGraphComponent implements OnInit {
 
-    @Input() sensor;
+    @Input() timeseries: string;
     @ViewChild('chart', { static: true }) canvas;
 
     constructor(
-        private observationService: ObservationService
+        private timeseriesService: TimeSeriesService,
     ) { }
 
     ngOnInit(): void {
 
-        this.observationService.getObservations({
-            madeBySensor: {
-                in: [this.sensor.id]
-            },
-            resultTime: {
-                gte: moment().subtract('24', 'hours').toISOString(),
-                lte: moment().toISOString(),
-            }
-        })
-            .subscribe((response) => {
-                const data = response.data.reduce((d, arr) => {
-                    d.labels.push(moment(arr.resultTime).format('HH:mm, DD/MM/YY'));
-                    d.values.push(arr.hasResult.value);
-                    return d;
-                }, { labels: [], values: [] });
+        this.timeseriesService.getTimeseriesObservations(this.timeseries)
+        .subscribe((data) => this.plotData(data));
 
-                this.drawChart(data);
-            });
+        // this.observationService.getObservations({
+        //     madeBySensor: {
+        //         in: [this.sensor.id]
+        //     },
+        //     resultTime: {
+        //         gte: moment().subtract('24', 'hours').toISOString(),
+        //         lte: moment().toISOString(),
+        //     }
+        // })
+        //     .subscribe((response) => {
+        //         const data = response.data.reduce((d, arr) => {
+        //             d.labels.push(moment(arr.resultTime).format('HH:mm, DD/MM/YY'));
+        //             d.values.push(arr.hasResult.value);
+        //             return d;
+        //         }, { labels: [], values: [] });
+
+        //         this.drawChart(data);
+        //     });
+    }
+
+    private plotData(data) {
+        const plotted = data.reduce((d, arr) => {
+            d.labels.push(moment(arr.resultTime).format('HH:mm, DD/MM/YY'));
+            d.values.push(arr.hasResult.value);
+            return d;
+            }, { labels: [], values: [] });
+    
+        this.drawChart(plotted);
     }
 
     private drawChart(data) {

@@ -8,7 +8,7 @@ const routes: Routes = [
     path: '',
     children: [
       {
-        path: ':platform/:propery',
+        path: ':platform/:property',
         component: ObservedPropertyComponent
       },
     ]

@@ -1,13 +1,14 @@
 <header class="py-10">
     <div class="max-w-full mx-auto px-4 sm:px-0">
-        <h1 class="text-white text-xl font-bold">Observed Property</h1>
+        <h1 class="text-white text-xl font-bold capitalize">{{ latestTimeseries?.observedProperty.label }}, {{ latestTimeseries?.ancestorPlatforms[0].name }}</h1>
     </div>
 </header>
 
-<div class="relative w-full shadow-md bg-gray-50 p-4 rounded-sm">
+<div class="relative w-full shadow-md bg-gray-50 p-4 rounded-sm" *ngIf="latestTimeseries">
 
-        <div class="relative w-full h-30">
-            <!-- <buo-time-series-graph [sensor]="sensor"></buo-time-series-graph> -->
-        </div>
-
+    <div class="relative w-full h-30">
+        <buo-time-series-graph [timeseries]="latestTimeseries?.id"></buo-time-series-graph>
+    </div>
+    
+    {{ latestTimeseries | json }}
 </div>
