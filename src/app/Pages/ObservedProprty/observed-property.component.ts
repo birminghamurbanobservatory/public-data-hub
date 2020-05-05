@@ -29,8 +29,8 @@ export class ObservedPropertyComponent implements OnInit {
         )
         .subscribe(response => {
             this.latestTimeseries = response.data.shift();
-            console.log(this.latestTimeseries);
             this.earlierTimeseries = response.data;
+            console.log(this.latestTimeseries);
         });
     }
 }

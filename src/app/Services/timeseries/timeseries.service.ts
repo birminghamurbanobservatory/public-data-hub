@@ -53,9 +53,11 @@ export class TimeSeriesService {
      * 
      * @param id : timeseries identifier
      */
-    public getTimeseriesObservations(id: string) {
+    public getTimeseriesObservations(id: string, where?: {}) {
 
-        return this.http.get(`${environment.apiUrl}/timeseries/${id}/observations`)
+        const qs = this.apiFunctions.whereToQueryString(where);
+
+        return this.http.get(`${environment.apiUrl}/timeseries/${id}/observations${qs}`)
         .pipe(
             map((response) => response['member'].map(this.transformReading))
         )
