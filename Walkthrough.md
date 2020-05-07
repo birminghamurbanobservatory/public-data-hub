@@ -136,6 +136,12 @@ await getObservations({
     includes: 'Meteorology'
   },
   observedProperty: 'AirTemperature',
+  aggregation: {
+    in: ['Instant', 'Average']
+  },
+  duration: {
+    lte: '1800' // in seconds
+  }
   flags: {
     exists: false
   },
@@ -147,11 +153,13 @@ await getObservations({
 
 Which makes the HTTP request:
 
-`GET http://api.birminghamurbanobservatory.com/observations?onePer=sensor&disciplines__includes=Meteorology&observedProperty=AirTemperature&flags__exists=false&resultTime__gte=2020-03-09T10:31:38Z`
+`GET http://api.birminghamurbanobservatory.com/observations?onePer=sensor&disciplines__includes=Meteorology&observedProperty=AirTemperature&aggregation__in=Instant,Average&duration__lte=1800&flags__exists=false&resultTime__gte=2020-03-09T10:31:38Z`
 
 The combination of the _disciplines_ and _observedProperty_ ensures we only get observations of *AirTemperature* relevant to *Meteorology*, i.e. it'll exclude any indoor *AirTemperature* measurements.
 
-The `resultTime: {gte: '2020-03-09T10:31:38Z'}` sets a limit to how old the observations can be. This prevents us from showing a reading that's out of date. For example we might set this to time to be 30 minutes ago. 
+By specifying the *aggregation* types we'll allow and *duration* we ensure that we only retrieve instantaneous observations of air temperature, or averages that are over a period less than 30 mins (1800 secs).
+
+The `resultTime: {gte: '2020-03-09T10:31:38Z'}` sets a limit to how old the observations can be. This prevents us from showing a reading that's out of date. For example we might set this time to be 30 minutes ago. 
 
 At some point we'll want to add the ability for a user to go back in time to see observations over a specific short window in time, e.g. between 12:00 and 13:00 last Tuesday. In which case we can add a `lt` property too, e.g.
 
@@ -166,9 +174,7 @@ At some point we'll want to add the ability for a user to go back in time to see
 
 Most observations should have a _location_ object so we know where to plot it on the map.
 
-N.B. as yet there's still no ability to set a spatial bounding box for the request, but it shouldn't be too much of an issue as we'll just keep the default extent of the map the same (i.e. to show all of Birmingham), and if we plot an observation outside of the extent the user can always find it by manually zooming out.
-
-At some point we should add the ability to click on a marker and see more details, e.g. when it was recorded and by which sensor, but this feature can be added further down the line.
+Although it is possible to  set a spatial bounding box for the request (see [docs](https://stoplight.io/p/docs/gh/birminghamurbanobservatory/docs/reference/REST-API.v1.yaml/paths/~1observations/get?srn=gh/birminghamurbanobservatory/docs/reference/REST-API.v1.yaml/paths/~1observations/get)), we probably don't need to bother, we'll just keep the default extent of the map the same (i.e. to show all of Birmingham), and if we plot an observation outside of the extent the user can always find it by manually zooming out.
 
 
 ## Modal with more information about an observation
@@ -296,9 +302,6 @@ to get some more information about this feature of interest.
 </div>
 ```
 
-
-
-   
 
 ## Getting historical observations to plot on a line graph
 

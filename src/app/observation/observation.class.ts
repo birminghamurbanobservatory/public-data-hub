@@ -10,10 +10,12 @@ export class Observation {
   public hasDeployment?: string;
   public resultTime?: string;
   public observedProperty?: ObservedProperty;
+  public aggreation: string;
   public hasFeatureOfInterest?: string;
   public location?: Location;
   public usedProcedures?: string[];
   public disciplines?: Discipline[];
+  public phenomenonTime?: PhenomenonTime;
   public inTimeseries?: []
 }
 
@@ -36,4 +38,10 @@ class LocationProperties {
 class Geometry {
   type?: string;
   coordinates?: any;
+}
+
+class PhenomenonTime {
+  hasBeginning: string;
+  hasEnd: string;
+  duration: number;
 }
