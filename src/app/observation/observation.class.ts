@@ -1,7 +1,3 @@
-import { ObservedProperty } from '../Interfaces/observed-property.interface';
-import { Unit } from '../Interfaces/unit.interface';
-import { Discipline } from '../Interfaces/disciplines.interface';
-
 export class Observation {
   public id?: string;
   public madeBySensor?: string;
@@ -9,19 +5,19 @@ export class Observation {
   public ancestorPlatforms?: string[]; // has a hierachical structure, top level parent first.
   public hasDeployment?: string;
   public resultTime?: string;
-  public observedProperty?: ObservedProperty;
+  public observedProperty?: any; // could be a string or object depending on "populate" query param.
   public aggreation: string;
   public hasFeatureOfInterest?: string;
   public location?: Location;
   public usedProcedures?: string[];
-  public disciplines?: Discipline[];
+  public disciplines?: any[]; // each item could be a string or object depending on "populate" query param.
   public phenomenonTime?: PhenomenonTime;
   public inTimeseries?: []
 }
 
 class Result {
   value?: any;
-  unit?: Unit;
+  unit?: any; // could be a string or object depending on "populate" query param.
   flags?: string[];
 }
 

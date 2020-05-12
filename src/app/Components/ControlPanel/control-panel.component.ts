@@ -61,7 +61,8 @@ export class ControlPanelComponent implements OnInit, OnDestroy {
                 gte: '2020-03-09T10:31:38Z'
             }
         }, {
-            onePer: 'sensor',
+            onePer: 'sensor'
+            // Haven't bothered to populate here, as I don't think we need to.
         }).subscribe((response) => {
             this.addMarkers(response.data);
         });
