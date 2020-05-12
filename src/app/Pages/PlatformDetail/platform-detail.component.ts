@@ -36,10 +36,11 @@ export class PlatformDetailComponent implements OnInit {
                     sensors: this.sensorService.getSensors({ isHostedBy: params.get('id') })
                         .pipe(catchError(error => of(error))),
                     lastReadings: this.observationService.getObservations({
-                        onePer: 'timeseries',
                         ancestorPlatforms: {
                             includes: params.get('id'),
                         }
+                    }, {
+                        onePer: 'timeseries'
                     })
                 })),
                 // this is a bit clunky, is there a better way...?!

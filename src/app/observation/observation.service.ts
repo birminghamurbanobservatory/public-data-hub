@@ -7,7 +7,8 @@ import { cloneDeep } from 'lodash';
 import { map } from 'rxjs/operators';
 import { Collection } from '../shared/collection';
 import { HttpClient } from '@angular/common/http';
-import { GetObservationsWhere } from './get-observations-where.class';
+import { GetObservationsWhere } from './get-observations-where.interface';
+import {GetObservationsOptions} from './get-observations-options.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -19,9 +20,12 @@ export class ObservationService {
     private apiFunctions: ApiFunctionsService
   ) { }
 
-  getObservations(where?: GetObservationsWhere): Observable<{ data: Observation[]; meta: any }> {
+  getObservations(where: GetObservationsWhere = {}, options: GetObservationsOptions = {}): Observable<{ data: Observation[]; meta: any }> {
 
-    const qs = this.apiFunctions.whereToQueryString(where);
+    const queryParamsObject = Object.assign({}, where, options);
+    const qs = this.apiFunctions.queryParamsObjectToString(queryParamsObject);
+
+    console.log(qs);
 
     return this.http.get(`${environment.apiUrl}/observations${qs}`)
       .pipe(
@@ -40,8 +44,11 @@ export class ObservationService {
    * 
    * @param id : an observation id
    */
-  getObservation(id: string) {
-    return this.http.get(`${environment.apiUrl}/observations/${id}`)
+  getObservation(id: string, options: {populate?: any[]} = {}) {
+
+    const qs = this.apiFunctions.queryParamsObjectToString(options);
+
+    return this.http.get(`${environment.apiUrl}/observations/${id}${qs}`)
       .pipe(
         map((response) => this.formatObservationForApp(response))
       )
@@ -67,11 +74,14 @@ export class ObservationService {
       observedProperty: property, 
       ancestorPlatforms: {
           includes: platform
-      },
+      }
+    };
+
+    const options = {
       limit: 1,
       sortBy: 'resultTime',
       sortOrder: 'asc'
-    };
+    }
 
     return this.getObservations(query)
       .pipe(map((res) => res.data[0]));

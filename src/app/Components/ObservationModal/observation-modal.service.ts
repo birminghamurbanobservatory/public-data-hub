@@ -34,7 +34,9 @@ export class ObservationModalService {
         
         return this.observation
             .pipe(
-                switchMap((id: string) => this.observationService.getObservation(id)),
+                switchMap((id: string) => this.observationService.getObservation(id, {
+                    populate: ['unit', 'observedProperty', 'disciplines']
+                })),
                 mergeMap(
                     (obs: Observation) => forkJoin({
                         timeseries: this.timeseriesService.getTimeseriesById(obs.inTimeseries),

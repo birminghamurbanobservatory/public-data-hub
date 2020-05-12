@@ -19,7 +19,7 @@ export class SensorService {
 
 
   getSensors(where: { isHostedBy: string }): Observable<Sensor[]> {
-    const qs = this.apiFunctions.whereToQueryString(where);
+    const qs = this.apiFunctions.queryParamsObjectToString(where);
     return this.http.get(`${environment.apiUrl}/sensors${qs}`)
       .pipe(
         map((sensorCollection: any) => {

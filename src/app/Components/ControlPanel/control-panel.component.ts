@@ -50,7 +50,6 @@ export class ControlPanelComponent implements OnInit, OnDestroy {
         this.closePanel.emit(); // closes the deployment side panel
 
         this.observationService.getObservations({
-            onePer: 'sensor',
             disciplines: {
                 includes: 'Meteorology'
             },
@@ -61,6 +60,8 @@ export class ControlPanelComponent implements OnInit, OnDestroy {
             resultTime: {
                 gte: '2020-03-09T10:31:38Z'
             }
+        }, {
+            onePer: 'sensor',
         }).subscribe((response) => {
             this.addMarkers(response.data);
         });

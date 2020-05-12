@@ -111,13 +111,15 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
         this.observationService.getObservations({
-            onePer: 'sensor',
             ancestorPlatforms: {
               includes: marker.id,
             },
             flags: {
               exists: false
             }
+          }, {
+            onePer: 'timeseries',
+            populate: ['observedProperty', 'unit', 'disciplines']
           })
           .subscribe((response) => this.latestObservations = response.data);
     }

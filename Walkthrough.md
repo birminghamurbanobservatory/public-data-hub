@@ -81,13 +81,14 @@ To save us having to get the latest observation for each sensor one at a time, t
 
 ```js
 await getObservations({
-  onePer: 'timeseries',
   ancestorPlatforms: {
     includes: 'id-of-top-level-platform',
   },
   flags: {
     exists: false
   }
+}, {
+  onePer: 'timeseries',
 })
 ```
 
@@ -131,7 +132,6 @@ We can use the same `getObservations()` function to get this data. The _where_ a
 
 ```js
 await getObservations({
-  onePer: 'sensor'
   disciplines: {
     includes: 'Meteorology'
   },
@@ -148,6 +148,8 @@ await getObservations({
   resultTime: {
     gte: '2020-03-09T10:31:38Z'
   }
+}, {
+  onePer: 'sensor'
 })
 ```
 

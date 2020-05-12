@@ -34,7 +34,7 @@ export class TimeSeriesService {
      */
     public getTimeSeriesByQuery(where?: Object) {
 
-        const qs = this.apiFunctions.whereToQueryString(where);
+        const qs = this.apiFunctions.queryParamsObjectToString(where);
 
         return this.http.get(`${environment.apiUrl}/timeseries${qs}`)
         .pipe(
@@ -55,7 +55,7 @@ export class TimeSeriesService {
      */
     public getTimeseriesObservations(id: string, where?: {}) {
 
-        const qs = this.apiFunctions.whereToQueryString(where);
+        const qs = this.apiFunctions.queryParamsObjectToString(where);
 
         return this.http.get(`${environment.apiUrl}/timeseries/${id}/observations${qs}`)
         .pipe(

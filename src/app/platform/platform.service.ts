@@ -25,7 +25,7 @@ export class PlatformService {
    */
   public getPlatform(id: string, where?: { nest?: boolean }) {
 
-    const qs = this.apiFunctions.whereToQueryString(where);
+    const qs = this.apiFunctions.queryParamsObjectToString(where);
 
     return this.http.get(`${environment.apiUrl}/platforms/${id}${qs}`)
       .pipe(
@@ -40,7 +40,7 @@ export class PlatformService {
    */
   getPlatforms(where?: { isHostedBy?: any; ancestorPlatforms?: any; }): Observable<{ data: Platform[]; meta: any }> {
 
-    const qs = this.apiFunctions.whereToQueryString(where);
+    const qs = this.apiFunctions.queryParamsObjectToString(where);
 
     return this.http.get(`${environment.apiUrl}/platforms${qs}`)
       .pipe(
