@@ -53,7 +53,7 @@ export class TimeSeriesGraphComponent implements OnInit {
     private getTimeseries() {
 
         const apiCalls = this.timeseries.map((ts) => {
-            return this.timeseriesService.getTimeseriesObservations(this.timeseries[0].id, {
+            return this.timeseriesService.getTimeseriesObservations(ts.id, {
             resultTime: {
                     gte: moment().subtract(this.period, 'hours').toISOString(),
                     lte: moment().toISOString(),
@@ -61,12 +61,9 @@ export class TimeSeriesGraphComponent implements OnInit {
             })
         });
 
-        console.log(apiCalls)
-
         forkJoin(apiCalls)
             .pipe(
                 map((data) => data.map(set => this.plotData(set))),
-                tap(data => console.log(data))
             )
             .subscribe((datasets) => this.drawChart(datasets));
     }
@@ -99,11 +96,7 @@ export class TimeSeriesGraphComponent implements OnInit {
             // pointHoverBackgroundColor: 'red',
             // pointHoverBorderColor: 'red',
         };
-        // console.log(this.plottedDataset)
-        // this.drawChart();
     }
-
-    private plottedDataset = [];
 
     private drawChart(data) {
 
