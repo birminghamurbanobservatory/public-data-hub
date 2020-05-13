@@ -98,7 +98,7 @@ Which makes the HTTP request:
 
 `onePer: 'timeseries'` limits the response to one observation per _timeseries_. Specifically the most recent one. A timeseries is a series of observations with common properties, e.g. measured by the same sensor, whilst on the same platform, using the same measurement procedure, measuring the same observable property, etc etc. If, for example, the sensor was moved onto a different platform then a completely new timeseries would be created for it.
 
-The main reason for getting on observation per _timeseries_ rather than per _sensor_ is because some sensors measure more that one observable property, for example a rain gauge measures both _PrecipitationDepth_ and _PrecipitationRate_. I'd like to show both to the user, rather than just whichever is the most recent.
+The main reason for getting an observation per _timeseries_ rather than per _sensor_ is because some sensors measure more that one observable property, for example a rain gauge measures both _PrecipitationDepth_ and _PrecipitationRate_. I'd like to show both to the user, rather than just whichever is the most recent.
 
 The `ancestorPlatforms: {includes: 'id-of-top-level-platform'}` bit ensures that we only get observations that have been collected by sensors whilst hosted on this platform.
 

@@ -4,10 +4,10 @@
     </div>
 </header>
 
-<div class="relative w-full shadow-md bg-gray-50 rounded-sm flex flex-col lg:flex-row" *ngIf="latestTimeseries">
+<div class="relative w-full shadow-md bg-gray-50 rounded-sm flex flex-col lg:flex-row" *ngIf="timeseries">
 
     <div class="relative w-full lg:w-3/4 pl-4 pr-2">
-        <buo-time-series-graph [timeseries]="latestTimeseries?.id"></buo-time-series-graph>
+        <buo-time-series-graph [timeseries]="timeseries"></buo-time-series-graph>
 
         <div class="mt-4 bg-white shadow-inner overflow-hidden border border-gray-200 sm:rounded-lg">
             <div class="px-4 py-5 sm:px-6">

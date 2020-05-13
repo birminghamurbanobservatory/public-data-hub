@@ -9,8 +9,7 @@ import { Timeseries } from '../../Services/timeseries/timeseries.class';
 })
 export class ObservedPropertyComponent implements OnInit {
 
-    public latestTimeseries: Timeseries;
-    public earlierTimeseries: Timeseries[];
+    public timeseries: Timeseries[];
 
     constructor (
         private route: ActivatedRoute,
@@ -28,9 +27,8 @@ export class ObservedPropertyComponent implements OnInit {
             }))
         )
         .subscribe(response => {
-            this.latestTimeseries = response.data.shift();
-            this.earlierTimeseries = response.data;
-            console.log(this.latestTimeseries);
+            this.timeseries = response.data;
+            console.log(this.timeseries);
         });
     }
 }
