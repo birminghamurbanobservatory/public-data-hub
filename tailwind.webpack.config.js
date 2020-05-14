@@ -3,13 +3,6 @@
  * 
  */
 
-const purgecss = require('@fullhuman/postcss-purgecss')({
-    // Specify the paths to all of the template files in your project
-    content: ['./src/**/*.html', './src/**/*.component.ts'],
-    // Regex updated for Tailwind CSS
-    defaultExtractor: content => content.match(/[\w-/.:]+(?<!:)/g) || []
-});
-
 module.exports = (config, options) => {
 
     console.log(`Using '${config.mode}' mode`);
@@ -25,7 +18,6 @@ module.exports = (config, options) => {
                         require('postcss-import'),
                         require('tailwindcss')('./tailwind.config.js'),
                         require('autoprefixer'),
-                        ...(config.mode === 'production' ? [purgecss] : [])
                     ]
                 }
             }

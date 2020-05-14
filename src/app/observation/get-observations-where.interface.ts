@@ -7,6 +7,7 @@ export interface GetObservationsWhere {
   duration?: any;
   ancestorPlatforms?: any; // ['parent', 'child'] for exact match or {includes: 'platform-1'} to match a single platform anywhere in the platform "tree".
   flags?: Flags;
+  location?: Location;
 }
 
 
@@ -16,6 +17,10 @@ interface Disciplines {
 
 interface Flags {
   exists: boolean;
+}
+
+interface Location {
+  exists: true;
 }
 
 interface ResultTime {

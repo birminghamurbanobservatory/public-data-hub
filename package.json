@@ -1,10 +1,11 @@
 {
   "name": "urban-obs",
-  "version": "0.0.0",
+  "version": "0.0.3",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --prod",
+    "deploy": "firebase deploy -m $npm_package_version",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -28,7 +29,7 @@
     "moment": "^2.24.0",
     "ng2-tooltip-directive": "^2.9.20",
     "rxjs": "~6.5.4",
-    "tailwindcss": "^1.2.0",
+    "tailwindcss": "^1.4.6",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
   },

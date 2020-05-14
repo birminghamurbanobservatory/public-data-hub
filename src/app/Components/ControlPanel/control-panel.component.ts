@@ -57,6 +57,9 @@ export class ControlPanelComponent implements OnInit, OnDestroy {
             flags: {
                 exists: false
             },
+            location: {
+                exists: true
+            },
             resultTime: {
                 gte: '2020-03-09T10:31:38Z'
             }
