@@ -63,7 +63,7 @@ export class TimeSeriesGraphComponent implements OnInit {
 
         forkJoin(apiCalls)
             .pipe(
-                map((data) => data.map(set => this.plotData(set))),
+                map((data) => data.map((set, i) => this.plotData(set, i))),
             )
             .subscribe((datasets) => this.drawChart(datasets));
     }
@@ -78,23 +78,25 @@ export class TimeSeriesGraphComponent implements OnInit {
         this.getTimeseries();
     }
 
-    private plotData(data) {
-        const plotted = data.reduce((points, arr) => {
-            points.push({ x: arr.resultTime, y: arr.hasResult.value })
-            return points;
-            }, []);
-    
+    private plotData(data, idx) {
+
+        const plotted = data.map((points) => ({ x: points.resultTime, y: points.hasResult.value }));
+
+        const colours = [
+            { colour: '#4299E1', hover: '#2C5282', line: '#F0FFF4' }, 
+            { colour: '#48BB78', hover: '#276749', line: '#EBF8FF' },
+            { colour: '#553C9A', hover: '#9F7AEA', line: '#FAF5FF' },
+            { colour: '#97266D', hover: '#ED64A6', line: '#FFF5F7' },
+        ]
 
         return {
             fill: false,
             data: plotted,
-            // borderColor: "red",
-            // borderDash: [5, 5],
-            // backgroundColor: "#e755ba",
-            // pointBackgroundColor: "#55bae7",
-            // pointBorderColor: "#55bae7",
-            // pointHoverBackgroundColor: 'red',
-            // pointHoverBorderColor: 'red',
+            borderColor: colours[idx].line,
+            pointBackgroundColor: colours[idx].colour,
+            pointBorderColor: colours[idx].colour,
+            pointHoverBackgroundColor: colours[idx].hover,
+            pointHoverBorderColor: colours[idx].hover,
         };
     }
 
@@ -108,6 +110,9 @@ export class TimeSeriesGraphComponent implements OnInit {
             options: {
                 legend: {
                     display: false
+                },
+                hover: {
+                    mode: 'nearest',
                 },
                 tooltips: {
                     displayColors: false, // removes the square color box
@@ -128,7 +133,7 @@ export class TimeSeriesGraphComponent implements OnInit {
                     yAxes: [{
                         scaleLabel: {
                             display: true,
-                            labelString: 'Air Temperature'
+                            labelString: this.timeseries[0].observedProperty.label
                         }
                     }],
                     xAxes: [{
@@ -141,7 +146,7 @@ export class TimeSeriesGraphComponent implements OnInit {
                         },
                         scaleLabel: {
                             display: true,
-                            labelString: 'Date time'
+                            labelString: 'Date'
                         }
                     }]
                 }
