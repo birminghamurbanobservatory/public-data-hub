@@ -12,7 +12,7 @@ import { map, tap } from 'rxjs/operators';
 @Component({
     selector: 'buo-time-series-graph',
     template: `
-        <div class="mt-4 border border-gray-200 rounded-md bg-white shadow-inner p-4">
+        <div class="border border-gray-200 rounded-md bg-white shadow-inner p-4">
             <div class="flex justify-end">
                 <span class="relative z-0 inline-flex">
                     <button (click)="redraw(6)"  type="button" class="relative inline-flex items-center px-2 py-1 rounded-l-md border border-gray-300 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150">
@@ -80,13 +80,13 @@ export class TimeSeriesGraphComponent implements OnInit {
 
     private plotData(data, idx) {
 
-        const plotted = data.map((points) => ({ x: points.resultTime, y: points.hasResult.value }));
+        const plotted = data.map((points) => ({ x: points.resultTime, y: points.hasResult.value, unit: 'wibble' }));
 
         const colours = [
-            { colour: '#4299E1', hover: '#2C5282', line: '#F0FFF4' }, 
-            { colour: '#48BB78', hover: '#276749', line: '#EBF8FF' },
-            { colour: '#553C9A', hover: '#9F7AEA', line: '#FAF5FF' },
-            { colour: '#97266D', hover: '#ED64A6', line: '#FFF5F7' },
+            { colour: '#4299E1', hover: '#2C5282', line: '#EBF8FF' }, // blue 
+            { colour: '#48BB78', hover: '#276749', line: '#F0FFF4' }, // green
+            { colour: '#553C9A', hover: '#9F7AEA', line: '#FAF5FF' }, // purple 
+            { colour: '#ED64A6', hover: '#97266D', line: '#FFF5F7' }, // pink
         ]
 
         return {
@@ -117,14 +117,17 @@ export class TimeSeriesGraphComponent implements OnInit {
                 tooltips: {
                     displayColors: false, // removes the square color box
                     callbacks: { 
-                        title: () => {
-                            return 'Air Temperature';
+                        title: (tooltipItem) => {
+                            return this.tooltipTitle(tooltipItem)
                         },
-                        label: (tooltipItem, data) => {
+                        label: (tooltipItem) => {
+
+                            const idx = tooltipItem.datasetIndex; // the datasetIndex is the same as the timeseries index
+
                             return [
                                 `Time: ${moment(tooltipItem.xLabel).format('HH:mm')}`, 
                                 `Date: ${moment(tooltipItem.xLabel).format('DD/MM/YY')}`, 
-                                `Value: ${tooltipItem.value}`
+                                `Value: ${tooltipItem.value} ${this.timeseries[idx].unit.symbol}`
                             ];
                         } 
                     }
@@ -153,6 +156,10 @@ export class TimeSeriesGraphComponent implements OnInit {
             }
         });
 
+    }
+
+    private tooltipTitle(item) {
+        return this.timeseries[item[0].datasetIndex].observedProperty.label.toUpperCase();
     }
 
 }
