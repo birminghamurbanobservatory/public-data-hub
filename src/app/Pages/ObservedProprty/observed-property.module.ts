@@ -5,12 +5,14 @@ import { ComponentsModule } from 'src/app/Components/components.module';
 
 import { ObservedPropertyComponent } from './observed-property.component';
 import { ObservedPropertyRoutingModule } from './observed-property-routing.module';
+import { DirectivesModule } from 'src/app/Directives/directives.module';
 
 @NgModule({
 
     imports: [
         CommonModule,
         ComponentsModule,
+        DirectivesModule,
         ObservedPropertyRoutingModule,
     ],
 
