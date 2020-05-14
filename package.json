@@ -28,7 +28,7 @@
     "moment": "^2.24.0",
     "ng2-tooltip-directive": "^2.9.20",
     "rxjs": "~6.5.4",
-    "tailwindcss": "^1.2.0",
+    "tailwindcss": "^1.4.6",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
   },
