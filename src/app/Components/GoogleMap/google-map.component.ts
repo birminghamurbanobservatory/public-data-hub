@@ -28,7 +28,7 @@ export class GoogleMapComponent implements OnInit {
     /**
      * Map zoom value
      */
-    public zoom = 11;
+    public zoom = 11.5;
 
     /**
      * Map center co-ordinates
@@ -39,9 +39,7 @@ export class GoogleMapComponent implements OnInit {
     /**
      * G Map options
      */
-    public options = {
-        mapTypeId: 'terrain'
-    }
+    public options = {}
 
     /**
      * Observable array of markers
