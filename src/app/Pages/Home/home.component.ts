@@ -73,11 +73,11 @@ export class HomeComponent implements OnInit, OnDestroy {
      */
     private addMarkers(platforms: Platform[]) {
 
-        const platformsWithACentroid = platforms.filter((platform) => {
-            return Boolean(platform.centroid);
+        const platformsWithALocation = platforms.filter((platform) => {
+            return Boolean(platform.location);
         })
 
-        const markers: MapMarker[] = platformsWithACentroid.map(platform => {
+        const markers: MapMarker[] = platformsWithALocation.map(platform => {
 
             let colour = this.generateHslColour(platform.inDeployment)
 
@@ -94,8 +94,8 @@ export class HomeComponent implements OnInit, OnDestroy {
                 type: 'platform',
                 id: platform.id,
                 position: {
-                    lat: platform.centroid.forMap.lat,
-                    lng: platform.centroid.forMap.lng,
+                    lat: platform.location.forMap.lat,
+                    lng: platform.location.forMap.lng,
                 },
                 options: {
                     icon,
