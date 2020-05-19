@@ -313,3 +313,23 @@ TODO
 
 
 
+### URL Map
+
+- '/'                                     : landing page, always useful I think, some basic info and what's this for...
+- '/about'                                : about the project 
+- '/team'                                 : some bio stuff on the team members, ie. you
+- '/contact'                              : a form for comms
+- '/partners'                             : place to list funders and other organisations you want to give a hat tip to
+
+- '/deployments'                          : list of deployments, sortable and /or searchable
+- '/deployments/:id'                      : deployment info page, shows all platforms in that deployment
+
+- '/platforms'                            : list of platforms, perhaps searchable by name
+- '/platforms/:id'                        : platform detail, list all sensors
+- '/platforms/:id/:observedProperty       : show all the timeseries for the oberserved property from that platform
+
+- '/map'                                  : the default google map page, showing platform locations
+- '/map/observed-property/:property'      : map view of a particular observered property
+- '/map/platform/:platform'               : when the user has clicked a platform location
+- '/map/platform/:platform/:observation'  : when the user has clicked a particular reading and is shown the modal
+

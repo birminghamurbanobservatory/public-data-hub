@@ -60,7 +60,7 @@ export class ObservationService {
   }
 
   /**
-   * Utility method for the eariest observation of a particilar property
+   * Utility method to retrieve the eariest observation of a particilar observed property
    * So we do not need to keep writing the query out in the controllers
    * 
    * @param property : observed property name

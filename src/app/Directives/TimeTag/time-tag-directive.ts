@@ -13,6 +13,10 @@ export class TimeTagComponent {
     @Input() format: string;
 
     get displayTime() {
+        if (this.format === 'from') {
+            return moment(this.datetime).fromNow();
+        }
+
         return moment(this.datetime).format(this.format);
     }
 

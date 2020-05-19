@@ -1,0 +1,21 @@
+<div>
+    <ul class="flex justify-end items-center">
+
+        <li class="mr-2">
+            <span class="inline-flex rounded-full shadow-sm">
+                <button type="button" tooltip="Reset Map" (click)="reset.emit()" class="inline-flex justify-center items-center h-10 w-10 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150">
+                    <i class="fas fa-undo"></i>
+                </button>
+            </span>
+        </li>
+
+        <li *ngFor="let property of observedProperties" class="ml-2">
+            <span class="inline-flex rounded-full shadow-sm">
+                <button type="button" tooltip="{{ property.name }}" (click)="select.emit(property.value)" class="inline-flex justify-center items-center h-10 w-10 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150">
+                    <i [ngClass]="property.icon"></i>
+                </button>
+            </span>
+        </li>
+        
+    </ul>
+</div>

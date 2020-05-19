@@ -7,7 +7,7 @@ import { Observation } from 'src/app/observation/observation.class';
 @Injectable({
     providedIn: 'root'
 })
-export class IconService {
+export class ColourService {
 
     private jetColorMap = colormap({
         colormap: 'jet',
@@ -70,5 +70,23 @@ export class IconService {
         colorIdx = Math.max(minColorIdx, colorIdx);
         colorIdx = Math.min(maxColorIdx, colorIdx);
         return colorMap[colorIdx];
+    }
+
+    /**
+     * Generate hsl colour based on an input string
+     * 
+     * @param string 
+     */
+    public generateHslColour(string) {
+        let hash = 0;
+
+        if (string.length > 0) {
+            for (var i = 0; i < string.length; i++) {
+                hash = string.charCodeAt(i) + ((hash << 5) - hash);
+                hash = hash & hash; // Convert to 32bit integer
+            }
+        }
+        
+        return "hsl(" + hash % 360 + ", 80%, 30%)";
     }
 }
