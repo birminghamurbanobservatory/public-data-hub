@@ -1,87 +1,90 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { PlatformService } from 'src/app/platform/platform.service';
-import { Platform } from 'src/app/platform/platform.class';
-import { GoogleMapService } from 'src/app/Components/GoogleMap/google-map.service';
-import { takeUntil, filter, tap } from 'rxjs/operators';
-import { Subject } from 'rxjs';
-import { ObservationService } from 'src/app/observation/observation.service';
-import { MapMarker } from '../../Interfaces/map-marker.interface';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ObservationModalService } from 'src/app/Components/ObservationModal/observation-modal.service';
+
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
+
+import { GoogleMapService } from 'src/app/Components/GoogleMap/google-map.service';
+import { PlatformService } from 'src/app/platform/platform.service';
 import { MapPinService } from 'src/app/Services/map-pins/map-pin.service';
 
+import { MapMarker } from '../../Interfaces/map-marker.interface';
+import { Platform } from 'src/app/platform/platform.class';
+
 @Component({
-    selector: 'buo-map-page',
-    templateUrl: './map.component.html'
+  selector: 'buo-map-page',
+  templateUrl: './map.component.html'
 })
 
 export class MapComponent implements OnInit, OnDestroy {
 
-    /**
-     * So we can kill our subscriptions on component destruction
-     */
-    private destroy$: Subject<boolean> = new Subject<boolean>();
-    
-    constructor(
-        private router: Router,
-        private route: ActivatedRoute,
-        private googleMapService: GoogleMapService,
-        private platformService: PlatformService,
-        private observationModalService: ObservationModalService,
-        private pins: MapPinService,
-    ) { }
+  /**
+   * So we can kill our subscriptions on component destruction
+   */
+  private mapSubscription$: Subscription;
 
-    ngOnInit(): void {
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private googleMapService: GoogleMapService,
+    private platformService: PlatformService,
+    private pins: MapPinService,
+  ) {}
 
-        this.setPlatforms();
+  ngOnInit(): void {
 
-        this.googleMapService.selectedMarker
-            .pipe(
-                takeUntil(this.destroy$),
-                filter((value: MapMarker) => value.type === 'platform')
-                )
-            .subscribe((marker) => this.router.navigate(['./platforms', marker.id], { relativeTo: this.route }));
-    }
+    this.setPlatforms();
 
-    ngOnDestroy(): void {
-        this.destroy$.next(true);
-        this.destroy$.unsubscribe();
-    }
+    this.mapSubscription$ = this.googleMapService.selectedMarker
+      .pipe(
+        filter((value: MapMarker) => value.type === 'platform')
+      )
+      .subscribe((marker) => this.router.navigate(['./platforms', marker.id], {
+        relativeTo: this.route
+      }));
+  }
 
-    public setPlatforms() {
-        this.platformService.getPlatforms({ isHostedBy: { exists: false } })
-            .subscribe(({data: platforms}) => this.addMarkers(platforms));
-    }
+  ngOnDestroy(): void {
+    this.mapSubscription$.unsubscribe();
+  }
 
-    /**
-     * Iterates through the platforms adding a map marker for each
-     * Adds the platform detail to each marker, so save a query
-     * 
-     * @param platforms : array of platforms
-     */
-    private addMarkers(platforms: Platform[]) {
-        const platformsWithALocation = platforms.filter((platform) => {
-            return Boolean(platform.location);
-        })
-        
-        const markers: MapMarker[] = platformsWithALocation.map(platform => this.pins.colouredPin(platform));
+  public setPlatforms() {
+    this.platformService.getPlatforms({
+        isHostedBy: {
+          exists: false
+        }
+      })
+      .subscribe(({
+        data: platforms
+      }) => this.addMarkers(platforms));
+  }
 
-        this.googleMapService.updateMarkers(markers);
+  /**
+   * Iterates through the platforms adding a map marker for each
+   * Adds the platform detail to each marker, so save a query
+   * 
+   * @param platforms : array of platforms
+   */
+  private addMarkers(platforms: Platform[]) {
 
-        // this.showDeploymentPanel(markers[0]); // line for ui dev only, delete!
-    }
+    const platformsWithALocation = platforms.filter((platform) => {
+      return Boolean(platform.location);
+    })
 
+    const markers: MapMarker[] = platformsWithALocation.map(platform => this.pins.colouredPin(platform));
 
+    this.googleMapService.updateMarkers(markers);
+  }
 
+  public resetHandler() {
+    this.router.navigate(['/map']);
+    this.setPlatforms();
+  }
 
-
-    public resetHandler() {
-        this.router.navigate(['/map']);
-        this.setPlatforms();
-    }
-    
-    public selectHandler(property: string) {
-        this.router.navigate(['./observed-property', property], { relativeTo: this.route })
-    }
+  public selectHandler(property: string) {
+    this.router.navigate(['./observed-property', property], {
+      relativeTo: this.route
+    })
+  }
 
 }

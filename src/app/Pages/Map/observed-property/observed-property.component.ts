@@ -12,44 +12,43 @@ import { MapPinService } from 'src/app/Services/map-pins/map-pin.service';
 import { MapMarker } from '../../../Interfaces/map-marker.interface';
 
 @Component({
-    selector: 'buo-map-observed-property',
-    template: '', // has no template as output onto map
+  selector: 'buo-map-observed-property',
+  template: '', // has no template as output onto map
 })
 export class ObservedPropertyComponent implements OnInit, OnDestroy {
 
-    private mapSubscription: Subscription;
+  private mapSubscription: Subscription;
 
-    constructor(
-        private route: ActivatedRoute,
-        private pins: MapPinService,
-        private map: GoogleMapService,
-        private observedPropertyService: ObservedPropertyService,
-        private modal: ObservationModalService,
-    ) {}
+  constructor(
+    private route: ActivatedRoute,
+    private pins: MapPinService,
+    private map: GoogleMapService,
+    private observedPropertyService: ObservedPropertyService,
+    private modal: ObservationModalService,
+  ) {}
 
-    ngOnInit(): void {
-        this.route.paramMap.pipe(
-            switchMap((params: Params) => this.observedPropertyService.getObservations(params.get('id')))
-        )
-        .subscribe((response) => this.addMarkers(response.data));
+  ngOnInit(): void {
+    this.route.paramMap.pipe(
+        switchMap((params: Params) => this.observedPropertyService.getObservations(params.get('id')))
+      )
+      .subscribe((response) => this.addMarkers(response.data));
 
-        this.mapSubscription = this.map.selectedMarker
-        .pipe(
-            filter((value: MapMarker) => value.type === 'observation'),
-        )
-        .subscribe((marker: MapMarker) => this.modal.observationSelected(marker.id));
-    }
+    this.mapSubscription = this.map.selectedMarker
+      .pipe(
+        filter((value: MapMarker) => value.type === 'observation'),
+      )
+      .subscribe((marker: MapMarker) => this.modal.observationSelected(marker.id));
+  }
 
-    ngOnDestroy(): void {
-        this.mapSubscription.unsubscribe();
-    }
+  ngOnDestroy(): void {
+    this.mapSubscription.unsubscribe();
+  }
 
+  private addMarkers(data) {
 
-    private addMarkers(data) {
+    const markers: MapMarker[] = data.map((obs) => this.pins.circle(obs));
 
-        const markers: MapMarker[] = data.map((obs) => this.pins.circle(obs));
-
-        this.map.updateMarkers(markers);
-    }
+    this.map.updateMarkers(markers);
+  }
 
 }

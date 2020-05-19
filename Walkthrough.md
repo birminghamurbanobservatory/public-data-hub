@@ -332,4 +332,3 @@ TODO
 - '/map/observed-property/:property'      : map view of a particular observered property
 - '/map/platform/:platform'               : when the user has clicked a platform location
 - '/map/platform/:platform/:observation'  : when the user has clicked a particular reading and is shown the modal
-

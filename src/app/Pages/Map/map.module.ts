@@ -15,25 +15,25 @@ import { DirectivesModule } from 'src/app/Directives/directives.module';
 
 @NgModule({
 
-    imports: [
-        CommonModule,
-        ComponentsModule,
-        DirectivesModule,
-        MapRoutingModule,
-        TooltipModule,
-    ],
+  imports: [
+    CommonModule,
+    ComponentsModule,
+    DirectivesModule,
+    MapRoutingModule,
+    TooltipModule,
+  ],
 
-    declarations: [
-        MapComponent,
-        MenuComponent,
-        PlatformComponent,
-        ObservedPropertyComponent,
-    ],
+  declarations: [
+    MapComponent,
+    MenuComponent,
+    PlatformComponent,
+    ObservedPropertyComponent,
+  ],
 
-    providers: [
-        ObservedPropertyService,
-    ]
+  providers: [
+    ObservedPropertyService,
+  ]
 
 })
 
-export class MapModule { }
+export class MapModule {}

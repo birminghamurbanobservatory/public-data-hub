@@ -1,76 +1,68 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
-import { switchMap } from 'rxjs/operators';
-
-import * as moment from 'moment';
+import { Observable } from 'rxjs';
+import { switchMap, map } from 'rxjs/operators';
 
 import { PlatformService } from 'src/app/platform/platform.service';
 import { ObservationService } from 'src/app/observation/observation.service';
-import { MapMarker } from '../../../Interfaces/map-marker.interface';
-import { Observation } from 'src/app/observation/observation.class';
 import { ObservationModalService } from 'src/app/Components/ObservationModal/observation-modal.service';
 
+import { Platform } from 'src/app/platform/platform.class';
+import { Observation } from 'src/app/observation/observation.class';
+
 @Component({
-    selector: 'buo-map-platforms',
-    templateUrl: './platform.component.html',
+  selector: 'buo-map-platforms',
+  templateUrl: './platform.component.html',
 })
 export class PlatformComponent implements OnInit {
 
-    /**
-     * Top level platform user has selected to view
-     */
-    public platform$;
+  public platform$: Observable < Platform >
 
-    /**
-     * Latest observations for top level platform
-     */
-    public observations$;
+    public observations$: Observable < Observation[] >
 
     constructor(
-        private route: ActivatedRoute,
-        private router: Router,
-        private platformService: PlatformService,
-        private observationService: ObservationService,
-        private observationModalService: ObservationModalService, 
+      private route: ActivatedRoute,
+      private router: Router,
+      private platformService: PlatformService,
+      private observationService: ObservationService,
+      private observationModalService: ObservationModalService,
     ) {}
 
-    ngOnInit(): void {
+  ngOnInit(): void {
 
-        this.platform$ = this.route.paramMap.pipe(
-            switchMap((params: Params) => this.platformService.getPlatform(params.get('id')))
-        )
+    this.platform$ = this.route.paramMap.pipe(
+      switchMap((params: Params) => this.platformService.getPlatform(params.get('id')))
+    )
 
-        this.observations$ = this.route.paramMap.pipe(
-          switchMap((params: Params) => this.getLatestObservations(params.get('id')))
+    this.observations$ = this.route.paramMap.pipe(
+      switchMap(
+        (params: Params) => this.getLatestObservations(params.get('id'))
+        .pipe(map(response => response.data))
       )
-    }
+    )
+  }
 
-    public close(): void {
-      this.router.navigate(['/map']);
-    }
+  public close(): void {
+    this.router.navigate(['/map']);
+  }
 
   public showPlatform(obs) {
-      this.observationModalService.observationSelected(obs.id);
+    this.observationModalService.observationSelected(obs.id);
   }
-        /**
-     * Handles the click event when user selects a platform
-     * Note: marker.platform is the ID of a platform
-     * 
-     * @param marker : Google Maps Map Marker
-     */
-    public getLatestObservations(platform: string) {
 
-        return this.observationService.getObservations({
-            ancestorPlatforms: {
-              includes: platform,
-            },
-            flags: {
-              exists: false
-            }
-          }, {
-            onePer: 'timeseries',
-            populate: ['observedProperty', 'unit', 'disciplines']
-          })
-    }
+  public getLatestObservations(platform: string) {
+
+    return this.observationService.getObservations({
+      ancestorPlatforms: {
+        includes: platform,
+      },
+      flags: {
+        exists: false
+      }
+    }, {
+      onePer: 'timeseries',
+      populate: ['observedProperty', 'unit', 'disciplines']
+    })
+  }
 }
