@@ -12,11 +12,11 @@ export class DurationDirective implements OnInit {
     @Input() aggregation: string;
 
     private abbrev = {
-        Average: 'Avg',
-        Maximum: 'Max',
-        Minimum: 'Min',
-        Sum: 'Sum',
-        Count: 'CT'
+        Average: 'avg',
+        Maximum: 'max',
+        Minimum: 'min',
+        Sum: 'sum',
+        Count: 'count'
     }
 
     constructor(
@@ -36,7 +36,7 @@ export class DurationDirective implements OnInit {
         }
             
         if (this.duration > 60 && this.duration < 3600) {
-            return `${m.minutes()} minute ${this.abbrev[this.aggregation]}.`
+            return `${m.minutes()} minute ${this.abbrev[this.aggregation]}`
         }
 
         return `${this.aggregation} over ${m.hours()} hr.`

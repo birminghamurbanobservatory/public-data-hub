@@ -90,7 +90,7 @@
                                     </div>
                                     <div class="flex items-center text-sm leading-5 text-gray-400 sm:mt-0">
                                         <span *ngIf="obs.aggregation !== 'Instant', else instant" [duration]="obs.phenomenonTime.duration" [aggregation]="obs.aggregation"></span>
-                                        <ng-template #instant>Instant reading.</ng-template>
+                                        <ng-template #instant>instant reading.</ng-template>
                                     </div> 
                                 </div>
                             </div>
@@ -121,7 +121,7 @@
                                     </div>
                                     <div class="flex items-center text-sm leading-5 text-gray-400 sm:mt-0">
                                         <span *ngIf="obs.aggregation !== 'Instant'; else instant" [duration]="obs.phenomenonTime.duration" [aggregation]="obs.aggregation"></span>
-                                        <ng-template #instant>Instant reading.</ng-template>
+                                        <ng-template #instant>instant reading</ng-template>
                                     </div>
                                 </div>
 
