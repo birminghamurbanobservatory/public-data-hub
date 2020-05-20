@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import {style, animate, transition, trigger} from '@angular/animations';
 
 import { Observable } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
@@ -14,6 +15,19 @@ import { Observation } from 'src/app/observation/observation.class';
 @Component({
   selector: 'buo-map-platforms',
   templateUrl: './platform.component.html',
+  animations: [
+    trigger('slideInOut', [
+      transition(':enter', [
+        style({transform: 'translateX(-100%)'}),
+        animate('400ms ease-in', style({transform: 'translateX(0%)'}))
+      ]),
+      transition(':leave', [
+        style({transform: 'translatex(0%)'}),
+        animate('400ms ease-in', style({transform: 'translateY(-100%)'}))
+      ])
+    ])
+  ]
+  
 })
 export class PlatformComponent implements OnInit {
 

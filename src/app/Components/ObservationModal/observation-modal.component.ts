@@ -1,13 +1,35 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { ObservationModalService } from './observation-modal.service';
-import { Observation } from 'src/app/observation/observation.class';
+import {style, animate, transition, trigger} from '@angular/animations';
+
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+
 import * as moment from 'moment';
+
+import { ObservationModalService } from './observation-modal.service';
+import { Observation } from 'src/app/observation/observation.class';
 
 @Component({
     selector: 'buo-observation-modal',
     templateUrl: './observation-modal.component.html',
+    animations: [
+        trigger(
+          'fadeInOut',
+          [
+            transition(
+            ':enter', [
+              style({'opacity': 0}),
+              animate('300ms', style({'opacity': 1}))
+            ]
+          ),
+          transition(
+            ':leave', [
+              style({'opacity': 1}),
+              animate('300ms', style({'opacity': 0})),
+            ]
+          )]
+        )
+      ],
 })
 export class ObservationModalComponent implements OnInit {
 
