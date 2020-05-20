@@ -73,20 +73,26 @@ export class ColourService {
     }
 
     /**
-     * Generate hsl colour based on an input string
+     * Generate Hex colour based on an input string
      * 
      * @param string 
      */
-    public generateHslColour(string) {
+    public generateHexColour(string) {
         let hash = 0;
 
-        if (string.length > 0) {
-            for (var i = 0; i < string.length; i++) {
-                hash = string.charCodeAt(i) + ((hash << 5) - hash);
-                hash = hash & hash; // Convert to 32bit integer
-            }
-        }
+        if (string.length === 0) return '#000000';
         
-        return "hsl(" + hash % 360 + ", 80%, 30%)";
+        for (let i = 0; i < string.length; i++) {
+            hash = string.charCodeAt(i) + ((hash << 5) - hash);
+            hash = hash & hash;
+        }
+
+        let color = '#';
+        for (let i = 0; i < 3; i++) {
+            let value = (hash >> (i * 8)) & 255;
+            color += ('00' + value.toString(16)).substr(-2);
+        }
+
+        return color;
     }
 }
