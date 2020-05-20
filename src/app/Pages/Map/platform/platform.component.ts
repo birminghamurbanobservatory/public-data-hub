@@ -83,14 +83,14 @@ export class PlatformComponent implements OnInit {
   public windDirectionDegreeToText(degree) {
     const val = Math.floor((degree / 45) + 0.5);
     const arr = [
-      'NLY', 
-      'NELY',
-      'ELY',
-      'SELY',
-      'SLY',
-      'SWLY',
-      'WLY',
-      'NWLY'
+      'N',
+      'NE',
+      'E',
+      'SE',
+      'S',
+      'SW',
+      'W',
+      'NW'
     ];
     return arr[(val % 8)];
   }
