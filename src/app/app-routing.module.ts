@@ -3,8 +3,8 @@ import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: '',
-    loadChildren: () => import('./Pages/Home/home.module').then(m => m.HomeModule),
+    path: 'map',
+    loadChildren: () => import('./Pages/Map/map.module').then(m => m.MapModule),
   },
   {
     path: 'platform-detail',
@@ -13,6 +13,11 @@ const routes: Routes = [
   {
     path: 'observe',
     loadChildren: () => import('./Pages/ObservedProprty/observed-property.module').then(m => m.ObservedPropertyModule)
+  },
+  {
+    path: '',
+    redirectTo: '/map',
+    pathMatch: 'full',
   }
 ];
 

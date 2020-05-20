@@ -7,7 +7,7 @@ import { Observation } from 'src/app/observation/observation.class';
 @Injectable({
     providedIn: 'root'
 })
-export class IconService {
+export class ColourService {
 
     private jetColorMap = colormap({
         colormap: 'jet',
@@ -70,5 +70,29 @@ export class IconService {
         colorIdx = Math.max(minColorIdx, colorIdx);
         colorIdx = Math.min(maxColorIdx, colorIdx);
         return colorMap[colorIdx];
+    }
+
+    /**
+     * Generate Hex colour based on an input string
+     * 
+     * @param string 
+     */
+    public generateHexColour(string) {
+        let hash = 0;
+
+        if (string.length === 0) return '#000000';
+        
+        for (let i = 0; i < string.length; i++) {
+            hash = string.charCodeAt(i) + ((hash << 5) - hash);
+            hash = hash & hash;
+        }
+
+        let color = '#';
+        for (let i = 0; i < 3; i++) {
+            let value = (hash >> (i * 8)) & 255;
+            color += ('00' + value.toString(16)).substr(-2);
+        }
+
+        return color;
     }
 }

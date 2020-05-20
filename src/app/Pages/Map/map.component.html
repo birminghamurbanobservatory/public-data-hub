@@ -1,0 +1,15 @@
+<header class="py-6">
+    <div class="max-w-full mx-auto px-4 sm:px-0">
+        <buo-map-menu (reset)="resetHandler()" (select)="selectHandler($event)"></buo-map-menu>
+    </div>
+</header>
+
+<div class="relative w-full h-screen shadow-md">
+
+    <buo-google-map></buo-google-map>
+
+    <buo-observation-modal></buo-observation-modal>
+
+    <router-outlet></router-outlet>
+
+</div>
