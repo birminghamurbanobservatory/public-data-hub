@@ -61,7 +61,7 @@
               Observation date
             </dt>
             <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {{ resultDate(observation.resultTime) }}
+              <span [datetime]="observation.resultTime" [format]="'Do MMMM YYYY'"></span>
             </dd>
           </div>
           
@@ -70,9 +70,49 @@
               Observation time
             </dt>
             <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {{ resultTime(observation.resultTime) }}
+              <span [datetime]="observation.resultTime" [format]="'HH:mm:ss'"></span>
             </dd>
           </div>
+
+          <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+            <dt class="text-sm leading-5 font-medium text-gray-500">
+              Aggregation type
+            </dt>
+            <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+              {{ observation.aggregation }}
+            </dd>
+          </div>
+
+          <ng-container *ngIf=" observation.aggregation !== 'Instant' ">
+
+            <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+              <dt class="text-sm leading-5 font-medium text-gray-500">
+                Aggregation duration
+              </dt>
+              <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                <span [duration]="observation.phenomenonTime.duration" [aggregation]="observation.aggregation"></span>
+              </dd>
+            </div>
+
+            <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+              <dt class="text-sm leading-5 font-medium text-gray-500">
+                Aggregation start
+              </dt>
+              <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                <span [datetime]="observation.phenomenonTime.hasBeginning" [format]="'HH:mm:ss, Do MMMM YYYY'"></span>
+              </dd>
+            </div>
+
+            <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+              <dt class="text-sm leading-5 font-medium text-gray-500">
+                Aggregation end
+              </dt>
+              <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                <span [datetime]="observation.phenomenonTime.hasEnd" [format]="'HH:mm:ss, Do MMMM YYYY'"></span>
+              </dd>
+            </div>
+
+          </ng-container>
 
           <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
             <dt class="text-sm leading-5 font-medium text-gray-500">
@@ -97,7 +137,7 @@
               First Observation
             </dt>
             <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {{ resultDate(firstObservation.resultTime) }}
+              <span [datetime]="observation.resultTime" [format]="'Do MMMM YYYY'"></span>
             </dd>
           </div>
 

@@ -9,11 +9,13 @@ import { GoogleMapComponent } from './GoogleMap/google-map.component';
 import { TimeSeriesGraphComponent } from './TimeSeriesGraph/time-series-graph.component';
 import { ObservationModalComponent } from './ObservationModal/observation-modal.component';
 import { TooltipModule } from 'ng2-tooltip-directive';
+import { DirectivesModule } from '../Directives/directives.module';
 
 @NgModule({
 
     imports: [
         CommonModule,
+        DirectivesModule,
         RouterModule,
         GoogleMapsModule,
         TooltipModule,

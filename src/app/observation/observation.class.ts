@@ -6,7 +6,7 @@ export class Observation {
   public hasDeployment?: string;
   public resultTime?: string;
   public observedProperty?: any; // could be a string or object depending on "populate" query param.
-  public aggreation: string;
+  public aggregation: string;
   public hasFeatureOfInterest?: string;
   public location?: Location;
   public usedProcedures?: string[];

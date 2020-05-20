@@ -71,11 +71,4 @@ export class ObservationModalComponent implements OnInit {
         this.showModal = false;
     }
 
-    resultDate(time) {
-        return moment(time).format('Do MMMM YYYY')
-    }
-
-    resultTime(time) {
-        return moment(time).format('HH:mm:ss')
-    }
 }
