@@ -1,14 +1,17 @@
 import { NgModule } from '@angular/core';
-import { TimeTagComponent } from './TimeTag/time-tag-directive';
+import { DatetimeDirective } from './datetime-directive';
+import { DurationDirective } from './duration.directive';
 
 @NgModule({
 
     declarations: [
-        TimeTagComponent,
+        DatetimeDirective,
+        DurationDirective,
     ],
 
     exports: [
-        TimeTagComponent,
+        DatetimeDirective,
+        DurationDirective,
     ]
 
 })
