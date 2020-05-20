@@ -61,30 +61,78 @@
 
     <ul *ngFor="let obs of (observations$ | async)">
         <li class="border-b border-gray-200">
-            <a (click)="showPlatform(obs)" [routerLink]="[]" class="block hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition duration-150 ease-in-out">
+            <a (click)="showModal(obs)" [routerLink]="[]" class="block hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition duration-150 ease-in-out">
 
-                <div class="flex items-center px-4 py-4">
+                <div class="flex items-center pl-4 pr-2 py-4">
                     <div class="min-w-0 flex-1 flex items-center">
                     
-                        <div class="min-w-0 flex-1 flex">
-                            <div class="flex-1 flex flex-col">
-                                <div class="text-sm leading-5 font-medium text-indigo-500 truncate capitalize">{{ obs.observedProperty.label }}</div>
-                                <div class="mt-2 flex items-center text-sm leading-5 text-gray-500">
-                                    <i class="far fa-clock"></i>
-                                    <span class="ml-1 truncate">
-                                        <buo-time-tag [datetime]="obs.resultTime" format="from"></buo-time-tag>
-                                    </span>
+                        <ng-container [ngSwitch]="obs.observedProperty['@id']">
+
+                            <!-- wind direction -->
+                            <div *ngSwitchCase="'WindDirection'" class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <div class="text-sm leading-5 font-medium text-indigo-600 truncate capitalize">
+                                        {{ obs.observedProperty.label }}
+                                    </div>
+                                    <div class="ml-2 flex-shrink-0 flex">
+                                        <span class="text-2xl leading-5 font-light text-gray-600">
+                                            {{ windDirectionDegreeToText(obs.hasResult.value) }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="mt-1 sm:flex sm:justify-between">
+                                    <div class="sm:flex">
+                                        <div class="mr-6 flex items-center text-sm leading-5 text-gray-500">
+                                            <i class="far fa-clock"></i>
+                                            <span class="ml-1 truncate">
+                                                <buo-time-tag [datetime]="obs.resultTime" format="from"></buo-time-tag>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center text-sm leading-5 text-gray-500 sm:mt-0">
+                                        {{ obs.hasResult.value }}{{ obs.hasResult.unit.symbol }}
+                                    </div>
                                 </div>
                             </div>
-                            <div class="mr-4 flex items-center justify-end">
-                                <span class="text-3xl font-light text-gray-500">{{ obs.hasResult.value }}</span> <sup class="font-bold text-xs text-gray-400">{{ obs.hasResult.unit.symbol }}</sup>
+
+                            <!-- default row -->
+                            <div *ngSwitchDefault class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <div class="text-sm leading-5 font-medium text-indigo-600 truncate capitalize">
+                                        {{ obs.observedProperty.label }}
+                                    </div>
+                                    <div class="ml-2 flex-shrink-0 flex">
+                                        <span class="text-2xl leading-5 font-light text-gray-600">
+                                            {{ obs.hasResult.value }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="mt-1 sm:flex sm:justify-between">
+                                    <div class="sm:flex">
+                                        <div class="mr-6 flex items-center text-sm leading-5 text-gray-500">
+                                            <i class="far fa-clock"></i>
+                                            <span class="ml-1 truncate">
+                                                <buo-time-tag [datetime]="obs.resultTime" format="from"></buo-time-tag>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center text-sm leading-5 text-gray-500 sm:mt-0">
+                                        {{ obs.hasResult.unit.symbol }}
+                                    </div>
+                                </div>
                             </div>
+
+                        </ng-container>
+
+                        <div class="ml-5 flex-shrink-0">
+                            <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                            </svg>
                         </div>
-                        <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
-                        </svg>
+
                     </div>
                 </div>
+
             </a>
         </li>
     </ul>

@@ -19,7 +19,7 @@ export class PlatformComponent implements OnInit {
 
   public platform$: Observable < Platform >
 
-    public observations$: Observable < Observation[] >
+  public observations$: Observable < Observation[] >
 
     constructor(
       private route: ActivatedRoute,
@@ -30,7 +30,7 @@ export class PlatformComponent implements OnInit {
     ) {}
 
   ngOnInit(): void {
-
+    
     this.platform$ = this.route.paramMap.pipe(
       switchMap((params: Params) => this.platformService.getPlatform(params.get('id')))
     )
@@ -47,7 +47,7 @@ export class PlatformComponent implements OnInit {
     this.router.navigate(['/map']);
   }
 
-  public showPlatform(obs) {
+  public showModal(obs) {
     this.observationModalService.observationSelected(obs.id);
   }
 
@@ -64,5 +64,20 @@ export class PlatformComponent implements OnInit {
       onePer: 'timeseries',
       populate: ['observedProperty', 'unit', 'disciplines']
     })
+  }
+
+  public windDirectionDegreeToText(degree) {
+    const val = Math.floor((degree / 45) + 0.5);
+    const arr = [
+      'NLY', 
+      'NELY',
+      'ELY',
+      'SELY',
+      'SLY',
+      'SWLY',
+      'WLY',
+      'NWLY'
+    ];
+    return arr[(val % 8)];
   }
 }
