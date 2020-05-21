@@ -55,7 +55,7 @@ export class ObservationService {
   formatObservationForApp(asJsonLd): Observation {
     const forApp = cloneDeep(asJsonLd);
     delete forApp['@context']; // get rid of the JSON-LD context
-    forApp.id = forApp['@id']; // Remove the @ from the id so easier to reference in code.
+    forApp.id = forApp['@id']; // Add id property so easier to reference in code than [@id]
     return forApp;
   }
 

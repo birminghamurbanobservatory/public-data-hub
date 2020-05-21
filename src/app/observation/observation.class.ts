@@ -6,10 +6,10 @@ export class Observation {
   public hasDeployment?: string;
   public resultTime?: string;
   public observedProperty?: any; // could be a string or object depending on "populate" query param.
-  public aggregation: string;
-  public hasFeatureOfInterest?: string;
+  public aggregation: any;
+  public hasFeatureOfInterest?: any;
   public location?: Location;
-  public usedProcedures?: string[];
+  public usedProcedures?: any[];
   public disciplines?: any[]; // each item could be a string or object depending on "populate" query param.
   public phenomenonTime?: PhenomenonTime;
   public inTimeseries?: []
