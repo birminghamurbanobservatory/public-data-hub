@@ -95,7 +95,7 @@
                 Aggregation duration
               </dt>
               <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                <span [duration]="observation.phenomenonTime.duration" [aggregation]="observation.aggregation"></span>
+                <span [duration]="observation.phenomenonTime.duration" [aggregation]="observation.aggregation['@id']"></span>
               </dd>
             </div>
 
