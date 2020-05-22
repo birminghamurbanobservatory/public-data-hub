@@ -13,7 +13,7 @@
             Observation Information
           </h3>
           <p class="mt-1 max-w-2xl text-sm leading-5 text-gray-500">
-            Platform and sensor details.
+            Extra information about this single observation
           </p>
         </div>
         <span class="inline-flex rounded-full shadow-sm">
@@ -47,24 +47,15 @@
             </dd>
           </div>
 
-          <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+          <div *ngIf="observation.observedProperty" class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
             <dt class="text-sm leading-5 font-medium text-gray-500">
               Observed Property
             </dt>
             <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2 capitalize">
-              {{ observation.observedProperty.label }}
+              {{ observation.observedProperty.label || observation.observedProperty['@id'] }}
             </dd>
           </div>
 
-          <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
-            <dt class="text-sm leading-5 font-medium text-gray-500">
-              Observation date
-            </dt>
-            <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              <span [datetime]="observation.resultTime" [format]="'Do MMMM YYYY'"></span>
-            </dd>
-          </div>
-          
           <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
             <dt class="text-sm leading-5 font-medium text-gray-500">
               Observation time
@@ -76,21 +67,35 @@
 
           <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
             <dt class="text-sm leading-5 font-medium text-gray-500">
-              Aggregation type
+              Observation date
             </dt>
             <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {{ observation.aggregation }}
+              <span [datetime]="observation.resultTime" [format]="'Do MMMM YYYY'"></span>
             </dd>
           </div>
 
-          <ng-container *ngIf=" observation.aggregation !== 'Instant' ">
+          <div *ngIf="observation.aggregation" class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+            <dt class="text-sm leading-5 font-medium text-gray-500">
+              Aggregation type
+            </dt>
+            <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+              <span class="capitalize">
+                {{ observation.aggregation.label || observation.aggregation.label['@id'] }}
+              </span>
+              <span *ngIf="observation.aggregation.comment">
+                - {{observation.aggregation.comment}}
+              </span>
+            </dd>
+          </div>
+
+          <ng-container *ngIf=" observation.aggregation['@id'] !== 'instant' ">
 
             <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
               <dt class="text-sm leading-5 font-medium text-gray-500">
                 Aggregation duration
               </dt>
               <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                <span [duration]="observation.phenomenonTime.duration" [aggregation]="observation.aggregation"></span>
+                <span [duration]="observation.phenomenonTime.duration" [aggregation]="observation.aggregation['@id']"></span>
               </dd>
             </div>
 
@@ -125,10 +130,10 @@
 
           <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
             <dt class="text-sm leading-5 font-medium text-gray-500">
-              Symbol
+              Unit
             </dt>
             <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {{ observation.hasResult.unit.symbol }} <span class="capitalize text-gray-600">({{ observation.hasResult.unit.label}})</span>
+              <span class="capitalize">{{ observation.hasResult.unit.label }}</span> {{' '}} <span class="text-gray-600">({{ observation.hasResult.unit.symbol}})</span>
             </dd>
           </div>
 
@@ -138,15 +143,6 @@
             </dt>
             <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
               <span [datetime]="observation.resultTime" [format]="'Do MMMM YYYY'"></span>
-            </dd>
-          </div>
-
-          <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
-            <dt class="text-sm leading-5 font-medium text-gray-500">
-              Location
-            </dt>
-            <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {{ observation.location.geometry.coordinates[0] }}, {{ observation.location.geometry.coordinates[1] }}  
             </dd>
           </div>
 

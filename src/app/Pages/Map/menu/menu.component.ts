@@ -12,22 +12,22 @@ export class MenuComponent {
 
   public observedProperties = [{
       name: 'Air Temperature',
-      value: 'AirTemperature',
+      value: 'air-temperature',
       icon: 'fas fa-temperature-low'
     },
     {
       name: 'Relative Humidity',
-      value: 'RelativeHumidity',
+      value: 'relative-humidity',
       icon: ''
     },
     {
       name: 'Wind Speed',
-      value: 'WindSpeed',
+      value: 'wind-speed',
       icon: 'fas fa-wind'
     },
     {
       name: 'Precipitation Rate',
-      value: 'PrecipitatonRate',
+      value: 'precipitation-rate',
       icon: 'fas fa-vial'
     },
   ];
