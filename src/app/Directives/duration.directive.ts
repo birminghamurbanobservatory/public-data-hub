@@ -12,11 +12,11 @@ export class DurationDirective implements OnInit {
     @Input() aggregation: string;
 
     private abbrev = {
-        Average: 'avg',
-        Maximum: 'max',
-        Minimum: 'min',
-        Sum: 'sum',
-        Count: 'count'
+        average: 'avg',
+        maximum: 'max',
+        minimum: 'min',
+        sum: 'sum',
+        count: 'count'
     }
 
     constructor(
