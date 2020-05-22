@@ -137,7 +137,7 @@ await getObservations({
   },
   observedProperty: 'air-temperature',
   aggregation: {
-    in: ['Instant', 'Average']
+    in: ['instant', 'average']
   },
   duration: {
     lte: '1800' // in seconds
@@ -155,7 +155,7 @@ await getObservations({
 
 Which makes the HTTP request:
 
-`GET http://api.birminghamurbanobservatory.com/observations?onePer=sensor&disciplines__includes=meteorology&observedProperty=air-temperature&aggregation__in=Instant,Average&duration__lte=1800&flags__exists=false&resultTime__gte=2020-03-09T10:31:38Z`
+`GET http://api.birminghamurbanobservatory.com/observations?onePer=sensor&disciplines__includes=meteorology&observedProperty=air-temperature&aggregation__in=instant,average&duration__lte=1800&flags__exists=false&resultTime__gte=2020-03-09T10:31:38Z`
 
 The combination of the _disciplines_ and _observedProperty_ ensures we only get observations of *air-temperature* relevant to *meteorology*, i.e. it'll exclude any indoor *air-temperature* measurements.
 
@@ -296,12 +296,7 @@ Bear in mind that sometimes the top level platform won't always be a place, it c
 
 to get some more information about this feature of interest.
 
-10. We need to display the usedProcedures, again this needs more work on the server side to provide a name and description for each usedProcedure, rather than just showing the IDs. For now we might be able to get away with something like:
-
-```html
-<div *ngIf="observation.usedProcedures.includes('maximum')">
-  <p>This is an observation of the maximum value between {{observation.phenomenonTime.hasBeginning | date}} and {{observation.phenomenonTime.hasEnd | date}}</p>
-</div>
+10.  We need to display the usedProcedures
 ```
 
 
