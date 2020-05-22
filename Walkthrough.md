@@ -98,7 +98,7 @@ Which makes the HTTP request:
 
 `onePer: 'timeseries'` limits the response to one observation per _timeseries_. Specifically the most recent one. A timeseries is a series of observations with common properties, e.g. measured by the same sensor, whilst on the same platform, using the same measurement procedure, measuring the same observable property, etc etc. If, for example, the sensor was moved onto a different platform then a completely new timeseries would be created for it.
 
-The main reason for getting an observation per _timeseries_ rather than per _sensor_ is because some sensors measure more that one observable property, for example a rain gauge measures both _PrecipitationDepth_ and _PrecipitationRate_. I'd like to show both to the user, rather than just whichever is the most recent.
+The main reason for getting an observation per _timeseries_ rather than per _sensor_ is because some sensors measure more that one observable property, for example a rain gauge measures both _PrecipitationDepth_ and _precipitation-rate_. I'd like to show both to the user, rather than just whichever is the most recent.
 
 The `ancestorPlatforms: {includes: 'id-of-top-level-platform'}` bit ensures that we only get observations that have been collected by sensors whilst hosted on this platform.
 
@@ -133,9 +133,9 @@ We can use the same `getObservations()` function to get this data. The _where_ a
 ```js
 await getObservations({
   disciplines: {
-    includes: 'Meteorology'
+    includes: 'meteorology'
   },
-  observedProperty: 'AirTemperature',
+  observedProperty: 'air-temperature',
   aggregation: {
     in: ['Instant', 'Average']
   },
@@ -155,9 +155,9 @@ await getObservations({
 
 Which makes the HTTP request:
 
-`GET http://api.birminghamurbanobservatory.com/observations?onePer=sensor&disciplines__includes=Meteorology&observedProperty=AirTemperature&aggregation__in=Instant,Average&duration__lte=1800&flags__exists=false&resultTime__gte=2020-03-09T10:31:38Z`
+`GET http://api.birminghamurbanobservatory.com/observations?onePer=sensor&disciplines__includes=meteorology&observedProperty=air-temperature&aggregation__in=Instant,Average&duration__lte=1800&flags__exists=false&resultTime__gte=2020-03-09T10:31:38Z`
 
-The combination of the _disciplines_ and _observedProperty_ ensures we only get observations of *AirTemperature* relevant to *Meteorology*, i.e. it'll exclude any indoor *AirTemperature* measurements.
+The combination of the _disciplines_ and _observedProperty_ ensures we only get observations of *air-temperature* relevant to *meteorology*, i.e. it'll exclude any indoor *air-temperature* measurements.
 
 By specifying the *aggregation* types we'll allow and *duration* we ensure that we only retrieve instantaneous observations of air temperature, or averages that are over a period less than 30 mins (1800 secs).
 
@@ -225,7 +225,7 @@ Here's an example of an observation object:
   },
   "disciplines": [
     {
-      "@id": "Meteorology",
+      "@id": "meteorology",
       "label": "meteorology"
     },
     {
@@ -247,7 +247,7 @@ Here's what we should be showing in the modal:
 
 1. The `value`, `unit.symbol` and `observedProperty.label` just as we did in the side bar. Further down the line the unit and the observedProperty could either have a tooltip or be a hyperlink to more information about them. E.g. a hyperlink could point to these [docs](https://api.birminghamurbanobservatory.com/vocab/uo/#PrecipitationDepth) about what PrecipitationDepth is. Or once I add the api endpoint `/observable-properties/PrecipitationDepth` we can get the comment/description from there to use as the tooltip.
    
-2. Show the `resultTime` as an absolute value rather than *time ago*. If an observation has a `phenomenonTime` object (like this example) then also show the `hasBeginning` and `hasEnd`. For something like *PrecipitationDepth* this details over what timeframe the amount of rain was collected. For a maximum *AirTemperature* observation the value is the max temperature recorded between the `hasBeginning` and `hasEnd`, with the `resultTime` showing the exact time within this timeframe that the max temp was recorded. 
+2. Show the `resultTime` as an absolute value rather than *time ago*. If an observation has a `phenomenonTime` object (like this example) then also show the `hasBeginning` and `hasEnd`. For something like *PrecipitationDepth* this details over what timeframe the amount of rain was collected. For a maximum *air-temperature* observation the value is the max temperature recorded between the `hasBeginning` and `hasEnd`, with the `resultTime` showing the exact time within this timeframe that the max temp was recorded. 
 
 3. Get the names of the `ancestorPlatforms` so we can show the hierarchy. 
    

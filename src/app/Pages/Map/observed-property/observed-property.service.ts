@@ -13,7 +13,7 @@ export class ObservedPropertyService {
   public getObservations(property: string) {
     return this.observationService.getObservations({
       disciplines: {
-        includes: 'Meteorology'
+        includes: 'meteorology'
       },
       observedProperty: property,
       flags: {

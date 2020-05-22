@@ -39,19 +39,19 @@ export class ColourService {
 
     public selectFillColour(observation: Observation) {
         
-        if (observation.observedProperty === 'AirTemperature' && observation.hasResult.unit === 'DegreeCelsius') {
+        if (observation.observedProperty === 'air-temperature' && observation.hasResult.unit === 'degree-celsius') {
             return this.selectColorFromColorMap(this.jetColorMap, observation.hasResult.value, -20, 40);
         }
 
-        if (observation.observedProperty === 'RelativeHumidity' && observation.hasResult.unit === 'Percent') {
+        if (observation.observedProperty === 'relative-humidity' && observation.hasResult.unit === 'percent') {
             return this.selectColorFromColorMap(this.brownBlueColorMap, observation.hasResult.value, 0, 100);
         }
 
-        if (observation.observedProperty === 'PrecipitationRate' && observation.hasResult.unit === 'MillimetrePerHour') {
+        if (observation.observedProperty === 'precipitation-rate' && observation.hasResult.unit === 'millimetre-per-hour') {
             return this.selectColorFromColorMap(this.whiteBlueColorMap, observation.hasResult.value, 0, 15);
         }
 
-        if (observation.observedProperty === 'WindSpeed' && observation.hasResult.unit === 'MetrePerSecond') {
+        if (observation.observedProperty === 'wind-speed' && observation.hasResult.unit === 'metre-per-second') {
             return this.selectColorFromColorMap(this.greenPinkColorMap, observation.hasResult.value, 0, 30);
         }
 
