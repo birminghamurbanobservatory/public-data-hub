@@ -11,6 +11,7 @@ export class ObservedPropertyService {
   ) {}
 
   public getObservations(property: string) {
+    const oneHourAgo = new Date((new Date().getTime()) - (1000 * 60 * 60));
     return this.observationService.getObservations({
       disciplines: {
         includes: 'meteorology'
@@ -23,7 +24,7 @@ export class ObservedPropertyService {
         exists: true
       },
       resultTime: {
-        gte: '2020-03-09T10:31:38Z'
+        gte: oneHourAgo.toISOString()
       }
     }, {
       onePer: 'sensor'
