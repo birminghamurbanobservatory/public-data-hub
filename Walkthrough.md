@@ -15,6 +15,7 @@ How I see the initial version of this public web application working/looking.
 
 [Newcastle's Data Portal](https://newcastle.urbanobservatory.ac.uk/)
 
+
 ## Landing
 
 Upon landing on at the website (probably hosted at https://app.birminghamurbanobservatory.com or https://data.birminghamurbanobservatory.com) the user will see a Google Map with its extent set to Birmingham. 
@@ -297,7 +298,6 @@ Bear in mind that sometimes the top level platform won't always be a place, it c
 to get some more information about this feature of interest.
 
 10.  We need to display the usedProcedures
-```
 
 
 ## Getting historical observations to plot on a line graph
@@ -310,20 +310,22 @@ TODO
 
 ### URL Map
 
-- '/'                                     : landing page, always useful I think, some basic info and what's this for...
-- '/about'                                : about the project 
-- '/team'                                 : some bio stuff on the team members, ie. you
-- '/contact'                              : a form for comms
-- '/partners'                             : place to list funders and other organisations you want to give a hat tip to
+URL | Priority | Description
+--- | --- | ---
+/ | High | Redirects to /map/platforms
+/map/platforms | High | Map of platforms (i.e. the current landing page)
+/map/platforms/:id | High | When the user has clicked a platform location. 
+/map/observations | High | Use query parameters to filter the observations. E.g. when the use clicks on the Air Temperature icon the query params would be `?observedProperty=air-temperature&unit=degree-celsius&discipline__in=meteorology?aggregation__in=max,instant?duration__lt=600&resultTime__gt=2020-05-26T15:45:00Z&resultTime__gt=2020-05-26T16:45:00Z`. These parameters can be passed straight to the observation service then.
+/plot | High | The page with the line graphs (or whatever chart type we need given the type of data). Again use query parameters to limit the data, e.g. air-temperature observations from a particular platform over a particular time frame.
+/deployments | Low | list of deployments, sortable and /or searchable
+/deployments/:id | Low | deployment info page, shows all platforms in that deployment
+/platforms' | Low | List of platforms. Searchable by name and filterable by deployment, each of which would update the URL, e.g. `?search=lamppost&hasDeployment__in=weather-stations`.
+/platforms/:id | Low | platform detail, list all sensors
 
-- '/deployments'                          : list of deployments, sortable and /or searchable
-- '/deployments/:id'                      : deployment info page, shows all platforms in that deployment
+Note the heavy use of query parameters to define/filter what's shown on the given page. Typically these parameters can be passed straight to a service to get the correct resources (observations, platforms, etc).
 
-- '/platforms'                            : list of platforms, perhaps searchable by name
-- '/platforms/:id'                        : platform detail, list all sensors
-- '/platforms/:id/:observedProperty       : show all the timeseries for the oberserved property from that platform
+Don't worry about *about us*, *team*, *contact* and *partners* pages, this is all covered in the [main static website](https://birminghamurbanobservatory.com/), we can just reuse the [header](https://github.com/birminghamurbanobservatory/static-website/blob/master/src/components/header.js) from there.
 
-- '/map'                                  : the default google map page, showing platform locations
-- '/map/observed-property/:property'      : map view of a particular observered property
-- '/map/platform/:platform'               : when the user has clicked a platform location
-- '/map/platform/:platform/:observation'  : when the user has clicked a particular reading and is shown the modal
+
+
+
