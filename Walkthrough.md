@@ -319,7 +319,7 @@ URL | Priority | Description
 /plot | High | The page with the line graphs (or whatever chart type we need given the type of data). Again use query parameters to limit the data, e.g. air-temperature observations from a particular platform over a particular time frame.
 /deployments | Low | list of deployments, sortable and /or searchable
 /deployments/:id | Low | deployment info page, shows all platforms in that deployment
-/platforms' | Low | List of platforms. Searchable by name and filterable by deployment, each of which would update the URL, e.g. `?search=lamppost&hasDeployment__in=weather-stations`.
+/platforms | Low | List of platforms. Searchable by name and filterable by deployment, each of which would update the URL, e.g. `?search=lamppost&hasDeployment__in=weather-stations`.
 /platforms/:id | Low | platform detail, list all sensors
 
 Note the heavy use of query parameters to define/filter what's shown on the given page. Typically these parameters can be passed straight to a service to get the correct resources (observations, platforms, etc).
