@@ -1,19 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { PlatformService } from 'src/app/platform/platform.service';
 import { GoogleMapService } from 'src/app/Components/GoogleMap/google-map.service';
 import { MapPinService } from 'src/app/Services/map-pins/map-pin.service';
 
-import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { Subscription, Subject, BehaviorSubject } from 'rxjs';
+import { filter, map, tap, mergeMap, distinct } from 'rxjs/operators';
 
 import { Platform } from 'src/app/platform/platform.class';
 import { MapMarker } from '../../../Interfaces/map-marker.interface';
+import { DeploymentService } from 'src/app/Services/deployment/deployment.service';
+import { ColourService } from 'src/app/Services/colours/colour.service';
 
 @Component({
     selector: 'buo-map-platforms',
-    template: '<router-outlet></router-outlet> <h1>Deployment Legend</h1>'
+    templateUrl: './platforms.component.html'
 })
 
 /**
@@ -22,32 +24,61 @@ import { MapMarker } from '../../../Interfaces/map-marker.interface';
  * the router-outlet is required for the side panel as that is a child route
  * 
  */
-export class PlatformsComponent implements OnInit {
+export class PlatformsComponent implements OnInit, OnDestroy {
 
    /**
    * Google Map Marker Service Subscription
    */
   private mapSubscription$: Subscription;
 
+  public deployments$;
+
+  public filter$: Subject<string> = new Subject();
+
+  public selectedDeployment$: BehaviorSubject<any> = new BehaviorSubject('')
+
+  private platforms: Platform[];
+
     constructor(
         private router: Router,
         private route: ActivatedRoute,
         private map: GoogleMapService,
         private pins: MapPinService,
-        private platforms: PlatformService,
+        private platformService: PlatformService,
+        private deployments: DeploymentService,
+        private colours: ColourService,
     ) {}
 
     ngOnInit(): void {
 
+      // get the deployments for the legend
+      this.deployments$ = this.deployments.getDeployments().pipe(
+        map((res) => res['member']),
+        map((member) => member.map(item => {
+          item.colour = this.colours.generateHexColour(item['@id'])
+          return item;
+        }))
+        );
+        
+      this.filter$.pipe(
+        map(d => this.selectedDeployment$.getValue() === d ? '' : d),
+        tap((deployment) => this.selectedDeployment$.next(deployment)),
+        map(deployment => this.platforms.filter(p => p.inDeployment === deployment)),
+        map(platforms => platforms.length ? platforms : this.platforms),
+      )
+      .subscribe(v => this.addMarkers(v))
+
+
       // get the top level platforms
-      this.platforms.getPlatforms({
+      this.platformService.getPlatforms({
         isHostedBy: {
           exists: false
         }
       })
-      .subscribe(({
-        data: platforms
-      }) => this.addMarkers(platforms));
+      .subscribe(({data: platforms}) => {
+        this.platforms = platforms;
+        this.addMarkers(platforms)
+      });
 
       // listen for marker clicks of the platform type
       this.mapSubscription$ = this.map.selectedMarker
@@ -59,13 +90,17 @@ export class PlatformsComponent implements OnInit {
       }));
     }
 
+    ngOnDestroy(): void {
+      this.mapSubscription$.unsubscribe();
+    }
+
     /**
    * Iterates through the platforms adding a map marker for each
    * Adds the platform detail to each marker, so save a query
    * 
    * @param platforms : array of platforms
    */
-  private addMarkers(platforms: Platform[]) {
+  private addMarkers(platforms: Platform[]): void {
 
     const platformsWithALocation = platforms.filter((platform) => {
       return Boolean(platform.location);
