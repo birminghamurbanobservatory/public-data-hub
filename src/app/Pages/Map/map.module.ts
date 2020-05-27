@@ -7,11 +7,12 @@ import { MapRoutingModule } from './map-routing.module';
 import { ComponentsModule } from 'src/app/Components/components.module';
 
 import { MapComponent } from './map.component';
-import { MenuComponent } from './menu/menu.component';
-import { PlatformComponent } from './platform/platform.component';
+import { MenuComponent } from './observations-menu/menu.component';
+import { PlatformDetailComponent } from './platform-detail/platform-detail.component';
 import { ObservedPropertyComponent } from './observed-property/observed-property.component';
 import { ObservedPropertyService } from './observed-property/observed-property.service';
 import { DirectivesModule } from 'src/app/Directives/directives.module';
+import { PlatformsComponent } from './platforms/platforms.component';
 
 @NgModule({
 
@@ -26,7 +27,8 @@ import { DirectivesModule } from 'src/app/Directives/directives.module';
   declarations: [
     MapComponent,
     MenuComponent,
-    PlatformComponent,
+    PlatformsComponent,
+    PlatformDetailComponent,
     ObservedPropertyComponent,
   ],
 

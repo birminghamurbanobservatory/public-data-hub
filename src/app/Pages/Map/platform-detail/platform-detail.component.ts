@@ -14,7 +14,7 @@ import { Observation } from 'src/app/observation/observation.class';
 
 @Component({
   selector: 'buo-map-platforms',
-  templateUrl: './platform.component.html',
+  templateUrl: './platform-detail.component.html',
   animations: [
     trigger('slideInOut', [
       transition(':enter', [
@@ -29,7 +29,7 @@ import { Observation } from 'src/app/observation/observation.class';
   ]
   
 })
-export class PlatformComponent implements OnInit {
+export class PlatformDetailComponent implements OnInit {
 
   public platform$: Observable < Platform >
 
@@ -57,8 +57,13 @@ export class PlatformComponent implements OnInit {
     )
   }
 
+  /**
+   * Closes the side panel displaying deployment info
+   * Not strictly necessary but does update url
+   * 
+   */
   public close(): void {
-    this.router.navigate(['/map']);
+    this.router.navigate(['/map/platforms']);
   }
 
   public showModal(obs) {
