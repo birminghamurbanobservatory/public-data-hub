@@ -1,6 +1,6 @@
 <header class="py-6">
     <div class="max-w-full mx-auto px-4 sm:px-0">
-        <buo-map-menu (reset)="resetHandler()" (select)="selectHandler($event)"></buo-map-menu>
+        <buo-map-observed-property-menu></buo-map-observed-property-menu>
     </div>
 </header>
 
@@ -10,6 +10,7 @@
 
     <buo-observation-modal></buo-observation-modal>
 
+    <!-- needed for the child routes: platforms and observed-property -->
     <router-outlet></router-outlet>
 
 </div>
