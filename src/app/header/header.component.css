@@ -1,0 +1,4 @@
+/* For some weird reason using bg-teal-500 produced a darker colour here than it does on the main birminghamurbanobservatory.com website, hence having to add this custom class to get it to match. */
+.header--buo-color {
+  background-color: #38b2ac;
+}
