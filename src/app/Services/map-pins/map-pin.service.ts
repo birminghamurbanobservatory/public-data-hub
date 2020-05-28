@@ -19,7 +19,7 @@ export class MapPinService {
         const icon = {
             path: 'M-15,0a15,15 0 1,0 30,0a15,15 0 1,0 -30,0',
             fillColor: iconFillColour,
-            fillOpacity: .8,
+            fillOpacity: 1,
             strokeWeight: 0,
             scale: 1
         };
