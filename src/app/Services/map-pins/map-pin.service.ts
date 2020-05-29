@@ -27,6 +27,8 @@ export class MapPinService {
         return {
             type: 'observation',
             id: observation.id,
+            text: `${Math.round(observation.hasResult.value)}`,
+            color: iconTextColour,
             position: {
                 lat: observation.location.geometry.coordinates[1],
                 lng: observation.location.geometry.coordinates[0],
@@ -37,8 +39,8 @@ export class MapPinService {
                     text: `${Math.round(observation.hasResult.value)}`,
                     color: iconTextColour
                 },
-                icon
-            }
+                icon,
+            },
         };
 
     }
@@ -65,6 +67,7 @@ export class MapPinService {
             },
             options: {
                 icon,
+
             }
         };
     }

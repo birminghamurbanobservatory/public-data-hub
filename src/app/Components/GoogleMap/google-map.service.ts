@@ -55,13 +55,18 @@ export class GoogleMapService {
         this.spiderfyMap = new OverlappingMarkerSpiderfier(this.map, {
             markersWontMove: true,
             markersWontHide: true,
-            basicFormatEvents: true,
+            keepSpiderfied:true,
         });
     }
 
     private selectedMarkerSource = new Subject();
     public selectedMarker = this.selectedMarkerSource.asObservable();
 
+    /**
+     * Adds markers to the normal Google map
+     * 
+     * @param pins : array of pins to add to the map
+     */
     public async updateMarkers(pins: MapMarker[]) {
 
         await GoogleMapService.load();
@@ -97,17 +102,41 @@ export class GoogleMapService {
         this.map.setCenter(position)
     }
 
+    /**
+     * Adds markers to the Spiderfy Map
+     * 
+     * @param pins : array of pins to be added to the map
+     */
     public async spiderfierMarkers(pins: MapMarker[]) {
 
         await GoogleMapService.load();
 
         this.clearMarkers();
 
-        pins.forEach(m => this.spiderfyMap.addMarker(new google.maps.Marker(m), () => {}));
+        pins.forEach((pin, idx) => {
+            let marker = new google.maps.Marker(pin);
 
-        this.spiderfyMap.addListener('click', (marker) => {
-            this.map.setCenter(marker.getPosition());
-            this.selectedMarkerSource.next(marker);
+            marker.setZIndex(idx); // this to fix the text overlap issue
+
+            google.maps.event.addListener(marker, 'spider_format', function(status) {
+
+                if (status == OverlappingMarkerSpiderfier.markerStatus.SPIDERFIED) {
+                    marker.setOptions({ label: { text: pin['text'], color: pin['color'] }})
+                } 
+                else if (status == OverlappingMarkerSpiderfier.markerStatus.UNSPIDERFIABLE) {
+                    // do nothing as already set up
+                }
+                else {
+                    marker.setOptions({ label: { text: '+', color: pin['color'] }})
+                }
+            });
+
+            marker.addListener('spider_click', () => {
+                this.map.setCenter(marker.getPosition());
+                this.selectedMarkerSource.next(marker);
+            });
+
+            this.spiderfyMap.addMarker(marker, () => {})
         });
     }
 }
