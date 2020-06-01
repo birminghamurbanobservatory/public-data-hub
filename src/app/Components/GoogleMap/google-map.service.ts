@@ -13,11 +13,26 @@ export class GoogleMapService {
 
     private static promise: Promise<any>;
 
+    /**
+     * Google map reference
+     */
     private map: google.maps.Map;
 
+    /**
+     * Spiderfy Map reference
+     */
     private spiderfyMap: OverlappingMarkerSpiderfier;
 
+    /**
+     * Container for Google Map markers, so can be removed
+     */
     private currentMarkers: google.maps.Marker[] = [];
+
+    /**
+     * Mechanisum through which service users can track marker clicks
+     */
+    private selectedMarkerSource = new Subject();
+    public selectedMarker = this.selectedMarkerSource.asObservable();
 
     private static load() {
         // First time 'load' is called?
@@ -49,18 +64,13 @@ export class GoogleMapService {
 
         this.map = new google.maps.Map(el.nativeElement, {
             center: new google.maps.LatLng({ lat: 52.480100, lng: -1.896478 }),
-            zoom: 11.5
+            zoom: 12
         });
 
         this.spiderfyMap = new OverlappingMarkerSpiderfier(this.map, {
-            markersWontMove: true,
-            markersWontHide: true,
-            keepSpiderfied:true,
+            keepSpiderfied: true,
         });
     }
-
-    private selectedMarkerSource = new Subject();
-    public selectedMarker = this.selectedMarkerSource.asObservable();
 
     /**
      * Adds markers to the normal Google map
@@ -109,16 +119,21 @@ export class GoogleMapService {
      */
     public async spiderfierMarkers(pins: MapMarker[]) {
         await GoogleMapService.load();
+
         this.clearMarkers();
+
         pins.forEach((pin, idx) => {
             let marker = new google.maps.Marker(pin);
             marker.setZIndex(idx); // this to fix the text overlap issue
 
-            google.maps.event.addListener(marker, 'spider_format', function(status) {
+            marker.addListener('spider_format', function(status) {
 
                 if (status == OverlappingMarkerSpiderfier.markerStatus.SPIDERFIED) {
                     marker.setOptions({ label: { text: pin['text'], color: pin['color'] }})
                 } 
+                else if (status == OverlappingMarkerSpiderfier.markerStatus.SPIDERFIABLE) {
+                    marker.setOptions({ label: { text: '+', color: pin['color'] }})
+                }
                 else if (status == OverlappingMarkerSpiderfier.markerStatus.UNSPIDERFIABLE) {
                     marker.setOptions({ label: { text: pin['text'], color: pin['color'] }})
                 }
@@ -134,5 +149,7 @@ export class GoogleMapService {
 
             this.spiderfyMap.addMarker(marker, () => {})
         });
+
+        this.setMapCenter({ lat: 52.480100, lng: -1.896478 }); // hack to make the spiderfy markers show the '+' when toggle observed properties
     }
 }
