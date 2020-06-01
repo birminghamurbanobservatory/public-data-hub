@@ -80,23 +80,18 @@ export class TimeSeriesGraphComponent implements OnInit {
 
     private plotData(data, idx) {
 
-        const plotted = data.map((points) => ({ x: points.resultTime, y: points.hasResult.value, unit: 'wibble' }));
+        const plotted = data.map((points) => ({ x: points.resultTime, y: points.hasResult.value, unit: '' }));
 
-        const colours = [
-            { colour: '#4299E1', hover: '#2C5282', line: '#EBF8FF' }, // blue 
-            { colour: '#48BB78', hover: '#276749', line: '#F0FFF4' }, // green
-            { colour: '#553C9A', hover: '#9F7AEA', line: '#FAF5FF' }, // purple 
-            { colour: '#ED64A6', hover: '#97266D', line: '#FFF5F7' }, // pink
-        ]
+        const colours = this.timeseries[idx].colours;
 
         return {
             fill: false,
             data: plotted,
-            borderColor: colours[idx].line,
-            pointBackgroundColor: colours[idx].colour,
-            pointBorderColor: colours[idx].colour,
-            pointHoverBackgroundColor: colours[idx].hover,
-            pointHoverBorderColor: colours[idx].hover,
+            borderColor: colours.line,
+            pointBackgroundColor: colours.point,
+            pointBorderColor: colours.point,
+            pointHoverBackgroundColor: colours.hover,
+            pointHoverBorderColor: colours.hover,
         };
     }
 

@@ -95,4 +95,35 @@ export class ColourService {
 
         return color;
     }
+
+    /**
+     * Returns a colour 'palette' for a chart
+     * If idx exceeeded returns a random colour from the array
+     * 
+     * @param idx 
+     */
+    public chartColours(idx: number) {
+        const colours = [
+            { point: '#4299E1', hover: '#2C5282', line: '#BEE3F8' }, // blue, 500, 800, 200
+            { point: '#48BB78', hover: '#276749', line: '#C6F6D5' }, // green
+            { point: '#553C9A', hover: '#9F7AEA', line: '#E9D8FD' }, // purple 
+            { point: '#ED64A6', hover: '#97266D', line: '#FED7E2' }, // pink
+            { point: '#ECC94B', hover: '#975A16', line: '#FEFCBF' }, // yellow
+            { point: '#7EA4B2', hover: '#507786', line: '#B7CCD4' },
+            { point: '#5D53A3', hover: '#302B54', line: '#A59FCE' },
+            { point: '#F56565', hover: '#9B2C2C', line: '#FED7D7' }, // red
+            { point: '#ED8936', hover: '#9C4221', line: '#FEEBC8' }, // orange 
+            { point: '#CA48D9', hover: '#91219E', line: '#E199EA' },
+            { point: '#667EEA', hover: '#434190', line: '#C3DAFE' }, // indigo
+            { point: '#00E9B7', hover: '#006B54', line: '#68FFDE' },
+        ];
+
+        if (colours[idx]) {
+            return colours[idx];
+        }
+
+        const rInt = Math.floor(Math.random() * (colours.length - 0 + 1) + 0);
+
+        return colours[rInt]
+    }
 }
