@@ -108,14 +108,10 @@ export class GoogleMapService {
      * @param pins : array of pins to be added to the map
      */
     public async spiderfierMarkers(pins: MapMarker[]) {
-
         await GoogleMapService.load();
-
         this.clearMarkers();
-
         pins.forEach((pin, idx) => {
             let marker = new google.maps.Marker(pin);
-
             marker.setZIndex(idx); // this to fix the text overlap issue
 
             google.maps.event.addListener(marker, 'spider_format', function(status) {
@@ -124,7 +120,7 @@ export class GoogleMapService {
                     marker.setOptions({ label: { text: pin['text'], color: pin['color'] }})
                 } 
                 else if (status == OverlappingMarkerSpiderfier.markerStatus.UNSPIDERFIABLE) {
-                    // do nothing as already set up
+                    marker.setOptions({ label: { text: pin['text'], color: pin['color'] }})
                 }
                 else {
                     marker.setOptions({ label: { text: '+', color: pin['color'] }})
