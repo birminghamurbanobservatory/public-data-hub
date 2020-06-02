@@ -6,7 +6,11 @@
 
 <div class="relative w-full shadow-md bg-gray-50 p-4 sm:rounded-sm" *ngIf="timeseries">
 
-    <buo-time-series-graph [timeseries]="timeseries"></buo-time-series-graph>
+    <buo-property-datetime-filter (window)="windowHandler($event)"></buo-property-datetime-filter>
+
+    <div class="mt-4">
+        <buo-line-graph [tso$]="tso$"></buo-line-graph>
+    </div>
 
     <div class="-mx-2 w-full flex flex-wrap">
         <div *ngFor="let ts of timeseries" class="w-1/3 px-2">

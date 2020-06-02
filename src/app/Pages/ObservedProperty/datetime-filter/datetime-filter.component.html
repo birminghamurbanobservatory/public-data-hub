@@ -1,0 +1,29 @@
+<div class="flex justify-end">
+
+    <div class="mr-2 max-w-md rounded-md shadow-sm">
+        <form [formGroup]="form">
+            <input formControlName="window" 
+                [selectMode]="'range'" 
+                [max]="maxDate" 
+                [owlDateTime]="dt1" 
+                [owlDateTimeTrigger]="dt1" 
+                placeholder="Time travel..." 
+                class="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5">
+            <owl-date-time #dt1></owl-date-time>
+        </form>
+    </div>
+
+    <div>
+    </div>
+    <span class="relative z-0 inline-flex">
+        <button (click)="timePeriod(6)"  type="button" class="relative inline-flex items-center px-2 py-1 rounded-l-md border border-gray-300 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150">
+        last 6 hours
+        </button>
+        <button (click)="timePeriod(12)" type="button" class="-ml-px relative inline-flex items-center px-2 py-1 border border-gray-300 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150">
+        last 12 hours
+        </button>
+        <button (click)="timePeriod(24)"  type="button" class="-ml-px relative inline-flex items-center px-2 py-1 rounded-r-md border border-gray-300 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150">
+        last 24 hours
+        </button>
+    </span>
+</div>

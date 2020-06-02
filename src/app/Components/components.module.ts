@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 import { GoogleMapComponent } from './GoogleMap/google-map.component';
-import { TimeSeriesGraphComponent } from './TimeSeriesGraph/time-series-graph.component';
+import { LineGraphComponent } from './LineGraph/line-graph.component';
 import { ObservationModalComponent } from './ObservationModal/observation-modal.component';
 import { TooltipModule } from 'ng2-tooltip-directive';
 import { DirectivesModule } from '../Directives/directives.module';
@@ -20,13 +20,13 @@ import { DirectivesModule } from '../Directives/directives.module';
     declarations: [
         GoogleMapComponent,
         ObservationModalComponent,
-        TimeSeriesGraphComponent,
+        LineGraphComponent,
     ],
 
     exports: [
         GoogleMapComponent,
         ObservationModalComponent,
-        TimeSeriesGraphComponent,
+        LineGraphComponent,
     ]
 
 })

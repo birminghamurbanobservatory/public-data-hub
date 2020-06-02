@@ -44,11 +44,11 @@ export class PlatformDetailComponent implements OnInit {
     ) {}
 
   ngOnInit(): void {
-    
+    // retrieve the platform details
     this.platform$ = this.route.paramMap.pipe(
       switchMap((params: Params) => this.platformService.getPlatform(params.get('id')))
     )
-
+    // retrieve the lastest observations for platform  
     this.observations$ = this.route.paramMap.pipe(
       switchMap(
         (params: Params) => this.getLatestObservations(params.get('id'))
@@ -85,6 +85,11 @@ export class PlatformDetailComponent implements OnInit {
     })
   }
 
+  /**
+   * Converts the wind direction to text representation
+   * 
+   * @param degree 
+   */
   public windDirectionDegreeToText(degree) {
     const val = Math.floor((degree / 45) + 0.5);
     const arr = [
