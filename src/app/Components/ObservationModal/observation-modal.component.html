@@ -34,7 +34,7 @@
               Sensor name
             </dt>
             <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {{ timeseries.madeBySensor.name }}
+              {{ timeseries.madeBySensor.label }}
             </dd>
           </div>
 
@@ -82,8 +82,8 @@
               <span class="capitalize">
                 {{ observation.aggregation.label || observation.aggregation.label['@id'] }}
               </span>
-              <span *ngIf="observation.aggregation.comment">
-                - {{observation.aggregation.comment}}
+              <span *ngIf="observation.aggregation.description">
+                - {{observation.aggregation.description}}
               </span>
             </dd>
           </div>
@@ -154,7 +154,7 @@
               <ul>
                 <li *ngFor="let p of timeseries.ancestorPlatforms; index as i; last as isLast" [ngClass]="[i > 0 ? 'ml-' + i*2 : '']">
                   <i class="far" [ngClass]="[isLast ? 'fa-folder' : 'fa-folder-open']"></i>
-                  <span class="ml-1">{{ p.name }}</span>
+                  <span class="ml-1">{{ p.label }}</span>
                 </li>   
               </ul>
             </dd>
