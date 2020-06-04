@@ -1,9 +1,8 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
-
-import * as moment from 'moment';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { filter, tap, startWith, defaultIfEmpty, isEmpty, distinctUntilChanged } from 'rxjs/operators';
+
+import * as moment from 'moment';
 
 @Component({
     selector: 'buo-property-datetime-filter',

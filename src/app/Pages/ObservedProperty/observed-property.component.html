@@ -4,16 +4,17 @@
     </div>
 </header>
 
-<div class="relative w-full shadow-md bg-gray-50 p-4 sm:rounded-sm" *ngIf="timeseries">
+<div class="relative w-full shadow-md bg-gray-50 p-4 sm:rounded-sm">
 
     <buo-property-datetime-filter (window)="windowHandler($event)"></buo-property-datetime-filter>
 
-    <div class="mt-4">
-        <buo-line-graph [tso$]="tso$"></buo-line-graph>
+    <div class="mt-4" *ngIf="(ts$ | async) as ts">
+        <buo-line-graph [timeseries]="ts"></buo-line-graph>
     </div>
 
     <div class="-mx-2 w-full flex flex-wrap">
-        <div *ngFor="let ts of timeseries" class="w-1/3 px-2">
+        
+        <div *ngFor="let ts of (ts$ | async); trackBy: trackByFn" class="w-1/3 px-2">
 
             <div class="mt-4 w-full bg-white shadow-inner overflow-hidden border border-gray-200 sm:rounded-md">
                 <div class="px-4 py-5 border-b border-gray-200 sm:px-6" [style.background]="ts.colours.line">
