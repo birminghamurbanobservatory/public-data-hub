@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 
 import { switchMap, filter } from 'rxjs/operators';
@@ -15,7 +15,7 @@ import { MapMarker } from '../../../Interfaces/map-marker.interface';
   selector: 'buo-map-observed-property',
   template: '', // has no template as output onto map
 })
-export class ObservedPropertyComponent implements OnInit, OnDestroy {
+export class ObservedPropertyComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private mapSubscription: Subscription;
 
@@ -28,10 +28,7 @@ export class ObservedPropertyComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.route.paramMap.pipe(
-        switchMap((params: Params) => this.observedPropertyService.getObservations(params.get('id')))
-      )
-      .subscribe((response) => this.addMarkers(response.data));
+    
 
     this.mapSubscription = this.map.selectedMarker
       .pipe(
@@ -40,15 +37,20 @@ export class ObservedPropertyComponent implements OnInit, OnDestroy {
       .subscribe((marker: MapMarker) => this.modal.observationSelected(marker.id));
   }
 
+  ngAfterViewInit(): void {
+    this.route.paramMap.pipe(
+      switchMap((params: Params) => this.observedPropertyService.getObservations(params.get('id')))
+    )
+    .subscribe((response) => this.addMarkers(response.data));
+  }
+
   ngOnDestroy(): void {
     this.mapSubscription.unsubscribe();
   }
 
   private addMarkers(data) {
-
     const markers: MapMarker[] = data.map((obs) => this.pins.circle(obs));
-
-    this.map.updateMarkers(markers);
+    this.map.spiderfierMarkers(markers);
   }
 
 }

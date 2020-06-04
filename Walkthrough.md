@@ -53,7 +53,7 @@ The location of each platform is held in the _geometry_ property, which takes th
 
 ## Showing Sensors (and other Platforms) hosted on each top-level platform
 
-When a user clicks on a map marker for a Platform that Platform's details should be display on the left-hand third of the screen (or below the map on mobile devices). E.g. we can show its name, when it was created, what deployment(s) it is in. We'll have all this information from the `getPlatforms()` call.
+When a user clicks on a map marker for a Platform that Platform's details should be display on the left-hand third of the screen (or below the map on mobile devices). E.g. we can show its label, when it was created, what deployment(s) it is in. We'll have all this information from the `getPlatforms()` call.
 
 What we don't know is whether any sensors are hosted on this platform, or any child platforms with their own sensors. E.g. a weather station platform might host several sensors: a thermometer, wind vane, etc.
 
@@ -246,11 +246,11 @@ Here's an example of an observation object:
 
 Here's what we should be showing in the modal:
 
-1. The `value`, `unit.symbol` and `observedProperty.label` just as we did in the side bar. Further down the line the unit and the observedProperty could either have a tooltip or be a hyperlink to more information about them. E.g. a hyperlink could point to these [docs](https://api.birminghamurbanobservatory.com/vocab/uo/#PrecipitationDepth) about what PrecipitationDepth is. Or once I add the api endpoint `/observable-properties/PrecipitationDepth` we can get the comment/description from there to use as the tooltip.
+1. The `value`, `unit.symbol` and `observedProperty.label` just as we did in the side bar. Further down the line the unit and the observedProperty could either have a tooltip or be a hyperlink to more information about them. E.g. a hyperlink could point to these [docs](https://api.birminghamurbanobservatory.com/vocab/uo/#PrecipitationDepth) about what PrecipitationDepth is. Or once I add the api endpoint `/observable-properties/PrecipitationDepth` we can get the description from there to use as the tooltip.
    
 2. Show the `resultTime` as an absolute value rather than *time ago*. If an observation has a `phenomenonTime` object (like this example) then also show the `hasBeginning` and `hasEnd`. For something like *PrecipitationDepth* this details over what timeframe the amount of rain was collected. For a maximum *air-temperature* observation the value is the max temperature recorded between the `hasBeginning` and `hasEnd`, with the `resultTime` showing the exact time within this timeframe that the max temp was recorded. 
 
-3. Get the names of the `ancestorPlatforms` so we can show the hierarchy. 
+3. Get the labels of the `ancestorPlatforms` so we can show the hierarchy. 
    
 You can get the details of each platform as separate requests:
 
@@ -267,7 +267,7 @@ N.B. the top grandparent platform comes first in the `ancestorPlatforms` array, 
 
 - https://api.birminghamurbanobservatory.com/sensors/netatmo-05-00-00-05-b8-bc-rain
 
-Although we'd only want to show the `name`, and possibly the `description`.
+Although we'd only want to show the `label`, and possibly the `description`.
 
 I'm thinking about creating a database of **metadata** records, with each record having certain tags, e.g. the id of platform it applies to, and/or the particular sensor, and/or deployment. Then we'll be able to get any relevant metadata for a given observation. For example a record with a tag relating to *forestdale-primary-school* could be "a large tree was cut down here on the 21st May 2019". I think we should be showing metadata like this in this modal. Obviously this needs implementing on the server first.
 
@@ -277,7 +277,7 @@ I'm thinking about creating a database of **metadata** records, with each record
 
 N.B. This should do for now, although later we might need to include the usedProcedures as a query parameter too.
 
-You should now have the human-friendly name for the platform so I'd phrase this as:
+You should now have the human-friendly label for the platform so I'd phrase this as:
 
 "Observations of precipitation depth from Forestdale Primary School date back to 23rd Nov 2018 at 10:58"
 
@@ -285,7 +285,7 @@ Bear in mind that sometimes the top level platform won't always be a place, it c
 
 6. Given that we have the location, we may wish to show a small zoomed in map of where the observation was made. This will be more pertinent for mobile platforms. Take the WM-Air van as an example, the location of this platform on the map could be the University, because it's now parked up, however the last PM10 reading was made when it was still on Broad Street, therefore our little map should be showing Broad Street.
 
-7. Show the name and description of the deployment(s). You can get this information like this:
+7. Show the label and description of the deployment(s). You can get this information like this:
 
 - https://api.birminghamurbanobservatory.com/platforms/deployments/netatmo-gatekeepers
 
@@ -319,7 +319,7 @@ URL | Priority | Description
 /plot | High | The page with the line graphs (or whatever chart type we need given the type of data). Again use query parameters to limit the data, e.g. air-temperature observations from a particular platform over a particular time frame.
 /deployments | Low | list of deployments, sortable and /or searchable
 /deployments/:id | Low | deployment info page, shows all platforms in that deployment
-/platforms | Low | List of platforms. Searchable by name and filterable by deployment, each of which would update the URL, e.g. `?search=lamppost&hasDeployment__in=weather-stations`.
+/platforms | Low | List of platforms. Searchable by label and filterable by deployment, each of which would update the URL, e.g. `?search=lamppost&hasDeployment__in=weather-stations`.
 /platforms/:id | Low | platform detail, list all sensors
 
 Note the heavy use of query parameters to define/filter what's shown on the given page. Typically these parameters can be passed straight to a service to get the correct resources (observations, platforms, etc).

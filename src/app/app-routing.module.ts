@@ -12,7 +12,7 @@ const routes: Routes = [
   },
   {
     path: 'observe',
-    loadChildren: () => import('./Pages/ObservedProprty/observed-property.module').then(m => m.ObservedPropertyModule)
+    loadChildren: () => import('./Pages/ObservedProperty/observed-property.module').then(m => m.ObservedPropertyModule)
   },
   {
     path: '',

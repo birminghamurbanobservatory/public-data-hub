@@ -1,6 +1,7 @@
 export interface MapMarker {
-    type: string;
-    id: string;
-    position: Object;
+    id?: string;
+    type?: string;
+    deployment?: string;
+    position: { lat: number, lng: number }
     options?: Object;
 }

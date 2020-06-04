@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { ApiFunctionsService } from '../shared/api-functions';
 import { environment } from './../../environments/environment';
 import { cloneDeep } from 'lodash';
-import { map, tap } from 'rxjs/operators';
+import { map, tap, filter } from 'rxjs/operators';
 import { Collection } from '../shared/collection';
 
 @Injectable({
@@ -51,9 +51,7 @@ export class PlatformService {
           };
         })
       );
-
   }
-
 
   formatPlatformForApp(asJsonLd): Platform {
     const forApp = cloneDeep(asJsonLd);

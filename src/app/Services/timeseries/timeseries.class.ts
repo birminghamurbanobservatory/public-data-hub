@@ -9,6 +9,7 @@ import {Aggregation} from 'src/app/Interfaces/aggregation.interface';
 export class Timeseries {
     id?: string;
     type: string;
+    colours?: { point: string, line: string, hover: string };
     startDate: string;
     endDate: string;
     observedProperty: ObservedProperty;

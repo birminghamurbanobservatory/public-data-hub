@@ -2,7 +2,7 @@ import { Sensor } from 'src/app/sensor/sensor.class';
 
 export class Platform {
   id?: string;
-  name: string;
+  label: string;
   description?: string;
   hosts?: Platform[] | undefined;
   ownerDeployment?: string;

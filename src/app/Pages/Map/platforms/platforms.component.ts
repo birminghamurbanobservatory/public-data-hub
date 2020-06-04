@@ -11,7 +11,6 @@ import { filter, map, tap, mergeMap, distinct } from 'rxjs/operators';
 import { Platform } from 'src/app/platform/platform.class';
 import { MapMarker } from '../../../Interfaces/map-marker.interface';
 import { DeploymentService } from 'src/app/Services/deployment/deployment.service';
-import { ColourService } from 'src/app/Services/colours/colour.service';
 
 @Component({
     selector: 'buo-map-platforms',
@@ -26,18 +25,26 @@ import { ColourService } from 'src/app/Services/colours/colour.service';
  */
 export class PlatformsComponent implements OnInit, OnDestroy {
 
-   /**
+  /**
    * Google Map Marker Service Subscription
    */
   private mapSubscription$: Subscription;
 
+  /**
+   * Observable collection of deployments
+   */
   public deployments$;
 
-  public filter$: Subject<string> = new Subject();
-
-  public selectedDeployment$: BehaviorSubject<any> = new BehaviorSubject('')
-
+  /**
+   * Array store of Platform with a location
+   */
   private platforms: Platform[];
+
+  /**
+   * Emits the value of the currently selected deployment, or empty string
+   */
+  public selectedDeployment$: Subject<string> = new Subject()
+
 
     constructor(
         private router: Router,
@@ -46,36 +53,24 @@ export class PlatformsComponent implements OnInit, OnDestroy {
         private pins: MapPinService,
         private platformService: PlatformService,
         private deployments: DeploymentService,
-        private colours: ColourService,
     ) {}
+
 
     ngOnInit(): void {
 
       // get the deployments for the legend
-      this.deployments$ = this.deployments.getDeployments().pipe(
-        map((res) => res['member']),
-        map((member) => member.map(item => {
-          item.colour = this.colours.generateHexColour(item['@id'])
-          return item;
-        }))
-        );
-        
-      this.filter$.pipe(
-        map(d => this.selectedDeployment$.getValue() === d ? '' : d),
-        tap((deployment) => this.selectedDeployment$.next(deployment)),
-        map(deployment => this.platforms.filter(p => p.inDeployment === deployment)),
-        map(platforms => platforms.length ? platforms : this.platforms),
-      )
-      .subscribe(v => this.addMarkers(v))
+      this.deployments$ = this.deployments.getDeployments();
 
-
-      // get the top level platforms
+      // retrieve and display top level platform on the map by default
       this.platformService.getPlatforms({
         isHostedBy: {
           exists: false
         }
       })
-      .subscribe(({data: platforms}) => {
+      .pipe(
+        map(({data: platforms}) => this.filterThoseWithoutLocation(platforms))
+      )
+      .subscribe(platforms => {
         this.platforms = platforms;
         this.addMarkers(platforms)
       });
@@ -90,24 +85,48 @@ export class PlatformsComponent implements OnInit, OnDestroy {
       }));
     }
 
-    ngOnDestroy(): void {
-      this.mapSubscription$.unsubscribe();
-    }
+  /**
+   * Destroy subscriptions
+   * 
+   */
+  ngOnDestroy(): void {
+    this.mapSubscription$.unsubscribe();
+  }
 
-    /**
-   * Iterates through the platforms adding a map marker for each
-   * Adds the platform detail to each marker, so save a query
+  /**
+   * Changes the displayed map markers when item in the deployments legend toggled
+   * 
+   * @param evt : checkbox click
+   */
+  public checkboxChange(evt) {
+
+    const value = evt.target.checked ? evt.target.value : null;
+
+    const show = value ? this.platforms.filter(p => p.inDeployment === value) 
+                       : this.platforms;
+    
+    this.selectedDeployment$.next(value);
+    this.addMarkers(show);
+  }
+
+  /**
+   * Iterates through the platforms creating a marker for each
    * 
    * @param platforms : array of platforms
    */
   private addMarkers(platforms: Platform[]): void {
 
-    const platformsWithALocation = platforms.filter((platform) => {
-      return Boolean(platform.location);
-    })
-
-    const markers: MapMarker[] = platformsWithALocation.map(platform => this.pins.colouredPin(platform));
+    const markers: MapMarker[] = platforms.map(platform => this.pins.colouredPin(platform));
 
     this.map.updateMarkers(markers);
+  }
+
+  /**
+   * Remove platforms that do not have a location
+   * 
+   * @param platforms : array of top level platforms
+   */
+  private filterThoseWithoutLocation(platforms: Platform[]): Platform[] {
+      return platforms.filter((platform) => Boolean(platform.location));
   }
 }
