@@ -1,6 +1,6 @@
 export interface HasDeployment {
   '@id': string;
   '@type': string;
-  name: string;
+  label: string;
   public: boolean;
 }

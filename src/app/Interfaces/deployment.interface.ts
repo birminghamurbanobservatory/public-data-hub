@@ -2,7 +2,7 @@ export interface Deployment {
     '@id': string;
     '@type': string;
     id?: string;
-    name: string;
+    label: string;
     description?: string;
     public: boolean;
     createdAt: string;
