@@ -20,7 +20,7 @@ import { map, tap } from 'rxjs/operators';
 })
 export class LineGraphComponent implements OnInit {
 
-    @Input() tso$;
+    @Input() timeseries;
 
     @ViewChild('chart', { static: true }) canvas;
 
@@ -28,29 +28,27 @@ export class LineGraphComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-                // map((data) => data.map((set, i) => this.plotData(set, i))),
+        const graphData = this.timeseries.map((ts, i) => this.plotData(ts, i));
 
-        this.tso$.subscribe((o) => {
-
-        })
+        this.drawChart(graphData);
     }
 
 
-    private plotData(data, idx) {
+    private plotData(ts, idx) {
 
-        console.log(data);
-        const plotted = data.map((points) => ({ x: points.resultTime, y: points.hasResult.value, unit: '' }));
+        // console.log(ts.obs);
+        const plotted = ts.obs.map((points) => ({ x: points.resultTime, y: points.hasResult.value, unit: '' }));
 
-        // const colours = this.tso[idx].colours;
+        const colours = ts.colours;
 
         return {
             fill: false,
             data: plotted,
-            // borderColor: colours.line,
-            // pointBackgroundColor: colours.point,
-            // pointBorderColor: colours.point,
-            // pointHoverBackgroundColor: colours.hover,
-            // pointHoverBorderColor: colours.hover,
+            borderColor: colours.line,
+            pointBackgroundColor: colours.point,
+            pointBorderColor: colours.point,
+            pointHoverBackgroundColor: colours.hover,
+            pointHoverBorderColor: colours.hover,
         };
     }
 
@@ -81,7 +79,7 @@ export class LineGraphComponent implements OnInit {
                             return [
                                 `Time: ${moment(tooltipItem.xLabel).format('HH:mm')}`, 
                                 `Date: ${moment(tooltipItem.xLabel).format('DD/MM/YY')}`, 
-                                // `Value: ${tooltipItem.value} ${this.timeseries[idx].unit.symbol}`
+                                `Value: ${tooltipItem.value} ${this.timeseries[idx].unit.symbol}`
                             ];
                         } 
                     }
@@ -90,7 +88,7 @@ export class LineGraphComponent implements OnInit {
                     yAxes: [{
                         scaleLabel: {
                             display: true,
-                            // labelString: this.timeseries[0].observedProperty.label
+                            labelString: this.timeseries[0].observedProperty.label
                         }
                     }],
                     xAxes: [{
@@ -113,7 +111,7 @@ export class LineGraphComponent implements OnInit {
     }
 
     private tooltipTitle(item) {
-        // return this.timeseries[item[0].datasetIndex].observedProperty.label.toUpperCase();
+        return this.timeseries[item[0].datasetIndex].observedProperty.label.toUpperCase();
     }
 
 }

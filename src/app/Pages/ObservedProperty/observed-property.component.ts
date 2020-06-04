@@ -1,20 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, mergeMap, flatMap, filter, toArray, take, last, withLatestFrom, first } from 'rxjs/operators';
 import { TimeSeriesService } from 'src/app/Services/timeseries/timeseries.service';
 import { Timeseries } from '../../Services/timeseries/timeseries.class';
 import { ColourService } from 'src/app/Services/colours/colour.service';
-import { forkJoin } from 'rxjs';
+import { forkJoin, concat, from, of, merge, Observable, Subject, BehaviorSubject, empty, combineLatest } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
+import { toASCII } from 'punycode';
 
 @Component({
     templateUrl: './observed-property.component.html'
 })
 export class ObservedPropertyComponent implements OnInit {
 
-    public timeseries: Timeseries[];
+    private timeseries: Timeseries[];
+    public ts$: Observable<Timeseries[]>;
 
-    public tso$;
+    private platform: string = null;
+    private property: string = null;
 
     constructor (
         private route: ActivatedRoute,
@@ -23,39 +26,53 @@ export class ObservedPropertyComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        this.route.paramMap
+        this.platform = this.route.snapshot.paramMap.get('platform');
+        this.property = this.route.snapshot.paramMap.get('property');
+    }
+    
+    private getTimeseries(): Promise<Timeseries[]> {
+        return this.timeseriesService.getTimeSeriesByQuery({ 
+            ancestorPlatforms: {
+                includes: this.platform,
+            },
+            observedProperty: this.property
+        })
         .pipe(
-            switchMap((params: ParamMap) => this.timeseriesService.getTimeSeriesByQuery({ 
-                ancestorPlatforms: {
-                    includes: params.get('platform'),
-                },
-                observedProperty: params.get('property')
-            }))
+            mergeMap(({data}) => data),
+            map((ts, idx) => {
+                    ts.colours = this.colours.chartColours(idx);
+                    return ts;
+            }),
+            toArray()
         )
-        .subscribe(({ data }) => {
-            this.timeseries = data.map((t, i) => {
-                t.colours = this.colours.chartColours(i); // adds a colour property
-                return t;
-            });
-        });
+        .toPromise()
+    }
+    
+    public async windowHandler(window) {
+
+        if (! this.timeseries) {
+            this.timeseries = await this.getTimeseries()
+        }
+        
+        this.ts$ = from(this.timeseries)
+        .pipe(
+            flatMap((ts: Timeseries) => {
+                return this.timeseriesService.getTimeseriesObservations(ts.id, {
+                    resultTime: {
+                        gte: window.start,
+                        lte: window.end,
+                    }
+                }).pipe(
+                    filter(obs => obs.length),
+                    map(obs => { ts['obs'] = obs; return ts;}),
+                    )
+                }),
+                toArray(),
+        )
     }
 
-    public windowHandler(window) {
-        console.log(window)
-        const apiCalls = this.timeseries.map((ts) => {
-            return this.timeseriesService.getTimeseriesObservations(ts.id, {
-                resultTime: {
-                    gte: window.start,
-                    lte: window.end,
-                }
-            })
-        });
-
-        this.tso$ = forkJoin(apiCalls)
-            .pipe(
-                tap(v => console.log(v))
-                // map((data) => data.map((set, i) => this.plotData(set, i))),
-            )
-            // .subscribe((datasets) => this.drawChart(datasets));
+    public trackByFn(idx, item) {
+        if (! item) return null;
+        return item.id;
     }
 }
