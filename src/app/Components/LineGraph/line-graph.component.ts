@@ -104,6 +104,11 @@ export class LineGraphComponent implements OnInit {
                             labelString: 'Date'
                         }
                     }]
+                },
+                elements: {
+                    line: {
+                        tension: 0 // joins dots with a straight, not curved, line
+                    }
                 }
             }
         });
