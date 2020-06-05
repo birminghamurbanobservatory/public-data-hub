@@ -1,44 +1,40 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
 
 import { Chart } from 'chart.js';
-import { ObservationService } from 'src/app/observation/observation.service';
-
 import * as moment from 'moment';
-import { TimeSeriesService } from 'src/app/Services/timeseries/timeseries.service';
+
 import { Timeseries } from 'src/app/Services/timeseries/timeseries.class';
-import { forkJoin } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
 
 @Component({
     selector: 'buo-line-graph',
     template: `
         <div class="border border-gray-200 rounded-md bg-white shadow-inner p-4">
-            <div class="mt-4 -mx-2">
+            <div class="mt-4 -mx-2" *ngIf="timeseries.length; else noDataMessage">
                 <canvas #chart height="100"></canvas>
             </div>
+            <ng-template #noDataMessage>
+                <div class="w-full text-sm leading-5 text-center text-gray-800">
+                    No data for the selected time period.
+                </div>
+            </ng-template>
         </div>`,
 })
 export class LineGraphComponent implements OnInit {
 
-    @Input() timeseries;
+    @Input() timeseries: Timeseries[];
+    @ViewChild('chart', { static: true }) canvas: ElementRef;
 
-    @ViewChild('chart', { static: true }) canvas;
-
-    constructor(
-    ) {}
+    constructor() {}
 
     ngOnInit(): void {
-        const graphData = this.timeseries.map((ts, i) => this.plotData(ts, i));
-
-        this.drawChart(graphData);
+        if (this.timeseries.length) {
+            const graphData = this.timeseries.map((ts) => this.plotData(ts));
+            this.drawChart(graphData);
+        }
     }
 
-
-    private plotData(ts, idx) {
-
-        // console.log(ts.obs);
+    private plotData(ts) {
         const plotted = ts.obs.map((points) => ({ x: points.resultTime, y: points.hasResult.value, unit: '' }));
-
         const colours = ts.colours;
 
         return {
@@ -110,6 +106,10 @@ export class LineGraphComponent implements OnInit {
 
     }
 
+    /**
+     * Tooltip title format method
+     * @param item 
+     */
     private tooltipTitle(item) {
         return this.timeseries[item[0].datasetIndex].observedProperty.label.toUpperCase();
     }

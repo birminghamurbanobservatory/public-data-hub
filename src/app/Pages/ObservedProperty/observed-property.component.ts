@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import { switchMap, mergeMap, flatMap, filter, toArray, take, last, withLatestFrom, first } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
+
+import { from, Observable } from 'rxjs';
+import {  mergeMap, flatMap, filter, toArray, map } from 'rxjs/operators';
+
 import { TimeSeriesService } from 'src/app/Services/timeseries/timeseries.service';
-import { Timeseries } from '../../Services/timeseries/timeseries.class';
 import { ColourService } from 'src/app/Services/colours/colour.service';
-import { forkJoin, concat, from, of, merge, Observable, Subject, BehaviorSubject, empty, combineLatest } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { toASCII } from 'punycode';
+
+import { Timeseries } from '../../Services/timeseries/timeseries.class';
 
 @Component({
     templateUrl: './observed-property.component.html'
