@@ -1,0 +1,179 @@
+<div class="mt-10 container mx-auto">
+    <div class="bg-white shadow overflow-hidden  sm:rounded-lg" *ngIf="(observation$ | async) as obs">
+        <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
+          <h3 class="text-xl leading-6 font-medium text-gray-900">
+            Observation Information
+          </h3>
+          <p class="mt-1 max-w-2xl text-sm leading-5 text-gray-500">
+            In-depth information on an observation.
+          </p>
+        </div>
+        <div class="px-4 py-5 sm:p-0">
+          <dl>
+            <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5">
+              <dt class="text-sm leading-5 font-medium text-gray-500">
+                Sensor
+              </dt>
+              <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                {{ obs.madeBySensor.label }}
+              </dd>
+            </div>
+            <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                <dt class="text-sm leading-5 font-medium text-gray-500">
+                  Sensor description
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                  {{ obs.madeBySensor.description }}
+                </dd>
+            </div>
+            <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                <dt class="text-sm leading-5 font-medium text-gray-500">
+                  Observed property
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                  {{ obs.observedProperty.label }}
+                </dd>
+            </div>
+            <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                <dt class="text-sm leading-5 font-medium text-gray-500">
+                  Observed property description
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                  {{ obs.observedProperty.description }}
+                </dd>
+            </div>
+            <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+              <dt class="text-sm leading-5 font-medium text-gray-500">
+                Value
+              </dt>
+              <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                {{ obs.hasResult.value }}
+              </dd>
+            </div>
+            <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                <dt class="text-sm leading-5 font-medium text-gray-500">
+                  Unit
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                    {{ obs.hasResult.unit.label }}, {{ obs.hasResult.unit.symbol }}
+                </dd>
+            </div>
+            <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                <dt class="text-sm leading-5 font-medium text-gray-500">
+                  Unit description
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                    {{ obs.hasResult.unit.description }}
+                </dd>
+            </div>
+            <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                <dt class="text-sm leading-5 font-medium text-gray-500">
+                  Observation date
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                    <span [datetime]="obs.resultTime" [format]="'Do MMMM YYYY'"></span>
+                </dd>
+            </div>
+            <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                <dt class="text-sm leading-5 font-medium text-gray-500">
+                  Observation time
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                    <span [datetime]="obs.resultTime" [format]="'HH:mm:ss'"></span>
+                </dd>
+            </div>
+            <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+              <dt class="text-sm leading-5 font-medium text-gray-500">
+                Aggregation type
+              </dt>
+              <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                {{ obs.aggregation.label }}
+              </dd>
+            </div>
+            <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                <dt class="text-sm leading-5 font-medium text-gray-500">
+                  Aggregation description
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                  {{ obs.aggregation.description }}
+                </dd>
+            </div>
+
+            <ng-container *ngIf=" obs.aggregation.label !== 'Instant' ">
+
+                <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                  <dt class="text-sm leading-5 font-medium text-gray-500">
+                    Aggregation duration
+                  </dt>
+                  <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                    <span [duration]="obs.phenomenonTime.duration" [aggregation]="obs.aggregation['@id']"></span>
+                  </dd>
+                </div>
+    
+                <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                  <dt class="text-sm leading-5 font-medium text-gray-500">
+                    Aggregation start
+                  </dt>
+                  <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                    <span [datetime]="obs.phenomenonTime.hasBeginning" [format]="'HH:mm:ss, Do MMMM YYYY'"></span>
+                  </dd>
+                </div>
+    
+                <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                  <dt class="text-sm leading-5 font-medium text-gray-500">
+                    Aggregation end
+                  </dt>
+                  <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                    <span [datetime]="obs.phenomenonTime.hasEnd" [format]="'HH:mm:ss, Do MMMM YYYY'"></span>
+                  </dd>
+                </div>
+    
+            </ng-container>
+
+            <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                <dt class="text-sm leading-5 font-medium text-gray-500">
+                  Feature of interest
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                    <p>{{ obs.hasFeatureOfInterest.label }}</p>
+                    <small class="-mt-1 text-gray-500">{{ obs.hasFeatureOfInterest.description }}</small>
+                </dd>
+            </div>
+            <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+              <dt class="text-sm leading-5 font-medium text-gray-500">
+                Displines
+              </dt>
+              <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                  <ul>
+                      <li class="capitalize" *ngFor="let discipline of obs.disciplines">
+                          <p>{{ discipline.label }}</p>
+                          <small class="-mt-1 text-gray-500">{{ discipline.description }}</small>
+                      </li>
+                  </ul>
+              </dd>
+            </div>
+            <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                <dt class="text-sm leading-5 font-medium text-gray-500">
+                  Deployment
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                  {{ obs.hasDeployment.label }}
+                </dd>
+            </div>
+            <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+              <dt class="text-sm leading-5 font-medium text-gray-500">
+                Platform Hierarchy
+              </dt>
+              <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                <ul>
+                    <li *ngFor="let platform of obs.ancestorPlatforms; index as i; last as isLast" [ngClass]="[i > 0 ? 'ml-' + i*2 : '']">
+                      <i class="far" [ngClass]="[isLast ? 'fa-folder' : 'fa-folder-open']"></i>
+                      <span class="ml-1">{{ platform }}</span>
+                    </li>   
+                  </ul>
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+</div>
