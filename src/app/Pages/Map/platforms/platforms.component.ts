@@ -45,7 +45,6 @@ export class PlatformsComponent implements OnInit, OnDestroy {
    */
   public selectedDeployment$: Subject<string> = new Subject()
 
-
     constructor(
         private router: Router,
         private route: ActivatedRoute,
@@ -55,9 +54,7 @@ export class PlatformsComponent implements OnInit, OnDestroy {
         private deployments: DeploymentService,
     ) {}
 
-
     ngOnInit(): void {
-
       // get the deployments for the legend
       this.deployments$ = this.deployments.getDeployments();
 
@@ -118,7 +115,7 @@ export class PlatformsComponent implements OnInit, OnDestroy {
 
     const markers: MapMarker[] = platforms.map(platform => this.pins.colouredPin(platform));
 
-    this.map.updateMarkers(markers);
+    this.map.spiderfierMarkers(markers);
   }
 
   /**

@@ -24,11 +24,6 @@ export class GoogleMapService {
     private spiderfyMap: OverlappingMarkerSpiderfier;
 
     /**
-     * Container for Google Map markers, so can be removed
-     */
-    private currentMarkers: google.maps.Marker[] = [];
-
-    /**
      * Mechanisum through which service users can track marker clicks
      */
     private selectedMarkerSource = new Subject();
@@ -73,37 +68,6 @@ export class GoogleMapService {
     }
 
     /**
-     * Adds markers to the normal Google map
-     * 
-     * @param pins : array of pins to add to the map
-     */
-    public async updateMarkers(pins: MapMarker[]) {
-
-        await GoogleMapService.load();
-
-        this.clearMarkers();
-
-        this.currentMarkers = pins.map(pin => {            
-            let marker =  new google.maps.Marker(
-                Object.assign({...pin}, {map: this.map})
-            );
-
-            marker.addListener('click', () => {
-                this.map.setCenter(marker.getPosition());
-                this.selectedMarkerSource.next(marker);
-              });
-
-            return marker;
-        });
-    }
-
-    private clearMarkers() {
-        this.currentMarkers.forEach(marker => marker.setMap(null));
-
-        this.spiderfyMap.removeAllMarkers();
-    }
-
-    /**
      * Updates the center point of the map based on the click marker position
      *
      * @param marker : map marker
@@ -120,7 +84,7 @@ export class GoogleMapService {
     public async spiderfierMarkers(pins: MapMarker[]) {
         await GoogleMapService.load();
 
-        this.clearMarkers();
+        this.spiderfyMap.removeAllMarkers();
 
         pins.forEach((pin, idx) => {
             let marker = new google.maps.Marker(pin);

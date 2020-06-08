@@ -62,7 +62,6 @@ export class PlatformDetailComponent implements OnInit {
   /**
    * Closes the side panel displaying deployment info
    * Not strictly necessary but does update url
-   * 
    */
   public close(): void {
     this.router.navigate(['/map/platforms']);
