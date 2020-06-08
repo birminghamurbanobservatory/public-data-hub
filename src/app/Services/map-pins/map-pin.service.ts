@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 
 import { ColourService } from '../colours/colour.service';
+import { Platform } from 'src/app/platform/platform.class';
+import { MapMarker } from 'src/app/Interfaces/map-marker.interface';
+import { Observation } from 'src/app/observation/observation.class';
 
 @Injectable({
     providedIn: 'root'
@@ -11,7 +14,7 @@ export class MapPinService {
         private colours: ColourService,
     ) {}
 
-    public circle(observation) {
+    public observationPin(observation: Observation): MapMarker {
         
         const iconFillColour = this.colours.selectFillColour(observation);
         const iconTextColour = this.colours.selectTextColour(iconFillColour)
@@ -27,13 +30,12 @@ export class MapPinService {
         return {
             type: 'observation',
             id: observation.id,
-            text: `${Math.round(observation.hasResult.value)}`,
-            color: iconTextColour,
+            labelText: `${Math.round(observation.hasResult.value)}`,
+            labelColour: iconTextColour,
             position: {
                 lat: observation.location.geometry.coordinates[1],
                 lng: observation.location.geometry.coordinates[0],
             },
-
             options: {
                 label: {
                     text: `${Math.round(observation.hasResult.value)}`,
@@ -42,13 +44,10 @@ export class MapPinService {
                 icon,
             },
         };
-
     }
 
-    public colouredPin(platform) {
-
+    public platformPin(platform: Platform): MapMarker {
         let colour = this.colours.generateHexColour(platform.inDeployment)
-
         const icon = {
             path: 'M-15,0a15,15 0 1,0 30,0a15,15 0 1,0 -30,0',
             fillColor: colour,
@@ -56,7 +55,6 @@ export class MapPinService {
             strokeWeight: 3,
             scale: 0.7
         };
-
 
         return {
             type: 'platform',
@@ -67,7 +65,6 @@ export class MapPinService {
             },
             options: {
                 icon,
-
             }
         };
     }

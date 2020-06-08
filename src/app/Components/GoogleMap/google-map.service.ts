@@ -90,19 +90,18 @@ export class GoogleMapService {
             let marker = new google.maps.Marker(pin);
             marker.setZIndex(idx); // this to fix the text overlap issue
 
-            marker.addListener('spider_format', function(status) {
-
+            marker.addListener('spider_format', (status) => {
                 if (status == OverlappingMarkerSpiderfier.markerStatus.SPIDERFIED) {
-                    marker.setOptions({ label: { text: pin['text'], color: pin['color'] }})
+                    marker.setLabel(this.setLabel(pin.labelText, pin.labelColour))
                 } 
                 else if (status == OverlappingMarkerSpiderfier.markerStatus.SPIDERFIABLE) {
-                    marker.setOptions({ label: { text: '+', color: pin['color'] }})
+                    marker.setLabel(this.setLabel('+', pin.labelColour))
                 }
                 else if (status == OverlappingMarkerSpiderfier.markerStatus.UNSPIDERFIABLE) {
-                    marker.setOptions({ label: { text: pin['text'], color: pin['color'] }})
+                    marker.setLabel(this.setLabel(pin.labelText, pin.labelColour))
                 }
                 else {
-                    marker.setOptions({ label: { text: '+', color: pin['color'] }})
+                    marker.setLabel(this.setLabel('+', pin.labelColour))
                 }
             });
 
@@ -115,5 +114,13 @@ export class GoogleMapService {
         });
 
         this.setMapCenter({ lat: 52.480100, lng: -1.896478 }); // hack to make the spiderfy markers show the '+' when toggle observed properties
+    }
+
+    private setLabel(text: string, color: string) {
+        if (text) {
+            return { text, color }
+        }
+
+        return null;
     }
 }

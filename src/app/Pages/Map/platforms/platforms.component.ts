@@ -113,7 +113,7 @@ export class PlatformsComponent implements OnInit, OnDestroy {
    */
   private addMarkers(platforms: Platform[]): void {
 
-    const markers: MapMarker[] = platforms.map(platform => this.pins.colouredPin(platform));
+    const markers: MapMarker[] = platforms.map(platform => this.pins.platformPin(platform));
 
     this.map.spiderfierMarkers(markers);
   }
