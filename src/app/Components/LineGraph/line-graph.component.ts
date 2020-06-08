@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 
 import { Chart } from 'chart.js';
 import * as moment from 'moment';
@@ -10,7 +10,7 @@ import { Timeseries } from 'src/app/Services/timeseries/timeseries.class';
     template: `
         <div class="border border-gray-200 rounded-md bg-white shadow-inner p-4">
             <div class="mt-4 -mx-2" *ngIf="timeseries.length; else noDataMessage">
-                <canvas #chart height="100"></canvas>
+                <canvas #lineChart height="100"></canvas>
             </div>
             <ng-template #noDataMessage>
                 <div class="w-full text-sm leading-5 text-center text-gray-800">
@@ -19,14 +19,12 @@ import { Timeseries } from 'src/app/Services/timeseries/timeseries.class';
             </ng-template>
         </div>`,
 })
-export class LineGraphComponent implements OnInit {
+export class LineGraphComponent implements AfterViewInit {
 
     @Input() timeseries: Timeseries[];
-    @ViewChild('chart', { static: true }) canvas: ElementRef;
+    @ViewChild('lineChart') canvas: ElementRef;
 
-    constructor() {}
-
-    ngOnInit(): void {
+    ngAfterViewInit(): void {
         if (this.timeseries.length) {
             const graphData = this.timeseries.map((ts) => this.plotData(ts));
             this.drawChart(graphData);
