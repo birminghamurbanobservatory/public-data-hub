@@ -29,6 +29,8 @@ export class GoogleMapService {
     private selectedMarkerSource = new Subject();
     public selectedMarker = this.selectedMarkerSource.asObservable();
 
+    private defaultMapCenter = {lat: 52.480100, lng: -1.885};
+
     private static load() {
         // First time 'load' is called?
         if (!GoogleMapService.promise) {
@@ -58,8 +60,8 @@ export class GoogleMapService {
         await GoogleMapService.load();
 
         this.map = new google.maps.Map(el.nativeElement, {
-            center: new google.maps.LatLng({ lat: 52.480100, lng: -1.896478 }),
-            zoom: 12
+            center: new google.maps.LatLng(this.defaultMapCenter),
+            zoom: 11
         });
 
         this.spiderfyMap = new OverlappingMarkerSpiderfier(this.map, {
@@ -113,7 +115,7 @@ export class GoogleMapService {
             this.spiderfyMap.addMarker(marker, () => {})
         });
 
-        this.setMapCenter({ lat: 52.480100, lng: -1.896478 }); // hack to make the spiderfy markers show the '+' when toggle observed properties
+        this.setMapCenter(this.defaultMapCenter); // hack to make the spiderfy markers show the '+' when toggle observed properties
     }
 
     private setLabel(text: string, color: string) {
