@@ -52,7 +52,9 @@ export class PlatformDetailComponent implements OnInit {
     this.observations$ = this.route.paramMap.pipe(
       switchMap(
         (params: Params) => this.getLatestObservations(params.get('id'))
-        .pipe(map(response => response.data))
+        .pipe(
+          map(response => response.data),
+        )
       )
     )
   }
@@ -60,7 +62,6 @@ export class PlatformDetailComponent implements OnInit {
   /**
    * Closes the side panel displaying deployment info
    * Not strictly necessary but does update url
-   * 
    */
   public close(): void {
     this.router.navigate(['/map/platforms']);
@@ -87,21 +88,11 @@ export class PlatformDetailComponent implements OnInit {
 
   /**
    * Converts the wind direction to text representation
-   * 
    * @param degree 
    */
   public windDirectionDegreeToText(degree) {
     const val = Math.floor((degree / 45) + 0.5);
-    const arr = [
-      'N',
-      'NE',
-      'E',
-      'SE',
-      'S',
-      'SW',
-      'W',
-      'NW'
-    ];
+    const arr = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
     return arr[(val % 8)];
   }
 }

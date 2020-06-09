@@ -28,14 +28,13 @@ export class DurationDirective implements OnInit {
     }
 
     private durationToString() {
-        
         let m = moment.duration(this.duration, 'seconds');
         
-        if (this.duration <= 60) {
+        if (this.duration <= 59) {
             return `${this.aggregation} over ${m.seconds()} secs.`;
         }
             
-        if (this.duration > 60 && this.duration < 3600) {
+        if (this.duration >= 60 && this.duration <= 3599) {
             return `${m.minutes()} minute ${this.abbrev[this.aggregation]}`
         }
 

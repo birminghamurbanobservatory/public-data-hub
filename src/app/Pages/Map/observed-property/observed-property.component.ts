@@ -49,7 +49,7 @@ export class ObservedPropertyComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   private addMarkers(data) {
-    const markers: MapMarker[] = data.map((obs) => this.pins.circle(obs));
+    const markers: MapMarker[] = data.map((obs) => this.pins.observationPin(obs));
     this.map.spiderfierMarkers(markers);
   }
 

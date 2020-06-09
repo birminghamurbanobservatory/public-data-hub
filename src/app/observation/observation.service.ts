@@ -81,7 +81,7 @@ export class ObservationService {
       sortOrder: 'asc'
     }
 
-    return this.getObservations(query)
+    return this.getObservations(query, options)
       .pipe(map((res) => res.data[0]));
   }
 
