@@ -66,6 +66,7 @@ export class GoogleMapService {
 
         this.spiderfyMap = new OverlappingMarkerSpiderfier(this.map, {
             keepSpiderfied: true,
+            nearbyDistance: 10 // default would have been 20. A lower the number would required more overlap to spiderfy.
         });
     }
 
