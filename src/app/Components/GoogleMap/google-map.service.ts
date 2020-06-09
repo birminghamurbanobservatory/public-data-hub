@@ -1,6 +1,6 @@
 import { Injectable, ElementRef } from '@angular/core';
 import { MapMarker } from '../../Interfaces/map-marker.interface';
-
+import {environment} from '../../../environments/environment';
 import { Subject } from 'rxjs';
 import { OverlappingMarkerSpiderfier } from 'ts-overlapping-marker-spiderfier'
 
@@ -9,7 +9,7 @@ import { OverlappingMarkerSpiderfier } from 'ts-overlapping-marker-spiderfier'
 })
 export class GoogleMapService {
 
-    private static url: string = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBaFvvfiN49ovEcHKQ5oCGARquxlv8irnA&callback=__onGoogleMapsLoaded';
+    private static url: string = `https://maps.googleapis.com/maps/api/js?key=${environment.googleMapsApiKey}&callback=__onGoogleMapsLoaded`;
 
     private static promise: Promise<any>;
 
