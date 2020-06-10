@@ -11,7 +11,7 @@ import { Subject } from 'rxjs';
     template: `
         <div class="border border-gray-200 rounded-md bg-white shadow-inner p-4">
             <div class="overflow-x-scroll">
-                <div class="mt-4 overflow-hidden" [ngStyle]="{'width.px': width }">
+                <div class="mt-4" [ngStyle]="{'width.px': width }">
                     <canvas #lineChart height="400" width="0"></canvas>
                 </div>
             </div>
@@ -30,10 +30,17 @@ export class LineGraphComponent implements AfterViewInit {
 
     public data: any;
     public width: number = 800;
+    private chart: Chart;
 
     ngAfterViewInit(): void {
         this.timeseries.subscribe(d => {
             this.data = d;
+
+            if (this.chart) {
+                console.log('destroy old chart')
+                this.chart.destroy();
+            }
+
             const graphData = d.tso.map((ts) => this.plotData(ts));
             this.drawChart(graphData);
         })
@@ -61,7 +68,7 @@ export class LineGraphComponent implements AfterViewInit {
 
     private drawChart(data) {
 
-        new Chart(this.canvas.nativeElement, {
+        this.chart = new Chart(this.canvas.nativeElement, {
             type: 'line',
             data: {
                 datasets: data,
@@ -102,11 +109,24 @@ export class LineGraphComponent implements AfterViewInit {
                         }
                     }],
                     xAxes: [{
+                        ticks: {
+                            // Include date in the label if time 00:00
+                            callback: function(value, index, values) {
+                                if (value === '00:00') {
+                                    const u = values[index].value / 1000;
+                                    return moment.unix(u).format('DD/MM/YYYY HH:mm')
+                                }
+                                return value;
+                            }
+                        },
                         type: 'time',
                         time: {
                             unit: 'hour',
+                            unitStepSize: 1,
+                            minUnit: 'hour',
                             displayFormats: {
-                                hour: 'HHmm'
+                                hour: 'HH:mm',
+                                day: 'MMM D',
                             }
                         },
                         scaleLabel: {
