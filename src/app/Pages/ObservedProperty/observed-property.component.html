@@ -8,8 +8,8 @@
 
     <buo-property-datetime-filter (window)="windowHandler($event)"></buo-property-datetime-filter>
 
-    <div class="mt-4" *ngIf="(ts$ | async) as ts">
-        <buo-line-graph [timeseries]="ts"></buo-line-graph>
+    <div class="mt-4">
+        <buo-line-graph [timeseries]="tso$"></buo-line-graph>
     </div>
 
     <div class="lg:-mx-2 w-full flex flex-wrap">

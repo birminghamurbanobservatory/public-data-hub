@@ -4,12 +4,13 @@ import { Chart } from 'chart.js';
 import * as moment from 'moment';
 
 import { Timeseries } from 'src/app/Services/timeseries/timeseries.class';
+import { Subject } from 'rxjs';
 
 @Component({
     selector: 'buo-line-graph',
     template: `
         <div class="border border-gray-200 rounded-md bg-white shadow-inner p-4">
-            <div class="mt-4 -mx-2" *ngIf="timeseries.length; else noDataMessage">
+            <div class="mt-4 -mx-2">
                 <canvas #lineChart height="100"></canvas>
             </div>
             <ng-template #noDataMessage>
@@ -21,18 +22,22 @@ import { Timeseries } from 'src/app/Services/timeseries/timeseries.class';
 })
 export class LineGraphComponent implements AfterViewInit {
 
-    @Input() timeseries: Timeseries[];
+    // @Input() timeseries: Timeseries[];
+    @Input() timeseries: Subject<any>;
     @ViewChild('lineChart') canvas: ElementRef;
 
+    public data: any;
+
     ngAfterViewInit(): void {
-        if (this.timeseries.length) {
-            const graphData = this.timeseries.map((ts) => this.plotData(ts));
+        this.timeseries.subscribe(d => {
+            this.data = d;
+            const graphData = d.tso.map((ts) => this.plotData(ts));
             this.drawChart(graphData);
-        }
+        })
     }
 
     private plotData(ts) {
-        const plotted = ts.obs.map((points) => ({ x: points.resultTime, y: points.hasResult.value, unit: '' }));
+        const plotted = ts.observations.map((points) => ({ x: points.resultTime, y: points.hasResult.value, unit: '' }));
         const colours = ts.colours;
 
         return {
@@ -54,6 +59,7 @@ export class LineGraphComponent implements AfterViewInit {
                 datasets: data,
             },
             options: {
+                responsive: true,
                 legend: {
                     display: false
                 },
@@ -73,7 +79,8 @@ export class LineGraphComponent implements AfterViewInit {
                             return [
                                 `Time: ${moment(tooltipItem.xLabel).format('HH:mm')}`, 
                                 `Date: ${moment(tooltipItem.xLabel).format('DD/MM/YY')}`, 
-                                `Value: ${tooltipItem.value} ${this.timeseries[idx].unit.symbol}`
+                                // `Value: ${tooltipItem.value} ${this.timeseries[idx].unit.symbol}`
+                                `Value: ${tooltipItem.value} ${this.data.symbol}`
                             ];
                         } 
                     }
@@ -82,7 +89,8 @@ export class LineGraphComponent implements AfterViewInit {
                     yAxes: [{
                         scaleLabel: {
                             display: true,
-                            labelString: this.timeseries[0].observedProperty.label
+                            // labelString: this.timeseries[0].observedProperty.label
+                            labelString: this.data.label
                         }
                     }],
                     xAxes: [{
@@ -95,7 +103,7 @@ export class LineGraphComponent implements AfterViewInit {
                         },
                         scaleLabel: {
                             display: true,
-                            labelString: 'Date'
+                            labelString: 'Time'
                         }
                     }]
                 },
@@ -114,7 +122,7 @@ export class LineGraphComponent implements AfterViewInit {
      * @param item 
      */
     private tooltipTitle(item) {
-        return this.timeseries[item[0].datasetIndex].observedProperty.label.toUpperCase();
+        return this.data.label.toUpperCase();
     }
 
 }

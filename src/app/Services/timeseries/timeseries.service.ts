@@ -59,7 +59,12 @@ export class TimeSeriesService {
 
         return this.http.get(`${environment.apiUrl}/timeseries/${id}/observations${qs}`)
         .pipe(
-            map((response) => response['member'].map(this.transformReading))
+            map((response) => {
+                return {
+                    meta: response['meta'],
+                    data: response['member'].map(this.transformReading)
+                }
+            })
         )
 
     }
