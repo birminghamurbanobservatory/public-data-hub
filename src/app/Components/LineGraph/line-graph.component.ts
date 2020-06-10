@@ -10,8 +10,10 @@ import { Subject } from 'rxjs';
     selector: 'buo-line-graph',
     template: `
         <div class="border border-gray-200 rounded-md bg-white shadow-inner p-4">
-            <div class="mt-4 -mx-2">
-                <canvas #lineChart height="100"></canvas>
+            <div class="overflow-x-scroll">
+                <div class="mt-4 overflow-hidden" [ngStyle]="{'width.px': width }">
+                    <canvas #lineChart height="400" width="0"></canvas>
+                </div>
             </div>
             <ng-template #noDataMessage>
                 <div class="w-full text-sm leading-5 text-center text-gray-800">
@@ -27,6 +29,7 @@ export class LineGraphComponent implements AfterViewInit {
     @ViewChild('lineChart') canvas: ElementRef;
 
     public data: any;
+    public width: number = 800;
 
     ngAfterViewInit(): void {
         this.timeseries.subscribe(d => {
@@ -38,6 +41,11 @@ export class LineGraphComponent implements AfterViewInit {
 
     private plotData(ts) {
         const plotted = ts.observations.map((points) => ({ x: points.resultTime, y: points.hasResult.value, unit: '' }));
+         
+        const w = plotted.length * 15;
+
+        this.width = w > this.width ? w : this.width;
+
         const colours = ts.colours;
 
         return {
