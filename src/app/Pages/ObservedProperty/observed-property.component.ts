@@ -43,7 +43,7 @@ export class ObservedPropertyComponent implements OnInit {
         .toPromise()
     }
     private graphDto: any;
-    public async windowHandler(window: any) {
+    public async timeWindowHandler(window: { start: string, end: string }) {
 
         if (! this.timeseries) {
             this.timeseries = await this.getTimeseries()

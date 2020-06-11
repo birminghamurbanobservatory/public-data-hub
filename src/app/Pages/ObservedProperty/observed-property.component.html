@@ -6,7 +6,7 @@
 
 <div class="relative w-full shadow-md bg-gray-50 p-4 sm:rounded-sm">
 
-    <buo-property-datetime-filter (window)="windowHandler($event)"></buo-property-datetime-filter>
+    <buo-property-datetime-filter (timeWindow)="timeWindowHandler($event)"></buo-property-datetime-filter>
 
     <div class="mt-4">
         <buo-line-graph [timeseries]="tso$"></buo-line-graph>
