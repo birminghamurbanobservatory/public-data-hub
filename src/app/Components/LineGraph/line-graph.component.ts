@@ -5,13 +5,14 @@ import * as moment from 'moment';
 
 import { Timeseries } from 'src/app/Services/timeseries/timeseries.class';
 import { Subject } from 'rxjs';
+import 'chartjs-plugin-zoom';
 
 @Component({
     selector: 'buo-line-graph',
     template: `
         <div class="border border-gray-200 rounded-md bg-white shadow-inner p-4">
             <div class="overflow-x-scroll">
-                <div class="mt-4" [ngStyle]="{'width.px': width }">
+                <div class="mt-4" #lineChartContainer>
                     <canvas #lineChart height="400" width="0"></canvas>
                 </div>
             </div>
@@ -27,12 +28,16 @@ export class LineGraphComponent implements AfterViewInit {
     // @Input() timeseries: Timeseries[];
     @Input() timeseries: Subject<any>;
     @ViewChild('lineChart') canvas: ElementRef;
+    @ViewChild('lineChartContainer') container: ElementRef;
 
     public data: any;
-    public width: number = 800;
+    // public width: number = 800; [ngStyle]="{'width.px': width }"
     private chart: Chart;
 
     ngAfterViewInit(): void {
+
+        // console.log(this.container.nativeElement.clientWidth )
+
         this.timeseries.subscribe(d => {
             this.data = d;
 
@@ -51,7 +56,7 @@ export class LineGraphComponent implements AfterViewInit {
          
         const w = plotted.length * 15;
 
-        this.width = w > this.width ? w : this.width;
+        // this.width = w > this.width ? w : this.width;
 
         const colours = ts.colours;
 
@@ -66,6 +71,10 @@ export class LineGraphComponent implements AfterViewInit {
         };
     }
 
+    private dragOptions = {
+        animationDuration: 1000
+    };
+
     private drawChart(data) {
 
         this.chart = new Chart(this.canvas.nativeElement, {
@@ -74,6 +83,16 @@ export class LineGraphComponent implements AfterViewInit {
                 datasets: data,
             },
             options: {
+                plugins: {
+					zoom: {
+						zoom: {
+							enabled: true,
+							// drag: this.dragOptions,
+							mode: 'xy',
+							speed: 0.05
+						}
+					}
+				},
                 responsive: true,
                 legend: {
                     display: false
