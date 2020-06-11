@@ -1,21 +1,15 @@
-import { Component, Input, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 
-import { Chart } from 'chart.js';
-import * as moment from 'moment';
-
-import { Timeseries } from 'src/app/Services/timeseries/timeseries.class';
 import { Subject } from 'rxjs';
-import 'chartjs-plugin-zoom';
+
+import * as moment from 'moment';
+import { ObservationModalService } from '../ObservationModal/observation-modal.service';
 
 @Component({
     selector: 'buo-line-graph',
     template: `
         <div class="border border-gray-200 rounded-md bg-white shadow-inner p-4">
-            <div class="overflow-x-scroll">
-                <div class="mt-4" #lineChartContainer>
-                    <canvas #lineChart height="400" width="0"></canvas>
-                </div>
-            </div>
+            <div class="mt-4 w-full h-80" #lineChartContainer></div>
             <ng-template #noDataMessage>
                 <div class="w-full text-sm leading-5 text-center text-gray-800">
                     No data for the selected time period.
@@ -27,24 +21,18 @@ export class LineGraphComponent implements AfterViewInit {
 
     // @Input() timeseries: Timeseries[];
     @Input() timeseries: Subject<any>;
-    @ViewChild('lineChart') canvas: ElementRef;
     @ViewChild('lineChartContainer') container: ElementRef;
 
     public data: any;
-    // public width: number = 800; [ngStyle]="{'width.px': width }"
-    private chart: Chart;
+
+    constructor(
+        private modal: ObservationModalService,
+        ) {}
 
     ngAfterViewInit(): void {
 
-        // console.log(this.container.nativeElement.clientWidth )
-
         this.timeseries.subscribe(d => {
             this.data = d;
-
-            if (this.chart) {
-                console.log('destroy old chart')
-                this.chart.destroy();
-            }
 
             const graphData = d.tso.map((ts) => this.plotData(ts));
             this.drawChart(graphData);
@@ -52,124 +40,74 @@ export class LineGraphComponent implements AfterViewInit {
     }
 
     private plotData(ts) {
-        const plotted = ts.observations.map((points) => ({ x: points.resultTime, y: points.hasResult.value, unit: '' }));
-         
-        const w = plotted.length * 15;
-
-        // this.width = w > this.width ? w : this.width;
-
         const colours = ts.colours;
+        const plotted = ts.observations.map((point) => ({ 
+            x: moment(point.resultTime).valueOf() , 
+            y: point.hasResult.value,
+            id: point.id,
+            click: (e) => { 
+                this.modal.observationSelected(e.dataPoint.id);
+            } 
+        }));
 
         return {
-            fill: false,
-            data: plotted,
-            borderColor: colours.line,
-            pointBackgroundColor: colours.point,
-            pointBorderColor: colours.point,
-            pointHoverBackgroundColor: colours.hover,
-            pointHoverBorderColor: colours.hover,
+            type: 'line',
+            name: 'Air Temp',
+            markerSize: 1,
+            xValueType: "dateTime",
+            markerType: 'circle',
+            markerSize: 5,
+            markerColor: colours.point,
+            lineColor: colours.line, 
+            dataPoints: plotted,
         };
     }
 
-    private dragOptions = {
-        animationDuration: 1000
-    };
-
     private drawChart(data) {
-
-        this.chart = new Chart(this.canvas.nativeElement, {
-            type: 'line',
-            data: {
-                datasets: data,
+         let chart = new CanvasJS.Chart(this.container.nativeElement, {
+            zoomEnabled: true,
+            zoomType: 'xy',
+            animationEnabled: true,
+            exportEnabled: true,
+            title: {
+                text: this.data.label
             },
-            options: {
-                plugins: {
-					zoom: {
-						zoom: {
-							enabled: true,
-							// drag: this.dragOptions,
-							mode: 'xy',
-							speed: 0.05
-						}
-					}
-				},
-                responsive: true,
-                legend: {
-                    display: false
+            toolTip: {
+                backgroundColor: '#000000',
+                cornerRadius: 5,
+                borderColor: '#000000',
+                fontColor: '#ffffff',
+                fontSize: 12,
+                contentFormatter: (e) => {
+                    const dp = e.entries[0].dataPoint;
+                    return `<i class="far fa-calendar mr-1"></i>${moment(dp.x).format('DD/MM/YYYY')}<br><i class="far fa-clock mr-1"></i>${moment(dp.x).format('HH:mm')}<br>${dp.y}${this.data.symbol}`
                 },
-                hover: {
-                    mode: 'nearest',
+            },
+            axisX: {
+                title: 'Date and Time',
+                titleFontColor: '#718096',
+                titleFontWeight: 'bold',
+                titleFontSize: 12,
+                labelFormatter: (label) => {
+                    const dt = moment(label.value);
+                    return dt.format('HHmm') === '0000' ? dt.format('DD/MM/YYYY HH:mm') : dt.format('HH:mm');
                 },
-                tooltips: {
-                    displayColors: false, // removes the square color box
-                    callbacks: { 
-                        title: (tooltipItem) => {
-                            return this.tooltipTitle(tooltipItem)
-                        },
-                        label: (tooltipItem) => {
-
-                            const idx = tooltipItem.datasetIndex; // the datasetIndex is the same as the timeseries index
-
-                            return [
-                                `Time: ${moment(tooltipItem.xLabel).format('HH:mm')}`, 
-                                `Date: ${moment(tooltipItem.xLabel).format('DD/MM/YY')}`, 
-                                // `Value: ${tooltipItem.value} ${this.timeseries[idx].unit.symbol}`
-                                `Value: ${tooltipItem.value} ${this.data.symbol}`
-                            ];
-                        } 
-                    }
-                },
-                scales: {
-                    yAxes: [{
-                        scaleLabel: {
-                            display: true,
-                            // labelString: this.timeseries[0].observedProperty.label
-                            labelString: this.data.label
-                        }
-                    }],
-                    xAxes: [{
-                        ticks: {
-                            // Include date in the label if time 00:00
-                            callback: function(value, index, values) {
-                                if (value === '00:00') {
-                                    const u = values[index].value / 1000;
-                                    return moment.unix(u).format('DD/MM/YYYY HH:mm')
-                                }
-                                return value;
-                            }
-                        },
-                        type: 'time',
-                        time: {
-                            unit: 'hour',
-                            unitStepSize: 1,
-                            minUnit: 'hour',
-                            displayFormats: {
-                                hour: 'HH:mm',
-                                day: 'MMM D',
-                            }
-                        },
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Time'
-                        }
-                    }]
-                },
-                elements: {
-                    line: {
-                        tension: 0 // joins dots with a straight, not curved, line
-                    }
-                }
-            }
+                labelFontColor: '#718096',
+                lineColor: '#CBD5E0',
+            },
+            axisY: {
+                title: `${this.data.label} (${this.data.symbol})`,
+                titleFontColor: '#718096',
+                titleFontWeight: 'bold',
+                titleFontSize: 12,
+                gridColor: '#EDF2F7',
+                lineColor: '#CBD5E0',
+                includeZero: false,
+                labelFontColor: '#718096',
+            },
+            data: data
         });
-
+            
+        chart.render();
     }
-
-    /**
-     * Tooltip title format method
-     * @param item 
-     */
-    private tooltipTitle(item) {
-        return this.data.label.toUpperCase();
-    }
-
 }
