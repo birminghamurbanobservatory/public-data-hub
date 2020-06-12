@@ -15,7 +15,6 @@
       "es2018",
       "dom"
     ],
-    "types" : ["canvasjs"]
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
