@@ -1,8 +1,8 @@
 import { Component, Input, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 
 import { Subject } from 'rxjs';
-
 import * as moment from 'moment';
+import * as CanvasJS from '../../../assets/js/canvasjs.min';
 import { ObservationModalService } from '../ObservationModal/observation-modal.service';
 
 @Component({
@@ -53,7 +53,6 @@ export class LineGraphComponent implements AfterViewInit {
         return {
             type: 'line',
             name: 'Air Temp',
-            markerSize: 1,
             xValueType: "dateTime",
             markerType: 'circle',
             markerSize: 5,
@@ -66,7 +65,7 @@ export class LineGraphComponent implements AfterViewInit {
     private drawChart(data) {
          let chart = new CanvasJS.Chart(this.container.nativeElement, {
             zoomEnabled: true,
-            zoomType: 'xy',
+            zoomType: "xy",
             animationEnabled: true,
             exportEnabled: true,
             title: {
