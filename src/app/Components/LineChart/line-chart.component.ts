@@ -6,7 +6,7 @@ import * as CanvasJS from '../../../assets/js/canvasjs.min';
 import { ObservationModalService } from '../ObservationModal/observation-modal.service';
 
 @Component({
-    selector: 'buo-line-graph',
+    selector: 'buo-line-chart',
     template: `
         <div class="border border-gray-200 rounded-md bg-white shadow-inner p-4">
             <div class="mt-4 w-full h-80" #lineChartContainer></div>
@@ -17,7 +17,7 @@ import { ObservationModalService } from '../ObservationModal/observation-modal.s
             </ng-template>
         </div>`,
 })
-export class LineGraphComponent implements AfterViewInit {
+export class LineChartComponent implements AfterViewInit {
 
     // @Input() timeseries: Timeseries[];
     @Input() timeseries: Subject<any>;
