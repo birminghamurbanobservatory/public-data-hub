@@ -21,7 +21,7 @@ export class TimeSeriesService {
      * 
      * @param id : timeseries identifier
      */
-    public getTimeseriesById(id, options?: {populate?: string[]} = {}) {
+    public getTimeseriesById(id, options: {populate?: string[]} = {}) {
 
         const qs = this.apiFunctions.queryParamsObjectToString(options);
         return this.http.get(`${environment.apiUrl}/timeseries/${id}${qs}`)
