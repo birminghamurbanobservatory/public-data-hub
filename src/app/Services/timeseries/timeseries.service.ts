@@ -21,9 +21,10 @@ export class TimeSeriesService {
      * 
      * @param id : timeseries identifier
      */
-    public getTimeseriesById(id) {
+    public getTimeseriesById(id, options: {populate?: string[]} = {}) {
 
-        return this.http.get(`${environment.apiUrl}/timeseries/${id}`)
+        const qs = this.apiFunctions.queryParamsObjectToString(options);
+        return this.http.get(`${environment.apiUrl}/timeseries/${id}${qs}`)
 
     }
 
@@ -32,9 +33,10 @@ export class TimeSeriesService {
      * 
      * @param where : query object
      */
-    public getTimeSeriesByQuery(where?: Object) {
+    public getTimeSeriesByQuery(where = {}, options: {populate?: string[]} = {}) {
 
-        const qs = this.apiFunctions.queryParamsObjectToString(where);
+        const queryParamsObject = Object.assign({}, where, options);
+        const qs = this.apiFunctions.queryParamsObjectToString(queryParamsObject);
 
         return this.http.get(`${environment.apiUrl}/timeseries${qs}`)
         .pipe(

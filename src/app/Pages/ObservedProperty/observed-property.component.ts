@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { Observable, Subject } from 'rxjs';
-import {  mergeMap, toArray, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 import { TimeSeriesService } from 'src/app/Services/timeseries/timeseries.service';
 import { ColourService } from 'src/app/Services/colours/colour.service';
@@ -38,6 +38,19 @@ export class ObservedPropertyComponent implements OnInit {
                 includes: this.platform,
             },
             observedProperty: this.property
+        }, {
+            populate: [
+                // TODO: Do we actually need all these to be populated?
+                'unit', 
+                'observedProperty', 
+                'disciplines', 
+                'aggregation', 
+                'hasFeatureOfInterest', 
+                'usedProcedures',
+                'hasDeployment',
+                'ancestorPlatforms',
+                'madeBySensor'
+            ]
         })
         .pipe(map(({data}) => data))
         .toPromise()
@@ -57,7 +70,7 @@ export class ObservedPropertyComponent implements OnInit {
                 tso: []
             }
 
-            this.timeseries.map((ts, idx) => {
+            this.timeseries.forEach((ts, idx) => {
                 this.graphDto.tso[idx] =  { 
                     id: ts.id, 
                     colours: this.colours.chartColours(idx),
@@ -101,8 +114,23 @@ export class ObservedPropertyComponent implements OnInit {
         return call;
     }
 
+    /**
+     * Track by function for timeseries info panel
+     * 
+     * @param idx item index
+     * @param item item in array
+     */
     public trackByFn(idx, item) {
         if (! item) return null;
         return item.id;
+    }
+
+    /**
+     * Simple function to check which chart type to load
+     * If lots of chart types consider replacing with dynamic import.
+     */
+    public chartType() {
+        const columnTypes = ['precipitation-depth'];
+        return columnTypes.includes(this.property) ? 'column-chart' : 'line-chart';
     }
 }
