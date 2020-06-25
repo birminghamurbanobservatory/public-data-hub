@@ -78,7 +78,7 @@
                     Aggregation duration
                   </dt>
                   <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                    <span [duration]="obs.phenomenonTime.duration" [aggregation]="obs.aggregation['@id']"></span>
+                    <span [duration]="obs.phenomenonTime.duration" [aggregation]="obs.aggregation.id"></span>
                   </dd>
                 </div>
     
@@ -153,7 +153,7 @@
               <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
                   <ul>
                       <li *ngFor="let procedure of obs.usedProcedures">
-                          <p>{{ procedure.label || procedure['@id'] }}</p>
+                          <p>{{ procedure.label || procedure.id }}</p>
                           <small class="-mt-1 text-gray-500">{{ procedure.description }}</small>
                       </li>
                   </ul>

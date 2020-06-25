@@ -48,7 +48,7 @@
               Observed Property
             </dt>
             <dd class="mt-0 text-sm leading-5 text-gray-900 sm:col-span-2 capitalize">
-              {{ observation.observedProperty.label || observation.observedProperty['@id'] }}
+              {{ observation.observedProperty.label || observation.observedProperty.id }}
             </dd>
           </div>
 
@@ -76,19 +76,19 @@
             </dt>
             <dd class="mt-0 text-sm leading-5 text-gray-900 sm:col-span-2">
               <span class="capitalize">
-                {{ observation.aggregation.label || observation.aggregation.label['@id'] }}
+                {{ observation.aggregation.label || observation.aggregation.id }}
               </span>
             </dd>
           </div>
 
-          <ng-container *ngIf=" observation.aggregation['@id'] !== 'instant' ">
+          <ng-container *ngIf=" observation.aggregation.id !== 'instant' ">
 
             <div class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
               <dt class="text-sm leading-5 font-medium text-gray-500">
                 Aggregation duration
               </dt>
               <dd class="mt-0 text-sm leading-5 text-gray-900 sm:col-span-2">
-                <span [duration]="observation.phenomenonTime.duration" [aggregation]="observation.aggregation['@id']"></span>
+                <span [duration]="observation.phenomenonTime.duration" [aggregation]="observation.aggregation.id"></span>
               </dd>
             </div>
 
@@ -149,7 +149,10 @@
         </span>
 
         <span class="flex w-full rounded-md shadow-sm sm:col-start-2 my-2">
-          <a [routerLink]="['/plot', observation.ancestorPlatforms[0]['@id'], observation.observedProperty['@id']]" class="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-pink-500 text-base leading-6 font-medium text-white shadow-sm hover:bg-pink-400 focus:outline-none focus:border-pink-600 focus:shadow-outline-pink transition ease-in-out duration-150 sm:text-sm sm:leading-5">
+          <a 
+            [routerLink]="['/plot']" 
+            [queryParams]="{ancestorPlatforms__includes: observation.ancestorPlatforms[0].id, observedProperty: observation.observedProperty.id, unit: observation.hasResult.unit.id}" 
+            class="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-pink-500 text-base leading-6 font-medium text-white shadow-sm hover:bg-pink-400 focus:outline-none focus:border-pink-600 focus:shadow-outline-pink transition ease-in-out duration-150 sm:text-sm sm:leading-5">
             Plot over time
           </a>
         </span>

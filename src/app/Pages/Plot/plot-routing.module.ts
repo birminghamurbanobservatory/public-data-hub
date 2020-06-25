@@ -6,12 +6,7 @@ import { PlotComponent } from './plot.component';
 const routes: Routes = [
   {
     path: '',
-    children: [
-      {
-        path: ':platform/:property',
-        component: PlotComponent
-      },
-    ]
+    component: PlotComponent
   }
 ];
 
