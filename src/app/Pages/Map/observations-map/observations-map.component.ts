@@ -5,17 +5,17 @@ import { switchMap, filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 
 import { GoogleMapService } from 'src/app/Components/GoogleMap/google-map.service';
-import { ObservedPropertyService } from './observed-property.service';
+import { ObservationsMapService } from './observations-map.service';
 import { ObservationModalService } from 'src/app/Components/ObservationModal/observation-modal.service';
 import { MapPinService } from 'src/app/Services/map-pins/map-pin.service';
 
 import { MapMarker } from '../../../Interfaces/map-marker.interface';
 
 @Component({
-  selector: 'buo-map-observed-property',
+  selector: 'buo-observations-map',
   template: '', // has no template as output onto map
 })
-export class ObservedPropertyComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ObservationsMapComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private mapSubscription: Subscription;
 
@@ -23,23 +23,23 @@ export class ObservedPropertyComponent implements OnInit, OnDestroy, AfterViewIn
     private route: ActivatedRoute,
     private pins: MapPinService,
     private map: GoogleMapService,
-    private observedPropertyService: ObservedPropertyService,
+    private observationsMapService: ObservationsMapService,
     private modal: ObservationModalService,
   ) {}
 
   ngOnInit(): void {
     
-
     this.mapSubscription = this.map.selectedMarker
       .pipe(
         filter((value: MapMarker) => value.type === 'observation'),
       )
       .subscribe((marker: MapMarker) => this.modal.observationSelected(marker.id));
+
   }
 
   ngAfterViewInit(): void {
-    this.route.paramMap.pipe(
-      switchMap((params: Params) => this.observedPropertyService.getObservations(params.get('id')))
+    this.route.queryParams.pipe(
+      switchMap((params: Params) => this.observationsMapService.getObservations(params))
     )
     .subscribe((response) => this.addMarkers(response.data));
   }
