@@ -39,7 +39,19 @@ export class ObservationModalService {
                 })),
                 mergeMap(
                     (obs: Observation) => forkJoin({
-                        timeseries: this.timeseriesService.getTimeseriesById(obs.inTimeseries),
+                        timeseries: this.timeseriesService.getTimeseriesById(obs.inTimeseries, {
+                            populate: [
+                                'unit', 
+                                'observedProperty', 
+                                'disciplines', 
+                                'aggregation', 
+                                'hasFeatureOfInterest', 
+                                'usedProcedures',
+                                'hasDeployment',
+                                'ancestorPlatforms',
+                                'madeBySensor'
+                            ]
+                        }),
                         earliest: this.observationService.getFirstObservation(obs.observedProperty["@id"], obs.ancestorPlatforms[0]),
                     }), (observation, forkJoin) => {
                         return { observation, ...forkJoin }

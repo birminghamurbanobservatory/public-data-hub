@@ -38,6 +38,19 @@ export class ObservedPropertyComponent implements OnInit {
                 includes: this.platform,
             },
             observedProperty: this.property
+        }, {
+            populate: [
+                // TODO: Do we actually need all these to be populated?
+                'unit', 
+                'observedProperty', 
+                'disciplines', 
+                'aggregation', 
+                'hasFeatureOfInterest', 
+                'usedProcedures',
+                'hasDeployment',
+                'ancestorPlatforms',
+                'madeBySensor'
+            ]
         })
         .pipe(map(({data}) => data))
         .toPromise()
