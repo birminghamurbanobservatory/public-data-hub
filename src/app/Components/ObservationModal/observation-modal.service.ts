@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Subject, forkJoin, Observable } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 
-import { switchMap, mergeMap} from 'rxjs/operators';
+import { switchMap, tap} from 'rxjs/operators';
 
 import { Observation } from 'src/app/observation/observation.class';
 import { ObservationService } from 'src/app/observation/observation.service';
-import { Sensor } from 'src/app/sensor/sensor.class';
-import { TimeSeriesService } from 'src/app/Services/timeseries/timeseries.service';
 
 @Injectable({
     providedIn: 'root',
@@ -17,8 +15,7 @@ export class ObservationModalService {
     public observation = this.observationSource.asObservable();
 
     constructor(
-        private observationService: ObservationService,
-        private timeseriesService: TimeSeriesService,
+        private observationService: ObservationService
     ) {}
 
     /**
@@ -30,32 +27,13 @@ export class ObservationModalService {
         this.observationSource.next(id);
     }
 
-    public observationInfo(): Observable<{ observation: Observation; timeseries; earliest: Observation; }> {
+    public observationInfo(): Observable<Observation> {
         
         return this.observation
             .pipe(
                 switchMap((id: string) => this.observationService.getObservation(id, {
-                    populate: ['unit', 'observedProperty', 'disciplines', 'aggregation', 'hasFeatureOfInterest', 'usedProcedures']
-                })),
-                mergeMap(
-                    (obs: Observation) => forkJoin({
-                        timeseries: this.timeseriesService.getTimeseriesById(obs.inTimeseries, {
-                            populate: [
-                                'unit', 
-                                'observedProperty', 
-                                'disciplines', 
-                                'aggregation', 
-                                'hasFeatureOfInterest', 
-                                'usedProcedures',
-                                'hasDeployment',
-                                'ancestorPlatforms',
-                                'madeBySensor'
-                            ]
-                        }),
-                        earliest: this.observationService.getFirstObservation(obs.observedProperty["@id"], obs.ancestorPlatforms[0]),
-                    }), (observation, forkJoin) => {
-                        return { observation, ...forkJoin }
-                    })
+                    populate: ['unit', 'madeBySensor', 'hasDeployment', 'observedProperty', 'aggregation', 'hasFeatureOfInterest', 'ancestorPlatforms']
+                }))
             )
 
     }

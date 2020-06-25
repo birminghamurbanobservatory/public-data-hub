@@ -3,7 +3,7 @@
 
     <div class="px-4 py-5 border-b border-gray-200 flex justify-between items-center">
         <h3 class="text-lg leading-6 font-medium text-gray-900">
-            Deployment Information
+            Platform Information
         </h3>
         <span class="inline-flex rounded-full shadow-sm">
             <button type="button" (click)="close()" class="inline-flex justify-center items-center h-8 w-8 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150">
@@ -24,21 +24,12 @@
                 </dd>
             </div>
     
-            <div>
+            <div *ngIf="platform.description">
                 <dt class="text-sm leading-5 font-medium text-indigo-600">
                     Description
                 </dt>
                 <dd class="mt-1 text-sm leading-5 text-gray-900">
-                    {{ platform.description ? platform.description : '-' }}
-                </dd>
-            </div>
-    
-            <div>
-                <dt class="text-sm leading-5 font-medium text-indigo-600">
-                    Deployment
-                </dt>
-                <dd class="mt-1 text-sm leading-5 text-gray-900">
-                    {{ platform.inDeployment }}
+                    {{ platform.description }}
                 </dd>
             </div>
     

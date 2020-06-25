@@ -57,6 +57,7 @@ export class PlatformDetailComponent implements OnInit {
         )
       )
     )
+    // TODO: Is it worth getting the name (label) of the platform's deployment too so we can show this?
   }
 
   /**
@@ -82,7 +83,7 @@ export class PlatformDetailComponent implements OnInit {
       }
     }, {
       onePer: 'timeseries',
-      populate: ['observedProperty', 'unit', 'disciplines']
+      populate: ['observedProperty', 'unit']
     })
   }
 

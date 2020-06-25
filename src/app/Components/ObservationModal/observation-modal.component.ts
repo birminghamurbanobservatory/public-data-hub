@@ -48,10 +48,9 @@ export class ObservationModalComponent implements OnInit {
 
         this.observationModalService.observationInfo()
             .pipe(takeUntil(this.destroy$))
-            .subscribe((result) => {
-                this.observation = result.observation;
-                this.firstObservation = result.earliest;
-                this.timeseries = result.timeseries;
+            .subscribe((observation) => {
+                console.log(observation);
+                this.observation = observation;
                 this.showModal = true;
             });
 

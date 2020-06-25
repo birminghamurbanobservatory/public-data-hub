@@ -22,6 +22,8 @@ export class ObservationComponent implements OnInit {
         this.observation$ = this.route.paramMap.pipe(
             switchMap((params: Params) => this.getObservation(params.get('id')))
         )
+
+        // TODO: Get the timeseries too so we can display the time of the first and last obs of this timeseries. 
     }
 
     private getObservation(id: string): Observable<Observation> {

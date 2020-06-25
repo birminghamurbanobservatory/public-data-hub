@@ -11,8 +11,8 @@ const routes: Routes = [
     loadChildren: () => import('./Pages/PlatformDetail/platform-detail.module').then(m => m.PlatformDetailModule),
   },
   {
-    path: 'observe',
-    loadChildren: () => import('./Pages/ObservedProperty/observed-property.module').then(m => m.ObservedPropertyModule),
+    path: 'plot',
+    loadChildren: () => import('./Pages/Plot/plot.module').then(m => m.PlotModule),
   },
   {
     path: 'observation',

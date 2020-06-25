@@ -4,15 +4,15 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { TimeSeriesService } from 'src/app/Services/timeseries/timeseries.service';
-import { ColourService } from 'src/app/Services/colours/colour.service';
+import { TimeSeriesService } from '../../Services/timeseries/timeseries.service';
+import { ColourService } from '../../Services/colours/colour.service';
 
 import { Timeseries } from '../../Services/timeseries/timeseries.class';
 
 @Component({
-    templateUrl: './observed-property.component.html'
+    templateUrl: './plot.component.html'
 })
-export class ObservedPropertyComponent implements OnInit {
+export class PlotComponent implements OnInit {
 
     private timeseries: Timeseries[];
     public ts$: Observable<Timeseries[]>;
