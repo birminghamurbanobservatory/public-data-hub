@@ -10,7 +10,7 @@ import {deeplyRenameKeys} from '../../shared/handy-utils';
 @Injectable({
     providedIn: 'root'
 })
-export class TimeSeriesService {
+export class TimeseriesService {
 
     constructor(
         private http: HttpClient,

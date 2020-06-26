@@ -5,7 +5,7 @@ import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {omit, cloneDeep, uniq} from 'lodash';
 import * as check from 'check-types';
-import { TimeSeriesService } from '../../Services/timeseries/timeseries.service';
+import { TimeseriesService } from '../../Services/timeseries/timeseries.service';
 import { ColourService } from '../../Services/colours/colour.service';
 
 import { Timeseries } from '../../Services/timeseries/timeseries.class';
@@ -31,7 +31,7 @@ export class PlotComponent implements OnInit {
     constructor (
         private route: ActivatedRoute,
         private router: Router,
-        private timeseriesService: TimeSeriesService,
+        private timeseriesService: TimeseriesService,
         private colours: ColourService,
     ) {}
 
@@ -43,8 +43,11 @@ export class PlotComponent implements OnInit {
         // Extract params from url
         this.route.queryParams.subscribe(params => {
             console.log(params);
-            this.timeseriesParams = omit(params, ['start', 'end']);
-            if (!this.timeseriesParams.observedProperty || !this.timeseriesParams.unit) {
+            this.timeseriesParams = omit(params, ['timeseriesId', 'start', 'end']);
+            if (params.timeseriesId) {
+                this.timeseriesParams.id__in = params.timeseriesId;
+            }
+            if (!this.timeseriesParams.id__in && (!this.timeseriesParams.observedProperty || !this.timeseriesParams.unit)) {
                 this.tooVague = true;
             }
             this.end = params.end ? new Date(params.end) : new Date();
