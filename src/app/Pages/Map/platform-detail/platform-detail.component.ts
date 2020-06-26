@@ -12,6 +12,8 @@ import { ObservationModalService } from 'src/app/Components/ObservationModal/obs
 
 import { Platform } from 'src/app/platform/platform.class';
 import { Observation } from 'src/app/observation/observation.class';
+import {Deployment} from 'src/app/Interfaces/deployment.interface';
+import {DeploymentService} from 'src/app/Services/deployment/deployment.service';
 
 @Component({
   selector: 'buo-map-platforms',
@@ -32,7 +34,8 @@ import { Observation } from 'src/app/observation/observation.class';
 })
 export class PlatformDetailComponent implements OnInit {
 
-  public platform$: Observable < Platform >
+  public platform$: Observable <Platform>;
+  public deployment$: Observable<Deployment>;
 
   public observations$: Observable < Observation[] >
 
@@ -42,6 +45,7 @@ export class PlatformDetailComponent implements OnInit {
       private platformService: PlatformService,
       private observationService: ObservationService,
       private observationModalService: ObservationModalService,
+      private deploymentService: DeploymentService
     ) {}
 
   ngOnInit(): void {
@@ -61,7 +65,15 @@ export class PlatformDetailComponent implements OnInit {
         )
       )
     )
-    // TODO: Worth also getting the name (label) of the platform's deployment too so we can show this.
+
+    // Worth getting the name (label) of the platform's deployment too so we can show this.
+    this.platform$.subscribe((platform: Platform) => {
+        if (platform.inDeployment) {
+          this.deployment$ = this.deploymentService.getDeployment(platform.inDeployment);
+        }
+    })
+
+
   }
 
   /**
