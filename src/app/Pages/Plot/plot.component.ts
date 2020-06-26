@@ -27,6 +27,8 @@ export class PlotComponent implements OnInit {
     public end: Date;
     public gettingObs = false;
     public obsTally = 0;
+    public title = '';
+    public subTitle = '';
 
     constructor (
         private route: ActivatedRoute,
@@ -78,6 +80,9 @@ export class PlotComponent implements OnInit {
 
         if (!this.timeseries) {
             this.timeseries = await this.getTimeseries();
+            const titles = this.buildTitles(this.timeseries);
+            this.title = titles.title;
+            this.subTitle = titles.subTitle;
             this.timeseriesDifferencesOnly = this.stripTimeseriesDownToJustDifferences(this.timeseries);
         }
 
@@ -195,6 +200,22 @@ export class PlotComponent implements OnInit {
     // This should be able to handle both populated and unpopulated properties
     private stripTimeseriesDownToJustDifferences(timeseries): any[] {
 
+        const {same: keysThatNeedDeleting} = this.compareTimeseries(timeseries);
+
+        const stripedTimeseries = cloneDeep(timeseries);
+
+        stripedTimeseries.forEach((timeseries) => {
+            keysThatNeedDeleting.forEach((key) => {
+                delete timeseries[key];
+            })
+        });
+        
+        return stripedTimeseries;
+    }
+
+
+    private compareTimeseries(timeseries): {same: string[], missing: string[], varies: string[]} {
+
         const keysToCompare = [
             'observedProperty',
             'aggregation',
@@ -208,7 +229,7 @@ export class PlotComponent implements OnInit {
 
         const idStruct = {};
 
-        // What this is doing is creating a list of all the ids it finds for each of these properties, so we can then find the unique values. If there is more than one unique value then this is a property we should keep.
+        // What this is doing is creating a list of all the ids it finds for each of these properties, so we can then find the unique values. If there is more than one unique value then it is a property that varies.
         keysToCompare.forEach((key) => {
             idStruct[key] = [];
             // Loop though the timeseries
@@ -244,24 +265,62 @@ export class PlotComponent implements OnInit {
             idStructUniq[key] = uniq(idStruct[key]);
         });
 
-        const keysThatNeedDeleting = [];
+        const output = {
+            same: [], // these properties are the same for all timeseries 
+            missing: [], // these properties are missing from all timeseries
+            varies: [] // the properties vary between timeseries.
+        }
+
         Object.keys(idStructUniq).forEach((key) => {
             if (idStructUniq[key].length === 1) {
-                keysThatNeedDeleting.push(key);
+                if (idStruct[key][0] === null) {
+                    output.missing.push(key);
+                } else {
+                    output.same.push(key);
+                }
+            } else {
+                output.varies.push(key);
             }
         })
 
-        const stripedTimeseries = cloneDeep(timeseries);
+        return output;
 
-        stripedTimeseries.forEach((timeseries) => {
-            keysThatNeedDeleting.forEach((key) => {
-                delete timeseries[key];
-            })
-        });
-        
-        return stripedTimeseries; 
     }
 
 
+    buildTitles(timeseries): {title: string; subTitle: string} {
+
+        const {same} = this.compareTimeseries(timeseries);
+
+        let title = '';
+
+        if (same.includes('observedProperty')) {
+            title += `${timeseries[0].observedProperty.label} `;
+        }
+
+        title += 'observations ';
+
+        let subTitle = '';
+        
+        if (same.includes('madeBySensor')) {
+            `Made by ${timeseries[0].madeBySensor.label}. `;
+        }
+
+        if (same.includes('ancestorPlatforms')) {
+            const platformLabels = timeseries[0].ancestorPlatforms.map((platform) => platform.label).reverse();
+            subTitle += `From ${platformLabels.join(' which is hosted by ')}. `
+        }
+
+        if (same.includes('hasDeployment')) {
+            subTitle += `Collected as part of the ${timeseries[0].hasDeployment.label} deployment. `
+        }
+
+        if (same.includes('hasFeatureOfInterest')) {
+            subTitle += `Studying ${timeseries[0].hasFeatureOfInterest.label}. `;
+        }
+
+        return {title, subTitle};
+
+    }
 
 }
