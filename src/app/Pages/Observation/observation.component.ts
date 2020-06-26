@@ -32,7 +32,6 @@ export class ObservationComponent implements OnInit {
             this.timeseries$ = this.timeseriesService.getTimeseriesById(observation.inTimeseries);
         })
 
-        // TODO: Get the timeseries too so we can display the time of the first and last obs of this timeseries. 
     }
 
     private getObservation(id: string): Observable<Observation> {
