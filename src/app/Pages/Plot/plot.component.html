@@ -47,7 +47,7 @@
                         Observed property
                         </dt>
                         <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2 capitalize">
-                        {{ ts.observedProperty.label }}
+                        {{ ts.observedProperty.label || ts.observedProperty.id }}
                         </dd>
                     </div>
 
@@ -57,7 +57,7 @@
                         Unit
                         </dt>
                         <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2 capitalize">
-                        {{ ts.unit.label }}
+                        {{ ts.unit.label || ts.unit.id }}
                         </dd>
                     </div>
 
@@ -93,7 +93,7 @@
                             Feature of Interest
                         </dt>
                         <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                            {{ ts.hasFeatureOfInterest.label }}
+                            {{ ts.hasFeatureOfInterest.label || ts.hasFeatureOfInterest.id }}
                         </dd>
                     </div>
 
@@ -127,7 +127,7 @@
                         </dt>
                         <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
                             <ul class="list-disc">
-                                <li *ngFor="let procedure of ts.usedProcedures">{{ procedure.label }}</li>
+                                <li *ngFor="let procedure of ts.usedProcedures">{{ procedure.label || procedure.id }}</li>
                             </ul>
                             
                         </dd>
