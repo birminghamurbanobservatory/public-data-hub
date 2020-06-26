@@ -65,7 +65,8 @@ export class ColumnChartComponent implements AfterViewInit {
             animationEnabled: true,
             exportEnabled: true,
             title: {
-                text: this.data.label
+                text: this.data.label,
+                fontColor: '#024451'
             },
             toolTip: {
                 backgroundColor: '#000000',
