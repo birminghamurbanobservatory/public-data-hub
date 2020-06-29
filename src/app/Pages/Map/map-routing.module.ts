@@ -4,7 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { MapComponent } from './map.component';
 import { PlatformsComponent } from './platforms/platforms.component';
 import { PlatformDetailComponent } from './platform-detail/platform-detail.component';
-import { ObservedPropertyComponent } from './observed-property/observed-property.component';
+import { ObservationsMapComponent } from './observations-map/observations-map.component';
 
 const routes: Routes = [
   {
@@ -27,8 +27,8 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'observed-property/:id',
-        component: ObservedPropertyComponent,
+        path: 'observations',
+        component: ObservationsMapComponent,
       },
     ]
   },

@@ -19,6 +19,7 @@ export class DeploymentService {
         private colours: ColourService,
     ) {}
 
+
     public getDeployments() {
         return this.http
             .get(`${environment.apiUrl}/deployments`)
@@ -27,6 +28,16 @@ export class DeploymentService {
                 map(items => items.map(item => this.transform(item))),
             )
     }
+
+
+    public getDeployment(id: string) {
+        return this.http
+            .get(`${environment.apiUrl}/deployments/${id}`)
+            .pipe(
+                map((deployment: Deployment) => this.transform(deployment))
+            )
+    }
+
 
     private transform(item: Deployment): Deployment {
         const colour = this.colours.generateHexColour(item['@id']);

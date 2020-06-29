@@ -44,6 +44,7 @@ export class ColumnChartComponent implements AfterViewInit {
         const plotted = ts.observations.map((point) => ({ 
             x: moment(point.resultTime).valueOf() , 
             y: point.hasResult.value,
+            durationStr: this.durationToString(point.phenomenonTime.duration),
             id: point.id,
             click: (e) => { 
                 this.modal.observationSelected(e.dataPoint.id);
@@ -65,7 +66,8 @@ export class ColumnChartComponent implements AfterViewInit {
             animationEnabled: true,
             exportEnabled: true,
             title: {
-                text: this.data.label
+                text: this.data.label,
+                fontColor: '#024451'
             },
             toolTip: {
                 backgroundColor: '#000000',
@@ -75,7 +77,15 @@ export class ColumnChartComponent implements AfterViewInit {
                 fontSize: 12,
                 contentFormatter: (e) => {
                     const dp = e.entries[0].dataPoint;
-                    return `<i class="far fa-calendar mr-1"></i>${moment(dp.x).format('DD/MM/YYYY')}<br><i class="far fa-clock mr-1"></i>${moment(dp.x).format('HH:mm')}<br>${dp.y}${this.data.symbol}`
+                    return `
+                        <i class="far fa-calendar mr-1"></i>${moment(dp.x).format('DD/MM/YYYY')}
+                        <br>
+                        <i class="far fa-clock mr-1"></i>${moment(dp.x).format('HH:mm')}
+                        <br>
+                        ${dp.y} ${this.data.symbol}
+                        <br>
+                        over ${dp.durationStr}
+                    `
                 },
             },
             axisX: {
@@ -105,4 +115,20 @@ export class ColumnChartComponent implements AfterViewInit {
             
         chart.render();
     }
+
+    
+    private durationToString(duration: number) {
+        if (duration <= 59) {
+            const nearestSecond = Math.round(duration);
+            return `${nearestSecond} sec${nearestSecond === 1 ? '' : 's'}`;
+        } else if (duration <= 3599) {
+            const nearestMinute = Math.round(duration / 60);
+            return `${nearestMinute} minute${nearestMinute === 1 ? '' : 's'}`;
+        } else {
+            const nearestHour = Math.round(duration / 3600);
+            return `${nearestHour} minute${nearestHour === 1 ? '' : 's'}`;
+        }
+    }
+
+
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
@@ -11,10 +11,12 @@ import * as moment from 'moment';
 })
 export class DatetimeFilterComponent implements OnInit {
 
+    @Input() initialTimeWindow: {start: Date; end: Date};
+
     /**
      * Event emitter for start and end dateime window changes
      */
-    @Output() timeWindow: EventEmitter<{ start: string, end: string}> = new EventEmitter();
+    @Output() timeWindowChange: EventEmitter<{ start: string, end: string}> = new EventEmitter();
 
     /**
      * Form for the date time picker
@@ -38,10 +40,19 @@ export class DatetimeFilterComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
+
         this.form = this.fb.group({
             window: ['', [Validators.required]]
         });
 
+        if (this.initialTimeWindow && this.initialTimeWindow.start && this.initialTimeWindow.end) {
+            console.log('datepicker has received an initial time window');
+            this.patchFormValues(this.initialTimeWindow.start.toISOString(), this.initialTimeWindow.end.toISOString());
+        } else {
+            this.timePeriod(this.defaultPeriod);
+        }
+
+        // Note that because this follows the initialisation above, the initial values won't be emitted, currently this is what we want, but you could always move the following code above the initialisation code if you did want the initial values to be emitted 
         this.form.valueChanges
         .subscribe(({window}) => {
             this.emitDatetimeChange(
@@ -49,15 +60,7 @@ export class DatetimeFilterComponent implements OnInit {
                 moment(window[1]).toISOString()
             );
         });
-
-        this.route.queryParams
-        .subscribe((params: Params) => {
-            if (params.hasOwnProperty('start') && params.hasOwnProperty('end')) {
-                this.patchFormValues(params.start, params.end);
-            } else {
-                this.timePeriod(this.defaultPeriod);
-            }
-        });
+        
     }
 
     /**
@@ -82,15 +85,14 @@ export class DatetimeFilterComponent implements OnInit {
     private patchFormValues(start: string, end: string) {
         this.form.controls['window'].patchValue([start, end]);
     }
-    /**
-     * Updates the url so users can copy and use the url string and 
-     * emits changes in the datetimes to the parent container
+
+    /** 
+     * Emits changes in the datetimes to the parent container
      * 
      * @param start : time window start ISO datetime
      * @param end : time window end ISO datetime
      */
     private emitDatetimeChange(start: string, end: string): void {
-        this.location.replaceState(window.location.pathname, `start=${start}&end=${end}`);
-        this.timeWindow.emit({ start, end });
+        this.timeWindowChange.emit({ start, end });
     }
 }

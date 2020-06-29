@@ -1,4 +1,4 @@
 export interface ObservedProperty {
-    '@id': string;
+    id: string;
     label: string;
   }

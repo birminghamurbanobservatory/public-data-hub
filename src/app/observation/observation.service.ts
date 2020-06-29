@@ -9,6 +9,8 @@ import { Collection } from '../shared/collection';
 import { HttpClient } from '@angular/common/http';
 import { GetObservationsWhere } from './get-observations-where.interface';
 import {GetObservationsOptions} from './get-observations-options.interface';
+import {deeplyRenameKeys} from '../shared/handy-utils';
+
 
 @Injectable({
   providedIn: 'root'
@@ -53,9 +55,12 @@ export class ObservationService {
   }
 
   formatObservationForApp(asJsonLd): Observation {
-    const forApp = cloneDeep(asJsonLd);
+    // @id and @type are super-annoying to work with, so let's change them to id and type
+    const forApp: Observation = deeplyRenameKeys(asJsonLd, {
+      '@id': 'id',
+      '@type': 'type'
+    });
     delete forApp['@context']; // get rid of the JSON-LD context
-    forApp.id = forApp['@id']; // Add id property so easier to reference in code than [@id]
     return forApp;
   }
 

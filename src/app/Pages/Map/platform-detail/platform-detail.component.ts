@@ -3,7 +3,8 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import {style, animate, transition, trigger} from '@angular/animations';
 
 import { Observable } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
+import { switchMap, map, tap } from 'rxjs/operators';
+import {sortBy} from 'lodash';
 
 import { PlatformService } from 'src/app/platform/platform.service';
 import { ObservationService } from 'src/app/observation/observation.service';
@@ -11,6 +12,8 @@ import { ObservationModalService } from 'src/app/Components/ObservationModal/obs
 
 import { Platform } from 'src/app/platform/platform.class';
 import { Observation } from 'src/app/observation/observation.class';
+import {Deployment} from 'src/app/Interfaces/deployment.interface';
+import {DeploymentService} from 'src/app/Services/deployment/deployment.service';
 
 @Component({
   selector: 'buo-map-platforms',
@@ -31,7 +34,8 @@ import { Observation } from 'src/app/observation/observation.class';
 })
 export class PlatformDetailComponent implements OnInit {
 
-  public platform$: Observable < Platform >
+  public platform$: Observable <Platform>;
+  public deployment$: Observable<Deployment>;
 
   public observations$: Observable < Observation[] >
 
@@ -41,6 +45,7 @@ export class PlatformDetailComponent implements OnInit {
       private platformService: PlatformService,
       private observationService: ObservationService,
       private observationModalService: ObservationModalService,
+      private deploymentService: DeploymentService
     ) {}
 
   ngOnInit(): void {
@@ -54,9 +59,21 @@ export class PlatformDetailComponent implements OnInit {
         (params: Params) => this.getLatestObservations(params.get('id'))
         .pipe(
           map(response => response.data),
+          map((observations) => {
+            return sortBy(observations, ['observedProperty.label', 'aggregation.id'])
+          })
         )
       )
     )
+
+    // Worth getting the name (label) of the platform's deployment too so we can show this.
+    this.platform$.subscribe((platform: Platform) => {
+        if (platform.inDeployment) {
+          this.deployment$ = this.deploymentService.getDeployment(platform.inDeployment);
+        }
+    })
+
+
   }
 
   /**
@@ -82,8 +99,9 @@ export class PlatformDetailComponent implements OnInit {
       }
     }, {
       onePer: 'timeseries',
-      populate: ['observedProperty', 'unit', 'disciplines']
-    })
+      populate: ['observedProperty', 'unit']
+    });
+   
   }
 
   /**

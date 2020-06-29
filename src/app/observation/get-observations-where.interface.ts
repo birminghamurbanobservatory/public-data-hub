@@ -8,6 +8,7 @@ export interface GetObservationsWhere {
   ancestorPlatforms?: any; // ['parent', 'child'] for exact match or {includes: 'platform-1'} to match a single platform anywhere in the platform "tree".
   flags?: Flags;
   location?: Location;
+  // Should also be able to provide these query params in the same format that the server expects them, e.g. resultTime__gt.
 }
 
 

@@ -10,15 +10,16 @@
         </div>
         <div class="px-4 py-5 sm:p-0">
           <dl>
-            <div *ngIf="obs.madeBySensor" class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5">
+
+            <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
               <dt class="text-sm leading-5 font-medium text-pink-500">
-                Sensor
+                Value
               </dt>
               <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                <p>{{ obs.madeBySensor.label }}</p>
-                <small class="-mt-1 text-gray-500">{{ obs.madeBySensor.description }}</small>
+                {{ obs.hasResult.value }} <span *ngIf="obs.hasResult.unit">{{ obs.hasResult.unit.symbol }}</span>
               </dd>
             </div>
+
             <div *ngIf="obs.observedProperty" class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
                 <dt class="text-sm leading-5 font-medium text-pink-500">
                   Observed property
@@ -28,14 +29,7 @@
                   <small class="-mt-1 text-gray-500">{{ obs.observedProperty.description }}</small>
                 </dd>
             </div>
-            <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
-              <dt class="text-sm leading-5 font-medium text-pink-500">
-                Value
-              </dt>
-              <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                {{ obs.hasResult.value }} <span *ngIf="obs.hasResult.unit">{{ obs.hasResult.unit.symbol }}</span>
-              </dd>
-            </div>
+
             <div *ngIf="obs.hasResult.unit" class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
                 <dt class="text-sm leading-5 font-medium text-pink-500">
                   Unit
@@ -45,6 +39,17 @@
                     <small class="-mt-1 text-gray-500">{{ obs.hasResult.unit.description }}</small>
                 </dd>
             </div>
+
+            <div *ngIf="obs.madeBySensor" class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+              <dt class="text-sm leading-5 font-medium text-pink-500">
+                Sensor
+              </dt>
+              <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                <p>{{ obs.madeBySensor.label }}</p>
+                <small class="-mt-1 text-gray-500">{{ obs.madeBySensor.description }}</small>
+              </dd>
+            </div>
+
             <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
                 <dt class="text-sm leading-5 font-medium text-pink-500">
                   Observation date
@@ -53,6 +58,7 @@
                     <span [datetime]="obs.resultTime" [format]="'Do MMMM YYYY'"></span>
                 </dd>
             </div>
+
             <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
                 <dt class="text-sm leading-5 font-medium text-pink-500">
                   Observation time
@@ -61,6 +67,7 @@
                     <span [datetime]="obs.resultTime" [format]="'HH:mm:ss'"></span>
                 </dd>
             </div>
+
             <div *ngIf="obs.aggregation" class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
               <dt class="text-sm leading-5 font-medium text-pink-500">
                 Aggregation type
@@ -78,7 +85,7 @@
                     Aggregation duration
                   </dt>
                   <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                    <span [duration]="obs.phenomenonTime.duration" [aggregation]="obs.aggregation['@id']"></span>
+                    <span [duration]="obs.phenomenonTime.duration" [aggregation]="obs.aggregation.id"></span>
                   </dd>
                 </div>
     
@@ -111,6 +118,7 @@
                     <small class="-mt-1 text-gray-500">{{ obs.hasFeatureOfInterest.description }}</small>
                 </dd>
             </div>
+
             <div *ngIf="obs.disciplines" class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
               <dt class="text-sm leading-5 font-medium text-pink-500">
                 Disciplines
@@ -124,6 +132,7 @@
                   </ul>
               </dd>
             </div>
+
             <div *ngIf="obs.hasDeployment" class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
                 <dt class="text-sm leading-5 font-medium text-pink-500">
                   Deployment
@@ -133,6 +142,7 @@
                   <small class="-mt-1 text-gray-500">{{ obs.hasDeployment.description }}</small>
                 </dd>
             </div>
+
             <div *ngIf="obs.ancestorPlatforms" class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
               <dt class="text-sm leading-5 font-medium text-pink-500">
                 Platform Hierarchy
@@ -144,8 +154,12 @@
                       <span class="ml-1">{{ platform }}</span>
                     </li>   
                   </ul>
+                  <div *ngIf="obs.observedProperty && obs.hasResult.unit" class="text-center py-3">
+                    <a [routerLink]="['/plot']" [queryParams]="{observedProperty: obs.observedProperty.id, unit: obs.hasResult.unit.id}" class="text-blue-500 hover:text-blue-700">Plot all {{obs.observedProperty.label}} observations from these platforms</a> 
+                  </div>
               </dd>
             </div>
+
             <div *ngIf="obs.usedProcedures" class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
               <dt class="text-sm leading-5 font-medium text-pink-500">
                 Procedures
@@ -153,12 +167,27 @@
               <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
                   <ul>
                       <li *ngFor="let procedure of obs.usedProcedures">
-                          <p>{{ procedure.label || procedure['@id'] }}</p>
+                          <p>{{ procedure.label || procedure.id }}</p>
                           <small class="-mt-1 text-gray-500">{{ procedure.description }}</small>
                       </li>
                   </ul>
               </dd>
             </div>
+
+            <div *ngIf="(timeseries$ | async) as timeseries" class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+              <dt class="text-sm leading-5 font-medium text-pink-500">
+                Timeseries
+              </dt>
+              <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                  <p>This observation is part of a series of observations that run from</p>
+                  <p>{{timeseries.startDate | date: 'medium'}} to</p>
+                  <p>{{timeseries.endDate | date: 'medium'}}</p>
+                  <div class="text-center py-3">
+                    <a [routerLink]="['/plot']" [queryParams]="{timeseriesId: timeseries.id}" class="text-blue-500 hover:text-blue-700">Plot Timeseries</a> 
+                  </div>
+              </dd>
+            </div>
+
           </dl>
         </div>
       </div>

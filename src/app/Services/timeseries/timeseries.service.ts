@@ -5,11 +5,12 @@ import { environment } from './../../../environments/environment';
 import { ApiFunctionsService } from '../../shared/api-functions';
 import { map } from 'rxjs/operators';
 import { Collection } from 'src/app/shared/collection';
+import {deeplyRenameKeys} from '../../shared/handy-utils';
 
 @Injectable({
     providedIn: 'root'
 })
-export class TimeSeriesService {
+export class TimeseriesService {
 
     constructor(
         private http: HttpClient,
@@ -25,6 +26,11 @@ export class TimeSeriesService {
 
         const qs = this.apiFunctions.queryParamsObjectToString(options);
         return this.http.get(`${environment.apiUrl}/timeseries/${id}${qs}`)
+        .pipe(
+            map((timeseries) => {
+                return this.formatTimeseriesForApp(timeseries);
+            })
+        )
 
     }
 
@@ -42,7 +48,7 @@ export class TimeSeriesService {
         .pipe(
             map((timeseries: Collection) => {
                 return {
-                    data: timeseries.member.map(this.transformTimeseries),
+                    data: timeseries.member.map(this.formatTimeseriesForApp),
                     meta: timeseries.meta,
                 }
             })
@@ -55,9 +61,11 @@ export class TimeSeriesService {
      * 
      * @param id : timeseries identifier
      */
-    public getTimeseriesObservations(id: string, where?: {}) {
+    public getTimeseriesObservations(id: string, where = {}, options = {}) {
 
-        const qs = this.apiFunctions.queryParamsObjectToString(where);
+        const defaultOptions = {limit: 1000}; // can go as high as 1000.
+        const queryParamsObject = Object.assign({}, where, defaultOptions, options);
+        const qs = this.apiFunctions.queryParamsObjectToString(queryParamsObject);
 
         return this.http.get(`${environment.apiUrl}/timeseries/${id}/observations${qs}`)
         .pipe(
@@ -71,12 +79,16 @@ export class TimeSeriesService {
 
     }
 
-    private transformTimeseries(series) {
-        return {
-            id: series['@id'],
-            ...series,
-        };
+
+    formatTimeseriesForApp(asJsonLd): any {
+        // @id and @type are super-annoying to work with, so let's change them to id and type
+        const forApp = deeplyRenameKeys(asJsonLd, {
+            '@id': 'id',
+            '@type': 'type'
+        });
+        return forApp;
     }
+
 
     private transformReading(reading) {
         return {
