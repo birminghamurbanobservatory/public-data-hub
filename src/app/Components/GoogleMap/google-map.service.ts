@@ -72,10 +72,8 @@ export class GoogleMapService {
 
     /**
      * Updates the center point of the map based on the click marker position
-     *
-     * @param marker : map marker
      */
-    public setMapCenter(position) {
+    public async setMapCenter(position) {
         this.map.setCenter(position)
     }
 

@@ -154,8 +154,11 @@
                       <span class="ml-1">{{ platform }}</span>
                     </li>   
                   </ul>
-                  <div *ngIf="obs.observedProperty && obs.hasResult.unit" class="text-center py-3">
-                    <a [routerLink]="['/plot']" [queryParams]="{observedProperty: obs.observedProperty.id, unit: obs.hasResult.unit.id}" class="text-blue-500 hover:text-blue-700">Plot all {{obs.observedProperty.label}} observations from these platforms</a> 
+                  <div *ngIf="obs.observedProperty && obs.hasResult.unit">
+                    <a [routerLink]="['/plot']" [queryParams]="{observedProperty: obs.observedProperty.id, unit: obs.hasResult.unit.id}" class="mt-4 inline-flex justify-between items-center pl-3 pr-2 py-1 border border-blue-300 text-xs leading-4 font-medium rounded-md text-blue-700 bg-transparent hover:text-blue-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-blue-800 active:bg-blue-50 transition ease-in-out duration-150">
+                      <span>Plot all {{obs.observedProperty.label}} observations from these platforms</span>
+                      <i class="ml-4 fas fa-chevron-right"></i>
+                    </a> 
                   </div>
               </dd>
             </div>
@@ -182,9 +185,19 @@
                   <p>This observation is part of a series of observations that run from</p>
                   <p>{{timeseries.startDate | date: 'medium'}} to</p>
                   <p>{{timeseries.endDate | date: 'medium'}}</p>
-                  <div class="text-center py-3">
-                    <a [routerLink]="['/plot']" [queryParams]="{timeseriesId: timeseries.id}" class="text-blue-500 hover:text-blue-700">Plot Timeseries</a> 
-                  </div>
+                  <a [routerLink]="['/plot']" [queryParams]="{timeseriesId: timeseries.id}" class="mt-4 inline-flex justify-between items-center pl-3 pr-2 py-1 border border-blue-300 text-xs leading-4 font-medium rounded-md text-blue-700 bg-transparent hover:text-blue-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-blue-800 active:bg-blue-50 transition ease-in-out duration-150">
+                    <span>Plot Timeseries</span>
+                    <i class="ml-4 fas fa-chevron-right"></i>
+                  </a> 
+              </dd>
+            </div>
+
+            <div *ngIf="obs.madeBySensor" class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+              <dt class="text-sm leading-5 font-medium text-pink-500">
+                Location
+              </dt>
+              <dd class="mt-1 h-80 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                  <buo-google-map [classes]="'h-full w-full z-10'"></buo-google-map>
               </dd>
             </div>
 
@@ -192,5 +205,3 @@
         </div>
       </div>
 </div>
-
-
