@@ -150,7 +150,10 @@
               <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
                 <ul>
                     <li *ngFor="let platform of obs.ancestorPlatforms; index as i; last as isLast" [ngClass]="[i > 0 ? 'ml-' + i*2 : '']">
-                      <i class="text-gray-600 fas" [ngClass]="[isLast ? 'fa-caret-right' : 'fa-caret-down']"></i>
+                      <span class="text-lg text-gray-600" *ngIf="!isLast; else last">&#8226;</span>
+                      <ng-template #last>
+                        <span class="text-gray-600">&#8627;</span>
+                      </ng-template>
                       <span class="ml-1">{{ platform }}</span>
                     </li>   
                   </ul>
