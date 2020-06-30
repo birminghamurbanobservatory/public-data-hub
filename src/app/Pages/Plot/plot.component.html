@@ -1,5 +1,10 @@
-<header class="py-10 bg-teal-900">
-    <div class="max-w-full mx-auto px-4 sm:px-0">
+<header class="py-10 bg-teal-900 flex">
+    <div *ngIf="backUrl" class="mr-4">
+        <button (click)="back()" type="button" class="text-white text-2xl h-12 w-12 bg-teal-700 rounded-full flex items-center justify-center hover:text-white hover:bg-teal-800 focus:outline-none focus:text-white focus:bg-teal-800">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+    </div>
+    <div class="max-w-full mx-auto px-4 sm:px-0 flex-1">
         <h1 class="text-white text-xl font-bold">{{title}}</h1>
         <p class="text-gray-300">{{subTitle}}</p>
     </div>

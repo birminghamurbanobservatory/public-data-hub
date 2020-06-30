@@ -9,7 +9,7 @@ import { TimeseriesService } from '../../Services/timeseries/timeseries.service'
 import { ColourService } from '../../Services/colours/colour.service';
 
 import { Timeseries } from '../../Services/timeseries/timeseries.class';
-
+import { LastUrlService } from 'src/app/Services/last-url/last-url.service';
 
 @Component({
     templateUrl: './plot.component.html'
@@ -29,20 +29,21 @@ export class PlotComponent implements OnInit {
     public obsTally = 0;
     public title = '';
     public subTitle = '';
+    public backUrl: Boolean = false;
 
     constructor (
         private route: ActivatedRoute,
         private router: Router,
         private timeseriesService: TimeseriesService,
         private colours: ColourService,
+        private lastUrlService: LastUrlService,
     ) {}
 
 
     ngOnInit(): void {
 
         console.log('Initialising plot component');
-
-        // Extract params from url
+        
         this.route.queryParams.subscribe(params => {
             console.log(params);
             this.timeseriesParams = omit(params, ['timeseriesId', 'start', 'end']);
@@ -60,9 +61,9 @@ export class PlotComponent implements OnInit {
             if (!this.tooVague) {
                 this.plot();
             }
+        });
 
-        })
-
+        this.backUrl = this.lastUrlService.lastUrl;
     }
 
 
@@ -323,4 +324,11 @@ export class PlotComponent implements OnInit {
 
     }
 
+    /**
+     * Handles the conditionally displayed back button, so user
+     * can return to the map view they were last on
+     */
+    public back(): void {
+        this.lastUrlService.back();
+    }
 }
