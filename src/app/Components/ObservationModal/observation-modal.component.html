@@ -7,11 +7,16 @@
   <div *ngIf="showModal" class="my-4 sm:mx-6 max-h-screen sm:max-h-4/5 relative bg-white rounded-lg overflow-y-scroll shadow-xl transform transition-all w-full sm:max-w-3xl" role="dialog" aria-modal="true">
     <div>
       <!-- content starts here -->
-      <div class="px-4 pt-4 py-1 flex items-center justify-between">
-        <div>
-          <!-- <h3 class="text-lg leading-6 font-medium text-gray-900">
-            Observation Information
-          </h3> -->
+      <div class="p-4 flex items-center justify-between border-b border-gray-200">
+        <div class="flex items-center flex-col">
+          <h3 class="text-2xl leading-6 font-extrabold text-pink-500">
+            {{observation.hasResult.value}}
+            <span *ngIf="observation.hasResult.unit.symbol">{{observation.hasResult.unit.symbol}}</span>
+          </h3>
+          <span class="text-sm text-gray-400 leading-5" *ngIf=" observation.aggregation.id == 'instant'; else notInstant ">Instant reading</span>
+          <ng-template #notInstant>
+            <span class="text-sm text-gray-400 leading-5" [duration]="observation.phenomenonTime.duration" [aggregation]="observation.aggregation.id"></span>
+          </ng-template>
         </div>
         <span class="inline-flex rounded-full shadow-sm">
           <button
@@ -26,14 +31,6 @@
 
       <div class="px-4 py-2 sm:p-0">
         <dl>
-
-          <div *ngIf="observation.hasResult" class="text-center px-3 pt-0 pb-3">
-            <p class="text-2xl font-extrabold text-pink-500">
-              {{observation.hasResult.value}} 
-              <span *ngIf="observation.hasResult.unit.symbol">{{observation.hasResult.unit.symbol}}</span>
-            </p>
-          </div>
-
           <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5 sm:border-t sm:border-gray-200">
             <dt class="text-sm leading-5 font-medium text-gray-500">
               Sensor
@@ -85,31 +82,13 @@
 
             <div class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
               <dt class="text-sm leading-5 font-medium text-gray-500">
-                Aggregation duration
+                Aggregation period
               </dt>
               <dd class="mt-0 text-sm leading-5 text-gray-900 sm:col-span-2">
-                <span [duration]="observation.phenomenonTime.duration" [aggregation]="observation.aggregation.id"></span>
+                <span [datetime]="observation.phenomenonTime.hasBeginning" [format]="'HH:mm:ss, DD/MM/YY'"></span> to 
+                <span [datetime]="observation.phenomenonTime.hasEnd" [format]="'HH:mm:ss, DD/MM/YY'"></span>
               </dd>
             </div>
-
-            <div class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
-              <dt class="text-sm leading-5 font-medium text-gray-500">
-                Aggregation start
-              </dt>
-              <dd class="mt-0 text-sm leading-5 text-gray-900 sm:col-span-2">
-                <span [datetime]="observation.phenomenonTime.hasBeginning" [format]="'HH:mm:ss, Do MMMM YYYY'"></span>
-              </dd>
-            </div>
-
-            <div class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
-              <dt class="text-sm leading-5 font-medium text-gray-500">
-                Aggregation end
-              </dt>
-              <dd class="mt-0 text-sm leading-5 text-gray-900 sm:col-span-2">
-                <span [datetime]="observation.phenomenonTime.hasEnd" [format]="'HH:mm:ss, Do MMMM YYYY'"></span>
-              </dd>
-            </div>
-
           </ng-container>
 
           <div *ngIf="observation.hasDeployment" class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
