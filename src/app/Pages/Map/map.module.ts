@@ -14,6 +14,8 @@ import { ObservationsMapComponent } from './observations-map/observations-map.co
 import { ObservationsMapService } from './observations-map/observations-map.service';
 import { DirectivesModule } from 'src/app/Directives/directives.module';
 import { PlatformsComponent } from './platforms/platforms.component';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+
 
 @NgModule({
 
@@ -24,6 +26,8 @@ import { PlatformsComponent } from './platforms/platforms.component';
     ReactiveFormsModule,
     MapRoutingModule,
     TooltipModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule,
   ],
 
   declarations: [

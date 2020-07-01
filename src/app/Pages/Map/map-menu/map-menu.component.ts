@@ -1,13 +1,27 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {FormControl} from '@angular/forms';
+import {FormControl, FormGroup, FormBuilder, Validators} from '@angular/forms';
 import {isMatch} from 'lodash';
+
+import * as moment from 'moment';
 
 @Component({
   selector: 'buo-map-menu',
   templateUrl: './map-menu.component.html',
 })
 export class MapMenuComponent implements OnInit {
+
+  public showDatePicker: Boolean = false;
+
+  /**
+   * Most recent datetime the user can select in the picker
+   */
+  public maxDate: string = moment().toISOString();
+
+  /**
+   * Form for the date time picker
+   */
+  public form: FormGroup;
 
   public options = [
     {
@@ -24,7 +38,8 @@ export class MapMenuComponent implements OnInit {
         // include hasFeatureofInterest too?
         flags__exists: 'false', // give as a string otherwise _.isMatch below won't work
         aggregation__in: 'instant,average',
-        duration__lt: '3630' // allows for averages up to about an hour 
+        duration__lt: '3630', // allows for averages up to about an hour 
+
       }
     },
     {
@@ -63,15 +78,22 @@ export class MapMenuComponent implements OnInit {
   ];
 
   public selectedOption;
+  private resultsWindow: any;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    private fb: FormBuilder,
   ) {}
 
 
   ngOnInit() {
+    this.form = this.fb.group({
+      window: ['', [Validators.required]]
+    });
 
+    this.setResultsWindow();
+    
     this.route.queryParams.subscribe(params => {
 
       // In order to select the correct option for the <select> box, check to see if the current query parameters match those listed in the available options.
@@ -88,19 +110,38 @@ export class MapMenuComponent implements OnInit {
       let initialOptionId = '';
       if (matchingOption)  {
         initialOptionId = matchingOption.id;
+        this.showDatePicker = true;
       } else if (!params.observedProperty) {
         // If there's no observedProperty query parameter then changes are the URL is currently /map/platforms and therefore the user is looking at a map of platforms
         initialOptionId = '-top-level-platforms-';
+        this.showDatePicker = false;
       }
 
       this.selectedOption = new FormControl(initialOptionId);
 
       this.listenToOptionChanges();
-
     })
+
+    this.form.valueChanges
+    .subscribe(({window}) => {
+      this.setResultsWindow(window)
+
+      const option = this.options.find((option) => option.id === this.selectedOption.value);
+      const params = Object.assign({}, option.queryParams, this.resultsWindow)
+
+      this.showObservations(params);
+    });
 
   }
 
+  
+  private setResultsWindow(dt: Date = null) {
+    const datetime = dt ? moment(dt) : moment();
+    this.resultsWindow = {
+      resultTime__lte: datetime.toISOString(),
+      resultTime__gte: datetime.subtract(1, 'hour').toISOString(),
+    }
+  }
 
   listenToOptionChanges() {
 
@@ -108,22 +149,20 @@ export class MapMenuComponent implements OnInit {
     .subscribe((selectedOptionId) => {
 
       const selectedOption = this.options.find((option) => option.id === selectedOptionId);
-      console.log(selectedOption);
+      
       if (selectedOptionId === '-top-level-platforms-') {
         this.showPlatforms();
       } else {
-        this.showObservations(selectedOption.queryParams);
+        const params = Object.assign({}, selectedOption.queryParams, this.resultsWindow);
+        this.showObservations(params);
       }
 
     });
-
   }
-
 
   public showPlatforms() {
     this.router.navigate(['/map/platforms']);
   }
-
 
   public showObservations(queryParams: any) {
     this.router.navigate(['/map/observations'], {queryParams})

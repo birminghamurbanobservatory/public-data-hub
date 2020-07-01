@@ -52,7 +52,8 @@ export class DatetimeFilterComponent implements OnInit {
             this.timePeriod(this.defaultPeriod);
         }
 
-        // Note that because this follows the initialisation above, the initial values won't be emitted, currently this is what we want, but you could always move the following code above the initialisation code if you did want the initial values to be emitted 
+        // Note that because this follows the initialisation above, the initial values won't be emitted, currently this is what we want, 
+        // but you could always move the following code above the initialisation code if you did want the initial values to be emitted 
         this.form.valueChanges
         .subscribe(({window}) => {
             this.emitDatetimeChange(

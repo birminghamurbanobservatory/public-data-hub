@@ -16,9 +16,9 @@ export class ObservationsMapService {
     const where = Object.assign({}, queryParams, {
       location: {exists: true},
       // TODO: Eventually we'll have a datepicker somewhere that allows a user to select a specific time to look at, but until we have this let's limit observations to just the last hour.
-      resultTime: {
-        gt: new Date((new Date().getTime()) - (1000 * 60 * 60)).toISOString()
-      }
+      // resultTime: {
+      //   gt: new Date((new Date().getTime()) - (1000 * 60 * 60)).toISOString()
+      // }
     });
 
     const options = {
