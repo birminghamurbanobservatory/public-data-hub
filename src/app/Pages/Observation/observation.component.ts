@@ -45,7 +45,7 @@ export class ObservationComponent implements OnInit, AfterViewInit {
 
     private getObservation(id: string): Observable<Observation> {
         return this.obsService.getObservation(id, {
-            populate: ['madeBySensor', 'unit', 'observedProperty', 'disciplines', 'aggregation', 'hasFeatureOfInterest', 'usedProcedures', 'hasDeployment']
+            populate: ['ancestorPlatforms', 'madeBySensor', 'unit', 'observedProperty', 'disciplines', 'aggregation', 'hasFeatureOfInterest', 'usedProcedures', 'hasDeployment']
         });
     }
 }
