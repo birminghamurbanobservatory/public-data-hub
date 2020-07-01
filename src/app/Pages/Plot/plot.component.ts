@@ -25,12 +25,12 @@ export class PlotComponent implements OnInit {
     public tooVague = false;
     public start: Date;
     public end: Date;
-    public gettingObs = false;
+    public gettingObs: Boolean = false;
     public obsTally = 0;
     public title = '';
     public subTitle = '';
     public backUrl: Boolean = false;
-
+    public notCancelled: boolean = true;
     constructor (
         private route: ActivatedRoute,
         private router: Router,
@@ -56,13 +56,16 @@ export class PlotComponent implements OnInit {
             this.end = params.end ? new Date(params.end) : new Date();
             const defaultDifference = 1000 * 60 * 60 * 6;
             this.start = params.end ? new Date(params.start) : new Date(this.end.getTime() - defaultDifference);
-            // If the query parameters didn't include start and end dates in the first place, then I don't think it makes sense to reload the page with the default start and end dates applied. We'll only add the dates to the URL if the datepicker specifically selects a time frame.
+            // If the query parameters didn't include start and end dates in the first place, then I don't think it makes sense to reload the page with the default start and end dates applied. 
+            // We'll only add the dates to the URL if the datepicker specifically selects a time frame.
 
             if (!this.tooVague) {
+                this.notCancelled = true;
                 this.plot();
             }
         });
 
+        // takes us back the correct map view, regardless of changes made here
         this.backUrl = this.lastUrlService.lastUrl;
     }
 
@@ -168,7 +171,7 @@ export class PlotComponent implements OnInit {
             
         // The number here limits how many consecutive observations requests can be made per timeseries. Basically a means of stopping a really silly request being made.
         // TODO: Alternatively you may want to apply a limit based on the obsTally? Or only stop (or pause) once a 429 error is returned?
-        if (count < 50 && r.meta.next) {
+        if (this.notCancelled && count < 50 && r.meta.next) {
             call.query.offset = r.meta.next.offset;
             await this.callApi(call, count)
         }
