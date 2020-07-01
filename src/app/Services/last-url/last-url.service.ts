@@ -2,7 +2,6 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { RoutesRecognized, Router } from '@angular/router';
 import { filter, pairwise } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
-import { Location } from '@angular/common';
 
 @Injectable({
     providedIn: 'root'
@@ -10,12 +9,10 @@ import { Location } from '@angular/common';
 export class LastUrlService implements OnDestroy {
 
     private subscription: Subscription;
-
     private url: string;
 
     constructor(
         private router: Router,
-        private location: Location,
     ) {}
 
     ngOnDestroy(): void {
@@ -27,7 +24,7 @@ export class LastUrlService implements OnDestroy {
     }
 
     public back(): void {
-        this.location.back();
+        this.router.navigateByUrl(this.url);
     }
 
     public load() {
@@ -36,8 +33,13 @@ export class LastUrlService implements OnDestroy {
             filter((e: any) => e instanceof RoutesRecognized),
             pairwise()
         ).subscribe((e: any) => {
-            this.url = e[0].urlAfterRedirects;
-            console.log('the url', e[0].urlAfterRedirects); // previous url
+            const url = this.router.url;
+            const segments = url.split('/');
+            if (segments[1] === 'map') {
+                this.url = url;
+            }
         });
+
+
     }
 }
