@@ -140,11 +140,11 @@ export class AirQualityLineChartComponent implements AfterViewInit {
             const maxDataPointValue = Math.max(seriesMaximums);
 
             // Make sure the y axis on the graph can accomodates this recommended limit
-            let maximumYAxisValue = (this.recommendedLimit + (this.recommendedLimit * 0.1));
+            let maximumYAxisValue = this.recommendedLimit;
             if (check.number(maxDataPointValue) && maxDataPointValue > this.recommendedLimit) {
                 maximumYAxisValue = maxDataPointValue;
             }
-            chartConfig.axisY.maximum = maximumYAxisValue
+            chartConfig.axisY.maximum = maximumYAxisValue + (maximumYAxisValue * 0.1); // add a 10% buffer
         }
 
         let chart = new CanvasJS.Chart(this.container.nativeElement, chartConfig);
