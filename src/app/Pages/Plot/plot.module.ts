@@ -9,6 +9,7 @@ import { PlotRoutingModule } from './plot-routing.module';
 import { DirectivesModule } from '../../Directives/directives.module';
 import { DatetimeFilterComponent } from './datetime-filter/datetime-filter.component';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { ObservationLoadingModalComponent } from './loading-modal/loading-modal.component';
 
 @NgModule({
 
@@ -25,6 +26,7 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
     declarations: [
         PlotComponent,
         DatetimeFilterComponent,
+        ObservationLoadingModalComponent,
     ],
 
 })
