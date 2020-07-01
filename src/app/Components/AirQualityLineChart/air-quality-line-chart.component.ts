@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 import * as moment from 'moment';
 import * as CanvasJS from '../../../assets/js/canvasjs.min';
 import { ObservationModalService } from '../ObservationModal/observation-modal.service';
-import {maxBy} from 'lodash';
+import {max, maxBy} from 'lodash';
 import * as check from 'check-types';
 import {getNationalAirQualityObjective} from 'src/app/shared/air-quality-utils';
 
@@ -137,7 +137,7 @@ export class AirQualityLineChartComponent implements AfterViewInit {
                     return maxDataPointInSeries.y;
                 }
             }).filter(check.number);
-            const maxDataPointValue = Math.max(seriesMaximums);
+            const maxDataPointValue = max(seriesMaximums);
 
             // Make sure the y axis on the graph can accomodates this recommended limit
             let maximumYAxisValue = this.recommendedLimit;
