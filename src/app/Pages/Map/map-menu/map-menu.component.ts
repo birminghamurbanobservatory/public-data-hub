@@ -75,6 +75,40 @@ export class MapMenuComponent implements OnInit {
         duration__lt: '3630' // allows for averages up to about an hour 
       }
     },
+    {
+      id: 'pm-10',
+      name: 'PM₁₀',
+      queryParams: {
+        observedProperty: 'pm10-mass-concentration',
+        disciplines__includes: 'atmospheric-chemistry',
+        unit: 'microgram-per-cubic-metre',
+        aggregation__in: 'instant,average',
+        duration__lt: '3630' // allows for averages up to about an hour 
+        // TODO: include hasFeatureOfInterst: 'earth-atmosphere' too?
+      }
+    },
+    {
+      id: 'no2',
+      name: 'NO₂',
+      queryParams: {
+        observedProperty: 'nitrogen-dioxide-mass-concentration',
+        disciplines__includes: 'atmospheric-chemistry',
+        unit: 'microgram-per-cubic-metre',
+        aggregation__in: 'instant,average',
+        duration__lt: '3630' // allows for averages up to about an hour 
+      }
+    },
+    {
+      id: 'ozone',
+      name: 'Ozone',
+      queryParams: {
+        observedProperty: 'ozone-mass-concentration',
+        disciplines__includes: 'atmospheric-chemistry',
+        unit: 'microgram-per-cubic-metre',
+        aggregation__in: 'instant,average',
+        duration__lt: '3630' // allows for averages up to about an hour 
+      }
+    }
   ];
 
   public selectedOption;
