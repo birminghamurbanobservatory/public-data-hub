@@ -45,7 +45,7 @@ export class PlotComponent implements OnInit {
         console.log('Initialising plot component');
         
         this.route.queryParams.subscribe(params => {
-            console.log(params);
+
             this.timeseriesParams = omit(params, ['timeseriesId', 'start', 'end']);
             if (params.timeseriesId) {
                 this.timeseriesParams.id__in = params.timeseriesId;
@@ -99,6 +99,8 @@ export class PlotComponent implements OnInit {
             this.graphDto = {
                 label: this.timeseries[0].observedProperty.label,
                 symbol: this.timeseries[0].unit.symbol,
+                observedPropertyId: this.timeseries[0].observedProperty.id,
+                unitId: this.timeseries[0].unit.id,
                 tso: []
             }
 
@@ -114,6 +116,9 @@ export class PlotComponent implements OnInit {
                         offset: 0,
                         sortBy: 'resultTime',
                         sortOrder: 'desc',
+                        flags: {
+                            exists: false
+                        }
                     },
                     observations: [],
                 }
@@ -196,8 +201,25 @@ export class PlotComponent implements OnInit {
      * If lots of chart types consider replacing with dynamic import.
      */
     public chartType() {
+
         const columnTypes = ['precipitation-depth'];
-        return columnTypes.includes(this.timeseriesParams.observedProperty) ? 'column-chart' : 'line-chart';
+        const airQualityTypes = [
+            'ozone-mass-concentration', 
+            'nitrogen-dioxide-mass-concentration',
+            'nitrogen-oxides-mass-concentration', 
+            'sulphur-dioxide-mass-concentration',
+            'pm10-mass-concentration',
+            'pm2p5-mass-concentration'
+        ];
+
+        if (columnTypes.includes(this.timeseriesParams.observedProperty)) {
+            return 'column-chart';
+        } else if (airQualityTypes.includes(this.timeseriesParams.observedProperty)) {
+            return 'air-quality-line-chart';
+        } else {
+            return 'line-chart';
+        }
+
     }
 
 

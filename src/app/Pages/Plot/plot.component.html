@@ -23,10 +23,12 @@
     <buo-property-datetime-filter [initialTimeWindow]="{start: start, end: end}" (timeWindowChange)="handleTimeWindowChange($event)"></buo-property-datetime-filter>
 
     <div class="mt-4">
-        <buo-column-chart *ngIf="chartType() == 'column-chart'; else lineChart" [timeseries]="tso$"></buo-column-chart>
-        <ng-template #lineChart>
-            <buo-line-chart [timeseries]="tso$"></buo-line-chart>
-        </ng-template>
+        <!-- column -->
+        <buo-column-chart *ngIf="chartType() === 'column-chart'" [timeseries]="tso$"></buo-column-chart>
+        <!-- air quality line chart -->
+        <buo-air-quality-line-chart *ngIf="chartType() === 'air-quality-line-chart'" [timeseries]="tso$"></buo-air-quality-line-chart>
+        <!-- line chart -->
+        <buo-line-chart *ngIf="chartType() === 'line-chart'" [timeseries]="tso$"></buo-line-chart>
     </div>
     
     <div *ngIf="timeseriesDifferencesOnly && timeseriesDifferencesOnly.length > 1" class="lg:-mx-2 w-full flex flex-wrap">
