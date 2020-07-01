@@ -8,6 +8,8 @@ import { ObservationModalComponent } from './ObservationModal/observation-modal.
 import { TooltipModule } from 'ng2-tooltip-directive';
 import { DirectivesModule } from '../Directives/directives.module';
 import { ColumnChartComponent } from './ColumnChart/column-chart.component';
+import {AirQualityLineChartComponent} from './AirQualityLineChart/air-quality-line-chart.component';
+
 
 @NgModule({
 
@@ -23,6 +25,7 @@ import { ColumnChartComponent } from './ColumnChart/column-chart.component';
         ObservationModalComponent,
         ColumnChartComponent,
         LineChartComponent,
+        AirQualityLineChartComponent
     ],
 
     exports: [
@@ -30,6 +33,7 @@ import { ColumnChartComponent } from './ColumnChart/column-chart.component';
         ObservationModalComponent,
         ColumnChartComponent,
         LineChartComponent,
+        AirQualityLineChartComponent
     ]
 
 })
