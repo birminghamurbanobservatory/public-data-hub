@@ -1,5 +1,5 @@
 export interface Aggregation {
-  '@id': string;
-  '@type': string;
+  id: string;
+  type: string;
   label: string;
 }

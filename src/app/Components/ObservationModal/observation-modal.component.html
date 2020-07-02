@@ -1,4 +1,4 @@
-<div *ngIf="showModal" class="fixed top-0 inset-x-0 px-4 pb-6 sm:inset-0 sm:p-0 sm:flex sm:items-center sm:justify-center z-50" [@fadeInOut]>
+<div *ngIf="showModal" class="fixed top-0 inset-x-0 px-4 pb-6 sm:inset-0 sm:p-0 sm:flex sm:items-center sm:justify-center z-1000" [@fadeInOut]>
 
   <div class="fixed inset-0 transition-opacity" *ngIf="showModal">
     <div class="absolute inset-0 bg-gray-500 opacity-75" (click)="showModal = false"></div>
@@ -7,153 +7,103 @@
   <div *ngIf="showModal" class="my-4 sm:mx-6 max-h-screen sm:max-h-4/5 relative bg-white rounded-lg overflow-y-scroll shadow-xl transform transition-all w-full sm:max-w-3xl" role="dialog" aria-modal="true">
     <div>
       <!-- content starts here -->
-      <div class="px-4 py-4 border-b border-gray-200 sm:px-6 flex items-center justify-between">
+      <div class="px-4 py-6 flex items-center justify-between border-b border-gray-200">
         <div>
-          <h3 class="text-lg leading-6 font-medium text-gray-900">
-            Observation Information
+          <h3 class="mb-2 text-4xl leading-6 font-semibold text-pink-500">
+            {{observation.hasResult.value}}
+            <span *ngIf="observation.hasResult.unit.symbol">{{observation.hasResult.unit.symbol}}</span>
           </h3>
-          <p class="mt-1 max-w-2xl text-sm leading-5 text-gray-500">
-            Extra information about this single observation
+          <p class="text-sm text-gray-400 leading-5">
+            <span *ngIf=" observation.aggregation.id == 'instant'; else notInstant ">Instant reading</span>
+            <ng-template #notInstant>
+              <span [duration]="observation.phenomenonTime.duration" [aggregation]="observation.aggregation.id"></span>
+            </ng-template>
           </p>
         </div>
-        <span class="inline-flex rounded-full shadow-sm">
-          <button
-            type="button"
-            (click)="showModal = false"
-            class="inline-flex justify-center items-center h-8 w-8 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-600 bg-white hover:text-gray-400 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
-          >
-            <i class="fas fa-times fa-sm"></i>
-          </button>
-        </span>
+        <div>
+          <span class="inline-flex rounded-full shadow-sm">
+            <button
+              type="button"
+              (click)="showModal = false"
+              class="inline-flex justify-center items-center h-8 w-8 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-600 bg-white hover:text-gray-400 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150"
+            >
+              <i class="fas fa-times fa-sm"></i>
+            </button>
+          </span>
+        </div>
       </div>
 
-      <div class="px-4 py-5 sm:p-0">
+      <div class="px-4 py-2 sm:p-0">
         <dl>
-          <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5">
+          <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5 sm:border-t sm:border-gray-200">
             <dt class="text-sm leading-5 font-medium text-gray-500">
-              Sensor name
+              Sensor
             </dt>
-            <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {{ timeseries.madeBySensor.label }}
+            <dd class="mt-0 text-sm leading-5 text-gray-900 sm:col-span-2">
+              {{ observation.madeBySensor.label }}
             </dd>
           </div>
 
-          <div *ngIf="timeseries.madeBySensor.description" class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
-            <dt class="text-sm leading-5 font-medium text-gray-500">
-              Sensor description
-            </dt>
-            <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {{ timeseries.madeBySensor.description }}
-            </dd>
-          </div>
-
-          <div *ngIf="observation.observedProperty" class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+          <div *ngIf="observation.observedProperty" class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
             <dt class="text-sm leading-5 font-medium text-gray-500">
               Observed Property
             </dt>
-            <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2 capitalize">
-              {{ observation.observedProperty.label || observation.observedProperty['@id'] }}
+            <dd class="mt-0 text-sm leading-5 text-gray-900 sm:col-span-2 capitalize">
+              {{ observation.observedProperty.label || observation.observedProperty.id }}
             </dd>
           </div>
 
-          <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+          <div *ngIf="observation.hasFeatureOfInterest" class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+            <dt class="text-sm leading-5 font-medium text-gray-500">
+              Feature of Interest
+            </dt>
+            <dd class="mt-0 text-sm leading-5 text-gray-900 sm:col-span-2">
+              {{ observation.hasFeatureOfInterest.label }}
+            </dd>
+          </div>
+
+          <div class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
             <dt class="text-sm leading-5 font-medium text-gray-500">
               Observation time
             </dt>
-            <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              <span [datetime]="observation.resultTime" [format]="'HH:mm:ss'"></span>
+            <dd class="mt-0 text-sm leading-5 text-gray-900 sm:col-span-2">
+              <span [datetime]="observation.resultTime" [format]="'HH:mm:ss, Do MMMM YYYY'"></span>
             </dd>
           </div>
 
-          <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
-            <dt class="text-sm leading-5 font-medium text-gray-500">
-              Observation date
-            </dt>
-            <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              <span [datetime]="observation.resultTime" [format]="'Do MMMM YYYY'"></span>
-            </dd>
-          </div>
+          <ng-container *ngIf=" observation.aggregation.id !== 'instant' ">
 
-          <div *ngIf="observation.aggregation" class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
-            <dt class="text-sm leading-5 font-medium text-gray-500">
-              Aggregation type
-            </dt>
-            <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              <span class="capitalize">
-                {{ observation.aggregation.label || observation.aggregation.label['@id'] }}
-              </span>
-              <span *ngIf="observation.aggregation.description">
-                - {{observation.aggregation.description}}
-              </span>
-            </dd>
-          </div>
-
-          <ng-container *ngIf=" observation.aggregation['@id'] !== 'instant' ">
-
-            <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+            <div class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
               <dt class="text-sm leading-5 font-medium text-gray-500">
-                Aggregation duration
+                Aggregation period
               </dt>
-              <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                <span [duration]="observation.phenomenonTime.duration" [aggregation]="observation.aggregation['@id']"></span>
+              <dd class="mt-0 text-sm leading-5 text-gray-900 sm:col-span-2">
+                <span [datetime]="observation.phenomenonTime.hasBeginning" [format]="'HH:mm:ss, DD/MM/YY'"></span> to 
+                <span [datetime]="observation.phenomenonTime.hasEnd" [format]="'HH:mm:ss, DD/MM/YY'"></span>
               </dd>
             </div>
-
-            <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
-              <dt class="text-sm leading-5 font-medium text-gray-500">
-                Aggregation start
-              </dt>
-              <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                <span [datetime]="observation.phenomenonTime.hasBeginning" [format]="'HH:mm:ss, Do MMMM YYYY'"></span>
-              </dd>
-            </div>
-
-            <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
-              <dt class="text-sm leading-5 font-medium text-gray-500">
-                Aggregation end
-              </dt>
-              <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                <span [datetime]="observation.phenomenonTime.hasEnd" [format]="'HH:mm:ss, Do MMMM YYYY'"></span>
-              </dd>
-            </div>
-
           </ng-container>
 
-          <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+          <div *ngIf="observation.hasDeployment" class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
             <dt class="text-sm leading-5 font-medium text-gray-500">
-              Value
+              Deployment
             </dt>
-            <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              {{ observation.hasResult.value }}
+            <dd class="mt-0 text-sm leading-5 text-gray-900 sm:col-span-2">
+              {{ observation.hasDeployment.label }}
             </dd>
           </div>
 
-          <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
-            <dt class="text-sm leading-5 font-medium text-gray-500">
-              Unit
-            </dt>
-            <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              <span class="capitalize">{{ observation.hasResult.unit.label }}</span> {{' '}} <span class="text-gray-600">({{ observation.hasResult.unit.symbol}})</span>
-            </dd>
-          </div>
-
-          <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
-            <dt class="text-sm leading-5 font-medium text-gray-500">
-              First Observation
-            </dt>
-            <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-              <span [datetime]="firstObservation.resultTime" [format]="'Do MMMM YYYY'"></span>
-            </dd>
-          </div>
-
-          <div class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+          <div *ngIf="observation.ancestorPlatforms" class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
             <dt class="text-sm leading-5 font-medium text-gray-500">
               Platforms
             </dt>
-            <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+            <dd class="mt-0 text-sm leading-5 text-gray-900 sm:col-span-2">
               <ul>
-                <li *ngFor="let p of timeseries.ancestorPlatforms; index as i; last as isLast" [ngClass]="[i > 0 ? 'ml-' + i*2 : '']">
-                  <i class="far" [ngClass]="[isLast ? 'fa-folder' : 'fa-folder-open']"></i>
+                <li *ngFor="let p of observation.ancestorPlatforms; index as i; last as isLast" [ngClass]="[i > 0 ? 'ml-' + i*2 : '']">
+                  <span class="text-lg text-gray-600" *ngIf="!isLast; else last">&#8226;</span>
+                  <ng-template #last>
+                    <span class="text-gray-600">&#8627;</span>
+                  </ng-template>
                   <span class="ml-1">{{ p.label }}</span>
                 </li>   
               </ul>
@@ -167,24 +117,21 @@
     <div class="p-4 bg-gray-100">
       <div class="mt-4 mb-4 sm:mb-0 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
 
-        <span class="flex w-full rounded-md shadow-sm sm:col-start-2">
-          <a [routerLink]="['/observe', observation.ancestorPlatforms[0], observation.observedProperty['@id']]" class="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-indigo-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo transition ease-in-out duration-150 sm:text-sm sm:leading-5">
-            Plot full timeseries
-          </a>
-        </span>
-        
-        <span class="flex w-full rounded-md shadow-sm sm:col-start-2">
+        <span class="flex w-full rounded-md shadow-sm sm:col-start-1 my-2">
           <a [routerLink]="['/observation', observation.id]" class="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-indigo-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo transition ease-in-out duration-150 sm:text-sm sm:leading-5">
-            Observation details
+            More details
           </a>
         </span>
-        
-        <span class="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:col-start-1">
-          <button type="button" (click)="showModal = false" class="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 sm:text-sm sm:leading-5">
-            Close
-          </button>
+
+        <span class="flex w-full rounded-md shadow-sm sm:col-start-2 my-2">
+          <a 
+            [routerLink]="['/plot']" 
+            [queryParams]="{ancestorPlatforms__includes: observation.ancestorPlatforms[0].id, observedProperty: observation.observedProperty.id, unit: observation.hasResult.unit.id}" 
+            class="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-pink-500 text-base leading-6 font-medium text-white shadow-sm hover:bg-pink-400 focus:outline-none focus:border-pink-600 focus:shadow-outline-pink transition ease-in-out duration-150 sm:text-sm sm:leading-5">
+            Plot over time
+          </a>
         </span>
-      
+           
       </div>
     </div>
     

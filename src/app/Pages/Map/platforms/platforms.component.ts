@@ -11,6 +11,7 @@ import { filter, map, tap, mergeMap, distinct } from 'rxjs/operators';
 import { Platform } from 'src/app/platform/platform.class';
 import { MapMarker } from '../../../Interfaces/map-marker.interface';
 import { DeploymentService } from 'src/app/Services/deployment/deployment.service';
+import { Location } from '@angular/common';
 
 @Component({
     selector: 'buo-map-platforms',
@@ -52,6 +53,7 @@ export class PlatformsComponent implements OnInit, OnDestroy {
         private pins: MapPinService,
         private platformService: PlatformService,
         private deployments: DeploymentService,
+        private location: Location,
     ) {}
 
     ngOnInit(): void {
@@ -69,6 +71,15 @@ export class PlatformsComponent implements OnInit, OnDestroy {
       )
       .subscribe(platforms => {
         this.platforms = platforms;
+        
+        // on page load/refresh get any query params and check for a deployment param
+        // if present only display the platforms in that deployment
+        const params = this.route.snapshot.queryParams;
+        if (['deployment'].every(param => param in params)) {
+          platforms = this.platforms.filter(p => p.inDeployment === params.deployment)
+          this.selectedDeployment$.next(params.deployment);
+        }
+
         this.addMarkers(platforms)
       });
 
@@ -102,6 +113,10 @@ export class PlatformsComponent implements OnInit, OnDestroy {
     const show = value ? this.platforms.filter(p => p.inDeployment === value) 
                        : this.platforms;
     
+    // update the url with the selected deployment or remove                       
+    const deploymentParam = value ? `deployment=${value}` : '';
+    this.location.replaceState('/map/platforms', deploymentParam);
+
     this.selectedDeployment$.next(value);
     this.addMarkers(show);
   }

@@ -1,13 +1,13 @@
-<header class="py-6">
-    <div class="max-w-full mx-auto px-4 sm:px-0">
-        <buo-map-observed-property-menu></buo-map-observed-property-menu>
+<header class="py-6 max-w-full mx-auto px-4 md:px-0">
+    <div class="w-full">
+        <buo-map-menu></buo-map-menu>
     </div>
 </header>
 
 <div class="pb-20 relative w-full h-screen">
-    <buo-google-map></buo-google-map>
+    <buo-google-map [classes]="'px-4 md:px-0 relative h-full w-full z-10 shadow-lg'"></buo-google-map>
     <buo-observation-modal></buo-observation-modal>
 
-    <!-- needed for the child routes: platforms and observed-property -->
+    <!-- needed for the child routes -->
     <router-outlet></router-outlet>
 </div>

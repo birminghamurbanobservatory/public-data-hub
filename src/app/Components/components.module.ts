@@ -3,10 +3,13 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 import { GoogleMapComponent } from './GoogleMap/google-map.component';
-import { LineGraphComponent } from './LineGraph/line-graph.component';
+import { LineChartComponent } from './LineChart/line-chart.component';
 import { ObservationModalComponent } from './ObservationModal/observation-modal.component';
 import { TooltipModule } from 'ng2-tooltip-directive';
 import { DirectivesModule } from '../Directives/directives.module';
+import { ColumnChartComponent } from './ColumnChart/column-chart.component';
+import {AirQualityLineChartComponent} from './AirQualityLineChart/air-quality-line-chart.component';
+
 
 @NgModule({
 
@@ -20,13 +23,17 @@ import { DirectivesModule } from '../Directives/directives.module';
     declarations: [
         GoogleMapComponent,
         ObservationModalComponent,
-        LineGraphComponent,
+        ColumnChartComponent,
+        LineChartComponent,
+        AirQualityLineChartComponent
     ],
 
     exports: [
         GoogleMapComponent,
         ObservationModalComponent,
-        LineGraphComponent,
+        ColumnChartComponent,
+        LineChartComponent,
+        AirQualityLineChartComponent
     ]
 
 })

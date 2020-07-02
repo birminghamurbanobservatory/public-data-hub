@@ -1,10 +1,10 @@
 export class Observation {
   public id?: string;
-  public madeBySensor?: string;
+  public madeBySensor?: any;
   public hasResult?: Result;
-  public ancestorPlatforms?: string[]; // has a hierachical structure, top level parent first.
-  public hasDeployment?: string;
-  public resultTime?: string;
+  public ancestorPlatforms?: any[]; // has a hierachical structure, top level parent first.
+  public hasDeployment?: any;
+  public resultTime?: any;
   public observedProperty?: any; // could be a string or object depending on "populate" query param.
   public aggregation: any;
   public hasFeatureOfInterest?: any;
@@ -12,7 +12,7 @@ export class Observation {
   public usedProcedures?: any[];
   public disciplines?: any[]; // each item could be a string or object depending on "populate" query param.
   public phenomenonTime?: PhenomenonTime;
-  public inTimeseries?: []
+  public inTimeseries?: any;
 }
 
 class Result {

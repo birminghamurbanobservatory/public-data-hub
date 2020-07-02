@@ -8,6 +8,5 @@ import { Component } from '@angular/core';
 /**
  * This is just a presentational container for the Google Map
  * This ensures the map shows on all child routes without reload
- * 
  */
 export class MapComponent {}

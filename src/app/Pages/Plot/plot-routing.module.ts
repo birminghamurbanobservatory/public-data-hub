@@ -1,17 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { ObservedPropertyComponent } from './observed-property.component';
+import { PlotComponent } from './plot.component';
 
 const routes: Routes = [
   {
     path: '',
-    children: [
-      {
-        path: ':platform/:property',
-        component: ObservedPropertyComponent
-      },
-    ]
+    component: PlotComponent
   }
 ];
 
@@ -27,4 +22,4 @@ const routes: Routes = [
 
 })
 
-export class ObservedPropertyRoutingModule { }
+export class PlotRoutingModule {}

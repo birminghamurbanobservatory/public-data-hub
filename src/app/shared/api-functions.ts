@@ -24,6 +24,7 @@ export class ApiFunctionsService {
     const arraysThatNeedDotSeparation = ['ancestorPlatforms'];
 
     const elements = [];
+
     Object.keys(obj).forEach((key) => {
       if (isObject(obj[key]) && !isArray(obj[key])) {
         Object.keys(obj[key]).forEach((modKey) => {
