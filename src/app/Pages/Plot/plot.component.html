@@ -22,14 +22,21 @@
 
     <buo-property-datetime-filter [initialTimeWindow]="{start: start, end: end}" (timeWindowChange)="handleTimeWindowChange($event)"></buo-property-datetime-filter>
 
-    <div class="mt-4">
-        <!-- column -->
-        <buo-column-chart *ngIf="chartType() === 'column-chart'" [timeseries]="tso$"></buo-column-chart>
-        <!-- air quality line chart -->
-        <buo-air-quality-line-chart *ngIf="chartType() === 'air-quality-line-chart'" [timeseries]="tso$"></buo-air-quality-line-chart>
-        <!-- line chart -->
-        <buo-line-chart *ngIf="chartType() === 'line-chart'" [timeseries]="tso$"></buo-line-chart>
+    <div *ngIf="obsTally === 0 && gettingObs === false; else showChart">
+        <div class="mt-4 bg-white shadow-inner p-6 text-center border border-gray-200 sm:rounded-md">
+            <p class="text-red-800 font-medium leading-5">No data for the period selected.</p>
+        </div>
     </div>
+    <ng-template #showChart>
+        <div class="mt-4">
+            <!-- column -->
+            <buo-column-chart *ngIf="chartType() === 'column-chart'" [timeseries]="tso$"></buo-column-chart>
+            <!-- air quality line chart -->
+            <buo-air-quality-line-chart *ngIf="chartType() === 'air-quality-line-chart'" [timeseries]="tso$"></buo-air-quality-line-chart>
+            <!-- line chart -->
+            <buo-line-chart *ngIf="chartType() === 'line-chart'" [timeseries]="tso$"></buo-line-chart>
+        </div>
+    </ng-template>
     
     <div *ngIf="timeseriesDifferencesOnly && timeseriesDifferencesOnly.length > 1" class="lg:-mx-2 w-full flex flex-wrap">
        
