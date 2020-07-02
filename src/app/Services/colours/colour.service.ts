@@ -37,6 +37,14 @@ export class ColourService {
         alpha: 1
     }).reverse();
 
+    private greenRedColorMap = colormap({
+        colormap: 'hsv',
+        nshades: 200,
+        format: 'hex',
+        alpha: 1
+    }).reverse().slice(130, 200); // only want a portion of the hsv spectrum.
+
+
     public selectFillColour(observation: Observation) {
         
         if (observation.observedProperty === 'air-temperature' && observation.hasResult.unit === 'degree-celsius') {
@@ -53,6 +61,21 @@ export class ColourService {
 
         if (observation.observedProperty === 'wind-speed' && observation.hasResult.unit === 'metre-per-second') {
             return this.selectColorFromColorMap(this.greenPinkColorMap, observation.hasResult.value, 0, 30);
+        }
+
+        if (observation.observedProperty === 'pm10-mass-concentration' && observation.hasResult.unit === 'microgram-per-cubic-metre') {
+            // National air quality objective is a 40 µg/m3 annual mean
+            return this.selectColorFromColorMap(this.greenRedColorMap, observation.hasResult.value, 0, 45);
+        }
+
+        if (observation.observedProperty === 'nitrogen-dioxide-mass-concentration' && observation.hasResult.unit === 'microgram-per-cubic-metre') {
+            // National air quality objective is a 40 µg/m3 annual mean
+            return this.selectColorFromColorMap(this.greenRedColorMap, observation.hasResult.value, 0, 45);
+        }
+
+        if (observation.observedProperty === 'ozone-mass-concentration' && observation.hasResult.unit === 'microgram-per-cubic-metre') {
+            // National air quality objective is a 1000 µg/m3
+            return this.selectColorFromColorMap(this.greenRedColorMap, observation.hasResult.value, 0, 110);
         }
 
         // If there's no match, return a default colour.
