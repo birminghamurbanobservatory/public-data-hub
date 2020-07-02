@@ -113,7 +113,10 @@ export class PlatformsComponent implements OnInit, OnDestroy {
     const show = value ? this.platforms.filter(p => p.inDeployment === value) 
                        : this.platforms;
     
-    this.location.replaceState('/map/platforms', `deployment=${value}`);
+    // update the url with the selected deployment or remove                       
+    const deploymentParam = value ? `deployment=${value}` : '';
+    this.location.replaceState('/map/platforms', deploymentParam);
+
     this.selectedDeployment$.next(value);
     this.addMarkers(show);
   }
