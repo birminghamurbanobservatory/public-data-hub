@@ -31,6 +31,7 @@ export class PlotComponent implements OnInit {
     public subTitle = '';
     public backUrl: Boolean = false;
     public notCancelled: boolean = true;
+    
     constructor (
         private route: ActivatedRoute,
         private router: Router,

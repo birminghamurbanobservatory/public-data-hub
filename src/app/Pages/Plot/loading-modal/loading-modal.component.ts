@@ -8,9 +8,8 @@ export class ObservationLoadingModalComponent {
 
     @Input() showModal: Boolean;
     @Input() obsTally: Number;
+    @Input() notCancelled: Boolean;
     @Output() cancelled: EventEmitter<Boolean> = new EventEmitter();
-
-    public notCancelled: Boolean = true;
 
     public cancel() {
         this.notCancelled = false;
