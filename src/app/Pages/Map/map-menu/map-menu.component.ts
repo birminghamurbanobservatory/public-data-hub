@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {FormControl, FormGroup, FormBuilder, Validators} from '@angular/forms';
-import {isMatch} from 'lodash';
+import { isMatch, hasIn } from 'lodash';
 
 import * as moment from 'moment';
 
@@ -125,10 +125,18 @@ export class MapMenuComponent implements OnInit {
     this.form = this.fb.group({
       window: ['', [Validators.required]]
     });
-
-    this.setResultsWindow();
     
     this.route.queryParams.subscribe(params => {
+
+      // patch any resultTime in the query params in the datepicker
+      // only need the lte as the map only ever shows the last hour of observations
+      if (['resultTime__lte'].every(key => key in params)) {
+        this.form.patchValue({ window: params.resultTime__lte});
+        this.setResultsWindow(params.resultTime__lte);
+      } else {
+        // set a default window
+        this.setResultsWindow();
+      }
 
       // In order to select the correct option for the <select> box, check to see if the current query parameters match those listed in the available options.
       const matchingOption = this.options.filter((option) => {
