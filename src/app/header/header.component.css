@@ -2,17 +2,3 @@
 .header--buo-color {
   background-color: #38b2ac;
 }
-
-
-.header-link {
-  @apply no-underline;
-  @apply block;
-  @apply mt-1;
-  @apply mr-3;
-  @apply py-2;
-  @apply px-3;
-  @apply rounded;
-  @apply text-white;
-  @apply font-medium; /* weight */
-  @apply text-sm; /* size */
-}
