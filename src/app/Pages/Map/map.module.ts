@@ -14,8 +14,8 @@ import { ObservationsMapComponent } from './observations-map/observations-map.co
 import { ObservationsMapService } from './observations-map/observations-map.service';
 import { DirectivesModule } from 'src/app/Directives/directives.module';
 import { PlatformsComponent } from './platforms/platforms.component';
-import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
-import { OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from '@danielmoncada/angular-datetime-picker';
+import { OWL_DATE_TIME_LOCALE } from '@danielmoncada/angular-datetime-picker';
 
 @NgModule({
 
@@ -40,7 +40,7 @@ import { OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
 
   providers: [
     ObservationsMapService,
-    { provide: OWL_DATE_TIME_LOCALE, useValue: 'gb' },
+    { provide: OWL_DATE_TIME_LOCALE, useValue: 'en-GB' },
   ]
 
 })

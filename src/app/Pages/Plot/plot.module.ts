@@ -8,9 +8,10 @@ import { PlotComponent } from './plot.component';
 import { PlotRoutingModule } from './plot-routing.module';
 import { DirectivesModule } from '../../Directives/directives.module';
 import { DatetimeFilterComponent } from './datetime-filter/datetime-filter.component';
-import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { ObservationLoadingModalComponent } from './loading-modal/loading-modal.component';
-import { OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
+
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from '@danielmoncada/angular-datetime-picker';
+import { OWL_DATE_TIME_LOCALE } from '@danielmoncada/angular-datetime-picker';
 
 @NgModule({
 
@@ -31,7 +32,7 @@ import { OWL_DATE_TIME_LOCALE } from 'ng-pick-datetime';
     ],
 
     providers: [
-        { provide: OWL_DATE_TIME_LOCALE, useValue: 'gb' },
+        { provide: OWL_DATE_TIME_LOCALE, useValue: 'en-GB' },
     ],
 })
 
