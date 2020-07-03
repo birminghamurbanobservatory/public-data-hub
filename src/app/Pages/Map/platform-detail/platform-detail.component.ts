@@ -96,6 +96,9 @@ export class PlatformDetailComponent implements OnInit {
       },
       flags: {
         exists: false
+      },
+      disciplines: {
+        not: ['instrumental'] // don't want the user seeing battery, signal, tilt, etc readings.
       }
     }, {
       onePer: 'timeseries',
