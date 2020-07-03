@@ -1,3 +1,5 @@
+declare const require: any;
+
 export const environment = {
   production: true,
   apiUrl: 'https://api.birminghamurbanobservatory.com',
