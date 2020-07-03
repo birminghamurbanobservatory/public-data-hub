@@ -4,15 +4,11 @@ import { GoogleMapService } from './google-map.service';
 @Component({
     selector: 'buo-google-map',
     template: `
-        <div [ngClass]="classes">
-            <div class="w-full h-full rounded-md" #googlemap></div>
-        </div>
+        <div class="w-full h-full rounded-md z-10" #googlemap></div>
     `
 })
 
 export class GoogleMapComponent implements AfterViewInit {
-
-    @Input() classes: string;
 
     @ViewChild('googlemap') mapContainer: ElementRef;
 

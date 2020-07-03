@@ -1,72 +1,75 @@
-<nav class="header--buo-color">
-  <div class="mx-auto px-4 md:px-8 lg:px-12">
-    <div class="flex items-center justify-between h-16">
-      <div class="flex items-center">
-        <div class="flex-shrink-0">
-          <a href="https://birminghamurbanobservatory.com" class="flex items-center flex-shrink-0 text-white mr-6">
-            <img class="h-7 w-7 mr-2" src="/assets/buo-logo.svg" alt="Birmingham Urban Observatory Logo">
-            <span class="font-semibold text-sm sm:text-xl tracking-tight">Birmingham Urban Observatory</span>
-          </a>
-        </div>
-        <div class="hidden md:block">
-          <div class="ml-10 flex items-baseline">
-            <a href="/" class="ml-4 px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-teal-900 focus:outline-none focus:text-white focus:bg-teal-900">
-              Map
-            </a>
-            <a href="https://live.birminghamurbanobservatory.com/about" class="ml-2 lg:ml-4 sm:px-2 lg:px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-teal-900 focus:outline-none focus:text-white focus:bg-teal-900">
-              Live
-            </a>
-            <a href="https://live.birminghamurbanobservatory.com/about" class="ml-2 lg:ml-4 sm:px-2 lg:px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-teal-900 focus:outline-none focus:text-white focus:bg-teal-900 whitespace-no-wrap">
-              About Us
-            </a>
-            <a href="https://birminghamurbanobservatory.com/blog" class="ml-2 lg:ml-4 sm:px-2 lg:px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-teal-900 focus:outline-none focus:text-white focus:bg-teal-900">
-              Blog
-            </a>
-            <a href="https://birminghamurbanobservatory.com/contact" class="ml-2 lg:ml-4 sm:px-2 lg:px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-teal-900 focus:outline-none focus:text-white focus:bg-teal-900">
-              Contact
+<header class="header--buo-color">
+
+  <nav>
+    <div class="mx-auto px-4 md:px-8 lg:px-12">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <a href="https://birminghamurbanobservatory.com" class="flex items-center flex-shrink-0 text-white mr-6">
+              <img class="h-7 w-7 mr-2" src="/assets/buo-logo.svg" alt="Birmingham Urban Observatory Logo">
+              <span class="font-semibold text-sm sm:text-xl tracking-tight">Birmingham Urban Observatory</span>
             </a>
           </div>
+          <div class="hidden md:block">
+            <div class="ml-10 flex items-baseline">
+              <a href="/" class="ml-4 px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-teal-900 focus:outline-none focus:text-white focus:bg-teal-900">
+                Map
+              </a>
+              <a href="https://live.birminghamurbanobservatory.com/about" class="ml-2 lg:ml-4 sm:px-2 lg:px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-teal-900 focus:outline-none focus:text-white focus:bg-teal-900">
+                Live
+              </a>
+              <a href="https://live.birminghamurbanobservatory.com/about" class="ml-2 lg:ml-4 sm:px-2 lg:px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-teal-900 focus:outline-none focus:text-white focus:bg-teal-900 whitespace-no-wrap">
+                About Us
+              </a>
+              <a href="https://birminghamurbanobservatory.com/blog" class="ml-2 lg:ml-4 sm:px-2 lg:px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-teal-900 focus:outline-none focus:text-white focus:bg-teal-900">
+                Blog
+              </a>
+              <a href="https://birminghamurbanobservatory.com/contact" class="ml-2 lg:ml-4 sm:px-2 lg:px-3 py-2 rounded-md text-sm font-medium text-white hover:text-white hover:bg-teal-900 focus:outline-none focus:text-white focus:bg-teal-900">
+                Contact
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="-mr-2 flex md:hidden">
+          <!-- Mobile menu button -->
+          <button class="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-white hover:bg-teal-500 focus:outline-none focus:bg-teal-900 focus:text-white">
+            <!-- Menu open: "hidden", Menu closed: "block" -->
+            <svg class="h-6 w-6" [ngClass]="mobileOpen ? 'hidden' : 'block' " (click)="toggleNav()" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <!-- Menu open: "block", Menu closed: "hidden" -->
+            <svg class="h-6 w-6" [ngClass]="mobileOpen ? 'block' : 'hidden' " (click)="toggleNav()" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
       </div>
-      
-      <div class="-mr-2 flex md:hidden">
-        <!-- Mobile menu button -->
-        <button class="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-white hover:bg-teal-500 focus:outline-none focus:bg-teal-900 focus:text-white">
-          <!-- Menu open: "hidden", Menu closed: "block" -->
-          <svg class="h-6 w-6" [ngClass]="mobileOpen ? 'hidden' : 'block' " (click)="toggleNav()" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-          <!-- Menu open: "block", Menu closed: "hidden" -->
-          <svg class="h-6 w-6" [ngClass]="mobileOpen ? 'block' : 'hidden' " (click)="toggleNav()" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
     </div>
-  </div>
 
-  <!--
-    Mobile menu, toggle classes based on menu state.
-    Open: "block", closed: "hidden"
-  -->
-  <div [ngClass]="mobileOpen ? 'block' : 'hidden' " (click)="toggleNav()">
-    <div class="px-2 pt-2 pb-3 sm:px-3">
-      <a href="/" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-white hover:bg-teal-900 focus:outline-none focus:text-white focus:bg-teal-900">
-        Map
-      </a>
-      <a href="https://live.birminghamurbanobservatory.com/about" class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-white hover:text-white hover:bg-teal-900 focus:outline-none focus:text-white focus:bg-teal-900">
-        Live
-      </a>
-      <a href="https://live.birminghamurbanobservatory.com/about" class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-white hover:text-white hover:bg-teal-900 focus:outline-none focus:text-white focus:bg-teal-900">
-        About Us
-      </a>
-      <a href="https://birminghamurbanobservatory.com/blog" class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-white hover:text-white hover:bg-teal-900 focus:outline-none focus:text-white focus:bg-teal-900">
-        Blog
-      </a>
-      <a href="https://birminghamurbanobservatory.com/contact" class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-white hover:text-white hover:bg-teal-900 focus:outline-none focus:text-white focus:bg-teal-900">
-        Contact
-      </a>
+    <!--
+      Mobile menu, toggle classes based on menu state.
+      Open: "block", closed: "hidden"
+    -->
+    <div [ngClass]="mobileOpen ? 'block' : 'hidden' " (click)="toggleNav()">
+      <div class="px-2 pt-2 pb-3 sm:px-3">
+        <a href="/" class="block px-3 py-2 rounded-md text-base font-medium text-white hover:text-white hover:bg-teal-900 focus:outline-none focus:text-white focus:bg-teal-900">
+          Map
+        </a>
+        <a href="https://live.birminghamurbanobservatory.com/about" class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-white hover:text-white hover:bg-teal-900 focus:outline-none focus:text-white focus:bg-teal-900">
+          Live
+        </a>
+        <a href="https://live.birminghamurbanobservatory.com/about" class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-white hover:text-white hover:bg-teal-900 focus:outline-none focus:text-white focus:bg-teal-900">
+          About Us
+        </a>
+        <a href="https://birminghamurbanobservatory.com/blog" class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-white hover:text-white hover:bg-teal-900 focus:outline-none focus:text-white focus:bg-teal-900">
+          Blog
+        </a>
+        <a href="https://birminghamurbanobservatory.com/contact" class="mt-1 block px-3 py-2 rounded-md text-base font-medium text-white hover:text-white hover:bg-teal-900 focus:outline-none focus:text-white focus:bg-teal-900">
+          Contact
+        </a>
+      </div>
+      
     </div>
-    
-  </div>
-</nav>
+  </nav>
+</header>
