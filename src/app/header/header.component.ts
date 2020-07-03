@@ -7,10 +7,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderComponent {
 
-  public mobileOpen: Boolean = false;
+  constructor() { }
 
-  toggleNav() {
-    this.mobileOpen = !this.mobileOpen;
+  public navDroppedDown = false;
+
+  toggleNavDropdown() {
+    this.navDroppedDown = !this.navDroppedDown;
   }
 
 }
