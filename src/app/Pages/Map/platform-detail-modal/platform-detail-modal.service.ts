@@ -59,6 +59,8 @@ export class PlatformDetailModalService {
     }
   
     public getLatestObservations(platform: string) {
+
+      console.log('getting');
   
       return this.observationService.getObservations({
         ancestorPlatforms: {
@@ -66,6 +68,9 @@ export class PlatformDetailModalService {
         },
         flags: {
           exists: false
+        },
+        disciplines: {
+          not: ['instrumental'] // don't want the user seeing battery, signal, tilt, etc readings.
         }
       }, {
         onePer: 'timeseries',
