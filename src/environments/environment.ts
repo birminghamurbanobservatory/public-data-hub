@@ -6,7 +6,8 @@ export const environment = {
   production: false,
   apiUrl: 'https://api.birminghamurbanobservatory.com',
   // The following key is for development only
-  googleMapsApiKey: 'AIzaSyDOT34BxSKrFJc4kN6fATO2VZebVOeCGo4'
+  googleMapsApiKey: 'AIzaSyDOT34BxSKrFJc4kN6fATO2VZebVOeCGo4',
+  version: require('../../package.json').version
 };
 
 /*
