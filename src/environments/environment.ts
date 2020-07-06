@@ -2,11 +2,14 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+declare const require: any;
+
 export const environment = {
   production: false,
   apiUrl: 'https://api.birminghamurbanobservatory.com',
   // The following key is for development only
-  googleMapsApiKey: 'AIzaSyDOT34BxSKrFJc4kN6fATO2VZebVOeCGo4'
+  googleMapsApiKey: 'AIzaSyDOT34BxSKrFJc4kN6fATO2VZebVOeCGo4',
+  version: require('../../package.json').version
 };
 
 /*

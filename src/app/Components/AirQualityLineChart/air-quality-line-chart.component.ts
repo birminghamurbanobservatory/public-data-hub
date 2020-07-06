@@ -10,15 +10,7 @@ import {getNationalAirQualityObjective} from 'src/app/shared/air-quality-utils';
 
 @Component({
     selector: 'buo-air-quality-line-chart',
-    template: `
-        <div class="border border-gray-200 rounded-md bg-white shadow-inner p-4">
-            <div class="mt-4 w-full h-80" #lineChartContainer></div>
-            <ng-template #noDataMessage>
-                <div class="w-full text-sm leading-5 text-center text-gray-800">
-                    No data for the selected time period.
-                </div>
-            </ng-template>
-        </div>`,
+    templateUrl: './air-quality-line-chart.component.html',
 })
 export class AirQualityLineChartComponent implements AfterViewInit {
 

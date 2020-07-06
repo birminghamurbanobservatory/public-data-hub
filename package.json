@@ -1,6 +1,6 @@
 {
   "name": "urban-obs",
-  "version": "0.5.2",
+  "version": "0.6.2",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -45,7 +45,6 @@
     "@fullhuman/postcss-purgecss": "^2.1.0",
     "@types/jasmine": "~3.5.0",
     "@types/jasminewd2": "~2.0.3",
-    "@types/node": "^12.11.1",
     "codelyzer": "^5.1.2",
     "jasmine-core": "~3.5.0",
     "jasmine-spec-reporter": "~4.2.1",

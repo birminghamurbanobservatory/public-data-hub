@@ -2,7 +2,7 @@ export interface GetObservationsWhere {
   madeBySensor?: any; // a string or {in: ['sensor1', 'sensor2']}
   observedProperty?: string;
   aggregation?: any;
-  disciplines?: Disciplines;
+  disciplines?: any;
   resultTime?: ResultTime;
   duration?: any;
   ancestorPlatforms?: any; // ['parent', 'child'] for exact match or {includes: 'platform-1'} to match a single platform anywhere in the platform "tree".
@@ -11,10 +11,6 @@ export interface GetObservationsWhere {
   // Should also be able to provide these query params in the same format that the server expects them, e.g. resultTime__gt.
 }
 
-
-interface Disciplines {
-  includes: string;
-}
 
 interface Flags {
   exists: boolean;
