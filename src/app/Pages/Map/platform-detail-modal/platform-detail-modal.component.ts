@@ -1,17 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
 import {style, animate, transition, trigger} from '@angular/animations';
 
 import { Observable } from 'rxjs';
-import { switchMap, map, tap, filter } from 'rxjs/operators';
-import {sortBy} from 'lodash';
+import { filter } from 'rxjs/operators';
 
 import { ObservationModalService } from 'src/app/Components/ObservationModal/observation-modal.service';
 
 import { Platform } from 'src/app/platform/platform.class';
 import { Observation } from 'src/app/observation/observation.class';
 import {Deployment} from 'src/app/Interfaces/deployment.interface';
-import {DeploymentService} from 'src/app/Services/deployment/deployment.service';
 import { PlatformDetailModalService } from './platform-detail-modal.service';
 
 @Component({
@@ -25,7 +22,7 @@ import { PlatformDetailModalService } from './platform-detail-modal.service';
       ]),
       transition(':leave', [
         style({transform: 'translatex(0%)'}),
-        animate('400ms ease-in', style({transform: 'translateY(-100%)'}))
+        animate('400ms ease-in', style({transform: 'translateX(-100%)'}))
       ])
     ])
   ]

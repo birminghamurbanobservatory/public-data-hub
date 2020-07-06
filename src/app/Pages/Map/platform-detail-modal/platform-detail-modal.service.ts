@@ -8,6 +8,7 @@ import { ObservationService } from 'src/app/observation/observation.service';
 
 import {Deployment} from 'src/app/Interfaces/deployment.interface';
 import {DeploymentService} from 'src/app/Services/deployment/deployment.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Injectable()
 export class PlatformDetailModalService {
@@ -24,6 +25,8 @@ export class PlatformDetailModalService {
     public deployment$: Observable<Deployment>;
     
       constructor(
+        private route: ActivatedRoute,
+        private router: Router,
         private platformService: PlatformService,
         private observationService: ObservationService,
         private deploymentService: DeploymentService
@@ -55,6 +58,11 @@ export class PlatformDetailModalService {
      * Not strictly necessary but does update url
      */
     public closeModal(): void {
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { platform: null },
+        queryParamsHandling: 'merge',
+      });
       this.showModalSource$.next(false);
     }
   

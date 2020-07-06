@@ -5,13 +5,12 @@ import { PlatformService } from 'src/app/platform/platform.service';
 import { GoogleMapService } from 'src/app/Components/GoogleMap/google-map.service';
 import { MapPinService } from 'src/app/Services/map-pins/map-pin.service';
 
-import { Subscription, Subject, BehaviorSubject, concat } from 'rxjs';
-import { filter, map, tap, mergeMap, distinct, switchMap, concatMap } from 'rxjs/operators';
+import { Subscription, Subject } from 'rxjs';
+import { filter, map, tap } from 'rxjs/operators';
 
 import { Platform } from 'src/app/platform/platform.class';
 import { MapMarker } from '../../../Interfaces/map-marker.interface';
 import { DeploymentService } from 'src/app/Services/deployment/deployment.service';
-import { Location } from '@angular/common';
 import { PlatformDetailModalService } from '../platform-detail-modal/platform-detail-modal.service';
 
 @Component({
@@ -49,11 +48,11 @@ export class PlatformsComponent implements OnInit, OnDestroy {
 
     constructor(
         private route: ActivatedRoute,
+        private router: Router,
         private map: GoogleMapService,
         private pins: MapPinService,
         private platformService: PlatformService,
         private deployments: DeploymentService,
-        private location: Location,
         private detailModalService: PlatformDetailModalService,
     ) {}
 
@@ -112,14 +111,18 @@ export class PlatformsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Updates the url, have to use location as route causes the map the reload
+   * Updates the url, with the plaform and or deployment
    * 
    * @param params : query param object
    */
-  public navigate(params) {
-    const qp = Object.assign({}, this.route.snapshot.queryParams, params); // merge new and existing params
-    const qs = Object.keys(qp).filter(key => qp[key] !== null).map(key => `${key}=${qp[key]}`); // filter nulls and map to strings
-    this.location.replaceState('map/platforms', qs.join('&'))
+  public navigate(params: { deployment?: string, platform?: string }) {
+    this.router.navigate(
+      [], 
+      {
+        relativeTo: this.route,
+        queryParams: params,
+        queryParamsHandling: 'merge'
+      });
   }
 
   /**
