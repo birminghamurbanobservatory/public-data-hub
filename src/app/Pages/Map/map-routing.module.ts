@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { MapComponent } from './map.component';
 import { PlatformsComponent } from './platforms/platforms.component';
-import { PlatformDetailComponent } from './platform-detail/platform-detail.component';
 import { ObservationsMapComponent } from './observations-map/observations-map.component';
 
 const routes: Routes = [
@@ -19,12 +18,6 @@ const routes: Routes = [
       {
         path: 'platforms',
         component: PlatformsComponent,
-        children: [
-          {
-            path: ':id',
-            component: PlatformDetailComponent,
-          },
-        ]
       },
       {
         path: 'observations',

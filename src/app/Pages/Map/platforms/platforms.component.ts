@@ -1,17 +1,17 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 
 import { PlatformService } from 'src/app/platform/platform.service';
 import { GoogleMapService } from 'src/app/Components/GoogleMap/google-map.service';
 import { MapPinService } from 'src/app/Services/map-pins/map-pin.service';
 
-import { Subscription, Subject, BehaviorSubject } from 'rxjs';
-import { filter, map, tap, mergeMap, distinct } from 'rxjs/operators';
+import { Subscription, Subject } from 'rxjs';
+import { filter, map, tap } from 'rxjs/operators';
 
 import { Platform } from 'src/app/platform/platform.class';
 import { MapMarker } from '../../../Interfaces/map-marker.interface';
 import { DeploymentService } from 'src/app/Services/deployment/deployment.service';
-import { Location } from '@angular/common';
+import { PlatformDetailModalService } from '../platform-detail-modal/platform-detail-modal.service';
 
 @Component({
     selector: 'buo-map-platforms',
@@ -47,13 +47,13 @@ export class PlatformsComponent implements OnInit, OnDestroy {
   public selectedDeployment$: Subject<string> = new Subject()
 
     constructor(
-        private router: Router,
         private route: ActivatedRoute,
+        private router: Router,
         private map: GoogleMapService,
         private pins: MapPinService,
         private platformService: PlatformService,
         private deployments: DeploymentService,
-        private location: Location,
+        private detailModalService: PlatformDetailModalService,
     ) {}
 
     ngOnInit(): void {
@@ -67,30 +67,39 @@ export class PlatformsComponent implements OnInit, OnDestroy {
         }
       })
       .pipe(
-        map(({data: platforms}) => this.filterThoseWithoutLocation(platforms))
+        map(({data: platforms}) => this.filterThoseWithoutLocation(platforms)),
+        tap(platforms => this.platforms = platforms),
       )
+
       .subscribe(platforms => {
-        this.platforms = platforms;
         
         // on page load/refresh get any query params and check for a deployment param
         // if present only display the platforms in that deployment
         const params = this.route.snapshot.queryParams;
+
         if (['deployment'].every(param => param in params)) {
           platforms = this.platforms.filter(p => p.inDeployment === params.deployment)
           this.selectedDeployment$.next(params.deployment);
         }
 
+        if (['platform'].every(param => param in params)) {
+          this.detailModalService.display(params.platform);
+        }
+
         this.addMarkers(platforms)
       });
+
+
 
       // listen for marker clicks of the platform type
       this.mapSubscription$ = this.map.selectedMarker
       .pipe(
         filter((value: MapMarker) => value.type === 'platform')
       )
-      .subscribe((marker) => this.router.navigate(['../platforms', marker.id], {
-        relativeTo: this.route
-      }));
+      .subscribe((marker) => {
+        this.navigate({ platform: marker.id });
+        this.detailModalService.display(marker.id);
+      });
     }
 
   /**
@@ -99,6 +108,21 @@ export class PlatformsComponent implements OnInit, OnDestroy {
    */
   ngOnDestroy(): void {
     this.mapSubscription$.unsubscribe();
+  }
+
+  /**
+   * Updates the url, with the plaform and or deployment
+   * 
+   * @param params : query param object
+   */
+  public navigate(params: { deployment?: string, platform?: string }) {
+    this.router.navigate(
+      [], 
+      {
+        relativeTo: this.route,
+        queryParams: params,
+        queryParamsHandling: 'merge'
+      });
   }
 
   /**
@@ -113,12 +137,11 @@ export class PlatformsComponent implements OnInit, OnDestroy {
     const show = value ? this.platforms.filter(p => p.inDeployment === value) 
                        : this.platforms;
     
-    // update the url with the selected deployment or remove                       
-    const deploymentParam = value ? `deployment=${value}` : '';
-    this.location.replaceState('/map/platforms', deploymentParam);
-
-    this.selectedDeployment$.next(value);
     this.addMarkers(show);
+
+    // update the url with the selected deployment or remove.
+    this.navigate({ deployment: value });
+    this.selectedDeployment$.next(value);
   }
 
   /**

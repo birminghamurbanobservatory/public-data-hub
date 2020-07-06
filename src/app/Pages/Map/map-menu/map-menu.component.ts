@@ -148,7 +148,6 @@ export class MapMenuComponent implements OnInit {
       });
 
       // Default to sensor platforms if a match wasn't found
-      console.log(`Match found: ${Boolean(matchingOption)}`);
       let initialOptionId = '';
       if (matchingOption)  {
         initialOptionId = matchingOption.id;
