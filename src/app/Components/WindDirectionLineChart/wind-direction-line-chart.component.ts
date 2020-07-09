@@ -34,7 +34,7 @@ export class WindDirectionLineChartComponent implements AfterViewInit {
     private plotData(ts) {
         const colours = ts.colours;
         const plotted = ts.observations.map((point) => ({ 
-            x: moment(point.resultTime).valueOf() , 
+            x: moment(point.resultTime).valueOf(), 
             y: point.hasResult.value,
             id: point.id,
             click: (e) => { 
