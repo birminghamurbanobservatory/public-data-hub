@@ -9,6 +9,7 @@ import { TooltipModule } from 'ng2-tooltip-directive';
 import { DirectivesModule } from '../Directives/directives.module';
 import { ColumnChartComponent } from './ColumnChart/column-chart.component';
 import {AirQualityLineChartComponent} from './AirQualityLineChart/air-quality-line-chart.component';
+import {WindDirectionLineChartComponent} from './WindDirectionLineChart/wind-direction-line-chart.component';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import {AirQualityLineChartComponent} from './AirQualityLineChart/air-quality-li
         ObservationModalComponent,
         ColumnChartComponent,
         LineChartComponent,
-        AirQualityLineChartComponent
+        AirQualityLineChartComponent,
+        WindDirectionLineChartComponent
     ],
 
     exports: [
@@ -33,7 +35,8 @@ import {AirQualityLineChartComponent} from './AirQualityLineChart/air-quality-li
         ObservationModalComponent,
         ColumnChartComponent,
         LineChartComponent,
-        AirQualityLineChartComponent
+        AirQualityLineChartComponent,
+        WindDirectionLineChartComponent
     ]
 
 })

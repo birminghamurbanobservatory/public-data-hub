@@ -4,15 +4,13 @@ import { Subject } from 'rxjs';
 import * as moment from 'moment';
 import * as CanvasJS from '../../../assets/js/canvasjs.min';
 import { ObservationModalService } from '../ObservationModal/observation-modal.service';
+import { windDirectionDegreeToText } from '../../shared/weather-funcs';
 
 @Component({
-    selector: 'buo-line-chart',
-    template: `
-        <div class="border border-gray-200 rounded-md bg-white shadow-inner p-4">
-            <div class="mt-4 w-full h-80" #lineChartContainer></div>
-        </div>`,
+    selector: 'buo-wind-direction-line-chart',
+    templateUrl: './wind-direction-line-chart.component.html'
 })
-export class LineChartComponent implements AfterViewInit {
+export class WindDirectionLineChartComponent implements AfterViewInit {
 
     // @Input() timeseries: Timeseries[];
     @Input() timeseries: Subject<any>;
@@ -22,10 +20,9 @@ export class LineChartComponent implements AfterViewInit {
 
     constructor(
         private modal: ObservationModalService,
-        ) {}
+    ) {}
 
     ngAfterViewInit(): void {
-
         this.timeseries.subscribe(d => {
             this.data = d;
 
@@ -37,7 +34,7 @@ export class LineChartComponent implements AfterViewInit {
     private plotData(ts) {
         const colours = ts.colours;
         const plotted = ts.observations.map((point) => ({ 
-            x: moment(point.resultTime).valueOf() , 
+            x: moment(point.resultTime).valueOf(), 
             y: point.hasResult.value,
             id: point.id,
             click: (e) => { 
@@ -74,7 +71,13 @@ export class LineChartComponent implements AfterViewInit {
                 fontSize: 12,
                 contentFormatter: (e) => {
                     const dp = e.entries[0].dataPoint;
-                    return `<i class="far fa-calendar mr-1"></i>${moment(dp.x).format('DD/MM/YYYY')}<br><i class="far fa-clock mr-1"></i>${moment(dp.x).format('HH:mm')}<br>${dp.y}${this.data.symbol}`
+                    return `
+                      <i class="far fa-calendar mr-1"></i>${moment(dp.x).format('DD/MM/YYYY')}
+                      <br>
+                      <i class="far fa-clock mr-1"></i>${moment(dp.x).format('HH:mm')}
+                      <br>
+                      <i class="far fa-compass mr-1"></i> ${windDirectionDegreeToText(dp.y)} (${dp.y}${this.data.symbol})
+                    `
                 },
             },
             axisX: {

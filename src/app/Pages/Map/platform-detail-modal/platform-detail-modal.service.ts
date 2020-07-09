@@ -67,8 +67,6 @@ export class PlatformDetailModalService {
     }
   
     public getLatestObservations(platform: string) {
-
-      console.log('getting');
   
       return this.observationService.getObservations({
         ancestorPlatforms: {

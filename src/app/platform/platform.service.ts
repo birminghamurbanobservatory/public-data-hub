@@ -38,9 +38,10 @@ export class PlatformService {
    * Get Platforms
    * @param where - use {isHostedBy: {exists: false}} to get just the top level platforms. Use {ancestorPlatform: {includes: 'some-platform-id'}} to get all descendents of a platform.
    */
-  getPlatforms(where?: { isHostedBy?: any; ancestorPlatforms?: any; }): Observable<{ data: Platform[]; meta: any }> {
+  getPlatforms(where?: { isHostedBy?: any; ancestorPlatforms?: any; }, options: {limit?} = {}): Observable<{ data: Platform[]; meta: any }> {
 
-    const qs = this.apiFunctions.queryParamsObjectToString(where);
+    const queryParamsObject = Object.assign({}, where, options);
+    const qs = this.apiFunctions.queryParamsObjectToString(queryParamsObject);
 
     return this.http.get(`${environment.apiUrl}/platforms${qs}`)
       .pipe(

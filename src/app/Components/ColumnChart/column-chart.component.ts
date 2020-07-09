@@ -10,11 +10,6 @@ import { ObservationModalService } from '../ObservationModal/observation-modal.s
     template: `
         <div class="border border-gray-200 rounded-md bg-white shadow-inner p-4">
             <div class="mt-4 w-full h-80" #barChartContainer></div>
-            <ng-template #noDataMessage>
-                <div class="w-full text-sm leading-5 text-center text-gray-800">
-                    No data for the selected time period.
-                </div>
-            </ng-template>
         </div>`,
 })
 export class ColumnChartComponent implements AfterViewInit {
