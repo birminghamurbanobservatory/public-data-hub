@@ -10,6 +10,7 @@ import { Platform } from 'src/app/platform/platform.class';
 import { Observation } from 'src/app/observation/observation.class';
 import {Deployment} from 'src/app/Interfaces/deployment.interface';
 import { PlatformDetailModalService } from './platform-detail-modal.service';
+import {windDirectionDegreeToText} from '../../../shared/weather-funcs';
 
 @Component({
   selector: 'buo-platform-detail-modal',
@@ -33,13 +34,13 @@ export class PlatformDetailModalComponent implements OnInit {
   public showModal$: Observable<Boolean>;
   public platform$: Observable <Platform>;
   public deployment$: Observable<Deployment>;
+  public observations$: Observable <Observation[]>
+  public windDirectionDegreeToText = windDirectionDegreeToText;
 
-  public observations$: Observable < Observation[] >
-
-    constructor(
-      private observationModalService: ObservationModalService,
-      private detailModalService: PlatformDetailModalService,
-    ) {}
+  constructor(
+    private observationModalService: ObservationModalService,
+    private detailModalService: PlatformDetailModalService,
+  ) {}
 
   ngOnInit(): void {
     this.showModal$ = this.detailModalService.showModal$;
@@ -69,13 +70,4 @@ export class PlatformDetailModalComponent implements OnInit {
     this.observationModalService.observationSelected(obs.id);
   }
 
-  /**
-   * Converts the wind direction to text representation
-   * @param degree 
-   */
-  public windDirectionDegreeToText(degree) {
-    const val = Math.floor((degree / 45) + 0.5);
-    const arr = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-    return arr[(val % 8)];
-  }
 }
