@@ -65,6 +65,8 @@ export class PlatformsComponent implements OnInit, OnDestroy {
         isHostedBy: {
           exists: false
         }
+      }, {
+        limit: 500 // watch this doesn't end up being maxed out
       })
       .pipe(
         map(({data: platforms}) => this.filterThoseWithoutLocation(platforms)),
