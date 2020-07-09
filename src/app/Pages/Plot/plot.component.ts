@@ -31,6 +31,7 @@ export class PlotComponent implements OnInit {
     public subTitle = '';
     public backUrl: Boolean = false;
     public notCancelled: boolean = true;
+    public plotsToShow = [];
     
     constructor (
         private route: ActivatedRoute,
@@ -89,6 +90,7 @@ export class PlotComponent implements OnInit {
             this.title = titles.title;
             this.subTitle = titles.subTitle;
             this.timeseriesDifferencesOnly = this.stripTimeseriesDownToJustDifferences(this.timeseries);
+            this.selectPlotsToShow();
         }
 
         this.timeseriesDifferencesOnly.forEach((ts, idx) => {
@@ -201,9 +203,10 @@ export class PlotComponent implements OnInit {
      * Simple function to check which chart type to load
      * If lots of chart types consider replacing with dynamic import.
      */
-    public chartType() {
+    public selectPlotsToShow() {
 
         const columnTypes = ['precipitation-depth'];
+
         const airQualityTypes = [
             'ozone-mass-concentration', 
             'nitrogen-dioxide-mass-concentration',
@@ -213,14 +216,25 @@ export class PlotComponent implements OnInit {
             'pm2p5-mass-concentration'
         ];
 
+        const windDirectionTypes = [
+            'wind-direction'
+        ]
+
+        // TODO: At some point we need to consider other parameters such as the unit.
+
+        const choices = [];
+
         if (columnTypes.includes(this.timeseriesParams.observedProperty)) {
-            return 'column-chart';
+            choices.push('column-chart');
         } else if (airQualityTypes.includes(this.timeseriesParams.observedProperty)) {
-            return 'air-quality-line-chart';
+            choices.push('air-quality-line-chart');
+        } else if (windDirectionTypes.includes(this.timeseriesParams.observedProperty)) {
+            choices.push('wind-direction-line-chart');
         } else {
-            return 'line-chart';
+            choices.push('line-chart');
         }
 
+        this.plotsToShow = choices;
     }
 
 

@@ -52,7 +52,6 @@ export class AirQualityLineChartComponent implements AfterViewInit {
         }));
 
         return {
-            // TODO: A lot of these parameters aren't even being used, refactor.
             type: 'line',
             xValueType: "dateTime",
             markerType: 'circle',

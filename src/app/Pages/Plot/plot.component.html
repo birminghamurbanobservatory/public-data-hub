@@ -31,11 +31,13 @@
     <ng-template #showChart>
         <div class="mt-4">
             <!-- column -->
-            <buo-column-chart *ngIf="chartType() === 'column-chart'" [timeseries]="tso$"></buo-column-chart>
+            <buo-column-chart *ngIf="plotsToShow.includes('column-chart')" [timeseries]="tso$"></buo-column-chart>
             <!-- air quality line chart -->
-            <buo-air-quality-line-chart *ngIf="chartType() === 'air-quality-line-chart'" [timeseries]="tso$"></buo-air-quality-line-chart>
+            <buo-air-quality-line-chart *ngIf="plotsToShow.includes('air-quality-line-chart')" [timeseries]="tso$"></buo-air-quality-line-chart>
+            <!-- wind direction line chart -->
+            <buo-wind-direction-line-chart *ngIf="plotsToShow.includes('wind-direction-line-chart')" [timeseries]="tso$"></buo-wind-direction-line-chart>
             <!-- line chart -->
-            <buo-line-chart *ngIf="chartType() === 'line-chart'" [timeseries]="tso$"></buo-line-chart>
+            <buo-line-chart *ngIf="plotsToShow.includes('line-chart')" [timeseries]="tso$"></buo-line-chart>
         </div>
     </ng-template>
     
