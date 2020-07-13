@@ -74,7 +74,7 @@ export class LineChartComponent implements AfterViewInit {
                 fontSize: 12,
                 contentFormatter: (e) => {
                     const dp = e.entries[0].dataPoint;
-                    return `<i class="far fa-calendar mr-1"></i>${moment(dp.x).format('DD/MM/YYYY')}<br><i class="far fa-clock mr-1"></i>${moment(dp.x).format('HH:mm')}<br>${dp.y}${this.data.symbol}`
+                    return `<i class="far fa-calendar mr-1"></i>${moment(dp.x).format('DD/MM/YYYY')}<br><i class="far fa-clock mr-1"></i>${moment(dp.x).format('HH:mm')}<br>${dp.y}${this.data.symbol || ''}`
                 },
             },
             axisX: {
@@ -90,7 +90,7 @@ export class LineChartComponent implements AfterViewInit {
                 lineColor: '#CBD5E0',
             },
             axisY: {
-                title: `${this.data.label} (${this.data.symbol})`,
+                title: `${this.data.label} ${this.data.symbol ? `(${this.data.symbol})` : ''}`,
                 titleFontColor: '#718096',
                 titleFontWeight: 'bold',
                 titleFontSize: 12,
