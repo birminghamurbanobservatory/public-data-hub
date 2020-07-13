@@ -10,6 +10,7 @@ import { DirectivesModule } from '../Directives/directives.module';
 import { ColumnChartComponent } from './ColumnChart/column-chart.component';
 import {AirQualityLineChartComponent} from './AirQualityLineChart/air-quality-line-chart.component';
 import {WindDirectionLineChartComponent} from './WindDirectionLineChart/wind-direction-line-chart.component';
+import {TotalComponent} from './Total/total.component';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import {WindDirectionLineChartComponent} from './WindDirectionLineChart/wind-dir
         ColumnChartComponent,
         LineChartComponent,
         AirQualityLineChartComponent,
-        WindDirectionLineChartComponent
+        WindDirectionLineChartComponent,
+        TotalComponent
     ],
 
     exports: [
@@ -36,7 +38,8 @@ import {WindDirectionLineChartComponent} from './WindDirectionLineChart/wind-dir
         ColumnChartComponent,
         LineChartComponent,
         AirQualityLineChartComponent,
-        WindDirectionLineChartComponent
+        WindDirectionLineChartComponent,
+        TotalComponent
     ]
 
 })
