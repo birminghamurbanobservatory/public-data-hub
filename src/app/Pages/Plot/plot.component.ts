@@ -205,7 +205,7 @@ export class PlotComponent implements OnInit {
      */
     public selectPlotsToShow() {
 
-        const columnTypes = ['precipitation-depth'];
+        const columnTypes = ['precipitation-depth', 'lightning-count'];
 
         const airQualityTypes = [
             'ozone-mass-concentration', 
@@ -220,7 +220,12 @@ export class PlotComponent implements OnInit {
             'wind-direction'
         ]
 
-        // TODO: At some point we need to consider other parameters such as the unit.
+        const totalTypes = [
+            'precipitation-depth',
+            'lightning-count'
+        ]
+
+        // TODO: At some point we may need to consider other parameters such as the unit.
 
         const choices = [];
 
@@ -232,6 +237,10 @@ export class PlotComponent implements OnInit {
             choices.push('wind-direction-line-chart');
         } else {
             choices.push('line-chart');
+        }
+
+        if (totalTypes.includes(this.timeseriesParams.observedProperty)) {
+            choices.push('total');
         }
 
         this.plotsToShow = choices;

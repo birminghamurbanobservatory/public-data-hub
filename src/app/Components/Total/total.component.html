@@ -1,0 +1,17 @@
+<div class="my-3">
+
+
+  <div *ngIf="totals">
+
+    <div *ngFor="let total of totals" class="my-3">
+
+      <p [ngStyle]="{'color': total.colour}" class="font-bold text-2xl">Total: {{total.value}} {{symbol}}</p> 
+      <p class="text-gray-500">Over {{total.timeFrameText}}. ({{total.start | date: 'short'}} to {{total.end | date: 'short'}}). </p>
+      <p *ngIf="total.percentMissing > 1" class="text-red-600">However no data was available over {{total.percentMissing}}% of this time period.</p>
+
+    </div>
+
+  </div>
+
+</div>
+

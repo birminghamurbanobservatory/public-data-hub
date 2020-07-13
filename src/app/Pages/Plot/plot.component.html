@@ -38,6 +38,8 @@
             <buo-wind-direction-line-chart *ngIf="plotsToShow.includes('wind-direction-line-chart')" [timeseries]="tso$"></buo-wind-direction-line-chart>
             <!-- line chart -->
             <buo-line-chart *ngIf="plotsToShow.includes('line-chart')" [timeseries]="tso$"></buo-line-chart>
+            <!-- total -->
+            <buo-total *ngIf="plotsToShow.includes('total')" [timeseries]="tso$"></buo-total>
         </div>
     </ng-template>
     

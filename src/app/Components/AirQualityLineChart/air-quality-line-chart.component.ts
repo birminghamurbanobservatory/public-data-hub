@@ -123,7 +123,7 @@ export class AirQualityLineChartComponent implements AfterViewInit {
 
             // What's the maximum datapoint value
             const seriesMaximums = data.map((series) => {
-                const maxDataPointInSeries = maxBy(series.dataPoints, 'y');
+                const maxDataPointInSeries: any = maxBy(series.dataPoints, 'y');
                 if (maxDataPointInSeries) {
                     return maxDataPointInSeries.y;
                 }
@@ -131,7 +131,7 @@ export class AirQualityLineChartComponent implements AfterViewInit {
             const maxDataPointValue = max(seriesMaximums);
 
             // Make sure the y axis on the graph can accomodates this recommended limit
-            let maximumYAxisValue = this.recommendedLimit;
+            let maximumYAxisValue: any = this.recommendedLimit;
             if (check.number(maxDataPointValue) && maxDataPointValue > this.recommendedLimit) {
                 maximumYAxisValue = maxDataPointValue;
             }

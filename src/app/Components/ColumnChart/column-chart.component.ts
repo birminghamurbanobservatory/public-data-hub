@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import * as moment from 'moment';
 import * as CanvasJS from '../../../assets/js/canvasjs.min';
 import { ObservationModalService } from '../ObservationModal/observation-modal.service';
+import {cloneDeep} from 'lodash';
 
 @Component({
     selector: 'buo-column-chart',
@@ -77,7 +78,7 @@ export class ColumnChartComponent implements AfterViewInit {
                         <br>
                         <i class="far fa-clock mr-1"></i>${moment(dp.x).format('HH:mm')}
                         <br>
-                        ${dp.y} ${this.data.symbol}
+                        ${dp.y} ${this.data.symbol || ''}
                         <br>
                         over ${dp.durationStr}
                     `
@@ -96,7 +97,7 @@ export class ColumnChartComponent implements AfterViewInit {
                 lineColor: '#CBD5E0',
             },
             axisY: {
-                title: `${this.data.label} (${this.data.symbol})`,
+                title: `${this.data.label} ${this.data.symbol ? `(${this.data.symbol})` : ''}`,
                 titleFontColor: '#718096',
                 titleFontWeight: 'bold',
                 titleFontSize: 12,

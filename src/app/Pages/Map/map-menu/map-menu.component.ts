@@ -76,6 +76,15 @@ export class MapMenuComponent implements OnInit {
       }
     },
     {
+      id: 'lightning-count',
+      name: 'Lightning Count',
+      queryParams: {
+        observedProperty: 'lightning-count',
+        aggregation__in: 'count',
+        duration__lt: '3630' // allows for averages up to about an hour 
+      }
+    },
+    {
       id: 'pm-10',
       name: 'PM₁₀',
       queryParams: {
