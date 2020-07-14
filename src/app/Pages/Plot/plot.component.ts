@@ -10,12 +10,16 @@ import { ColourService } from '../../Services/colours/colour.service';
 
 import { Timeseries } from '../../Services/timeseries/timeseries.class';
 import { LastUrlService } from 'src/app/Services/last-url/last-url.service';
+import {sub} from 'date-fns';
+import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 
 @Component({
     templateUrl: './plot.component.html'
 })
 export class PlotComponent implements OnInit {
 
+    public datePickerForm: FormGroup;
+    public maxDate = new Date();
     private timeseries: Timeseries[];
     public timeseriesDifferencesOnly: any[];
     public ts$: Observable<Timeseries[]>;
@@ -32,6 +36,8 @@ export class PlotComponent implements OnInit {
     public backUrl: Boolean = false;
     public notCancelled: boolean = true;
     public plotsToShow = [];
+    public customWindows = ['6-hours', '24-hours', '3-days'];
+    public customWindow: string;
     
     constructor (
         private route: ActivatedRoute,
@@ -39,30 +45,48 @@ export class PlotComponent implements OnInit {
         private timeseriesService: TimeseriesService,
         private colours: ColourService,
         private lastUrlService: LastUrlService,
+        private fb: FormBuilder
     ) {}
 
 
     ngOnInit(): void {
+
+        this.datePickerForm = this.fb.group({
+            window: ['']
+        });
+
+        this.listenForDatePickerWindowChanges();
         
         this.route.queryParams.subscribe(params => {
 
-            this.timeseriesParams = omit(params, ['timeseriesId', 'start', 'end']);
+            this.timeseriesParams = omit(params, ['timeseriesId', 'start', 'end', 'customWindow']);
             if (params.timeseriesId) {
                 this.timeseriesParams.id__in = params.timeseriesId;
             }
             if (!this.timeseriesParams.id__in && (!this.timeseriesParams.observedProperty || !this.timeseriesParams.unit)) {
                 this.tooVague = true;
             }
-            this.end = params.end ? new Date(params.end) : new Date();
-            const defaultDifference = 1000 * 60 * 60 * 6;
-            this.start = params.end ? new Date(params.start) : new Date(this.end.getTime() - defaultDifference);
-            // If the query parameters didn't include start and end dates in the first place, then I don't think it makes sense to reload the page with the default start and end dates applied. 
-            // We'll only add the dates to the URL if the datepicker specifically selects a time frame.
+
+            if (params.customWindow) {
+                this.customWindow = params.customWindow;
+                this.setStartAndEndFromCustomWindow(this.customWindow);
+            } else if (!params.start && !params.end) {
+                this.customWindow = this.customWindows[0];
+                this.setStartAndEndFromCustomWindow(this.customWindow);    
+            } else {
+                this.customWindow = undefined;
+                this.end = params.end ? new Date(params.end) : new Date();
+                const defaultDifference = 1000 * 60 * 60 * 6;
+                this.start = params.end ? new Date(params.start) : new Date(this.end.getTime() - defaultDifference);
+            }
+
+            this.datePickerForm.controls['window'].setValue([this.start, this.end], {emitEvent: false});
 
             if (!this.tooVague) {
                 this.notCancelled = true;
                 this.plot();
             }
+
         });
 
         // takes us back the correct map view, regardless of changes made here
@@ -70,15 +94,59 @@ export class PlotComponent implements OnInit {
     }
 
 
-    handleTimeWindowChange(timeWindow: { start: string, end: string }) {
-        console.log(`Time window change event has been received by the plot component`);
-        this.router.navigate([], {
-            queryParams: timeWindow,
+    listenForDatePickerWindowChanges() {
+        this.datePickerForm.valueChanges
+        .subscribe(({window}) => {
+            this.router.navigate([], {
+            // N.b. the customWindow query parameter is unset whenever a specific start and end date is used.
+            queryParams: {
+                start: window[0].toISOString(),
+                end: window[1].toISOString(),
+                customWindow: null
+            },
             queryParamsHandling: 'merge', // keeps any existing query parameters
             relativeTo: this.route
         });
+        });
     }
-    
+
+
+    private setStartAndEndFromCustomWindow(customWindow: string) {
+        const [value, increment] = customWindow.split('-');
+        const valueAsNumber = Number(value);
+        const durationObject = {};
+        durationObject[increment] = value;
+        if (check.not.integer(valueAsNumber)) {
+            throw new Error(`Invalid customWindow: ${customWindow}`);
+        }
+        if (!['seconds', 'minutes', 'hours', 'days', 'weeks', 'months', 'years'].includes(increment)) {
+            throw new Error(`Invalid customWindow: ${customWindow}`);
+        }
+        const now = new Date();
+        this.start = sub(now, durationObject);
+        this.end = now;
+    } 
+
+
+    public customWindowToText(customWindow: string) {
+        return `last ${customWindow.replace('-', ' ')}`;
+    }
+
+
+    public customWindowSelected(customWindow: string) {
+
+        this.router.navigate([], {
+            queryParams: {
+                customWindow,
+                start: null, // we want to unset the start and end dates
+                end: null
+            },
+            queryParamsHandling: 'merge', // keeps any existing query parameters
+            relativeTo: this.route
+        });
+
+    }
+
 
     public async plot() {
 

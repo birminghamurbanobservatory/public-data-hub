@@ -20,7 +20,30 @@
 
 <div *ngIf="!tooVague" class="relative w-full shadow-md bg-gray-50 p-4 sm:rounded-sm">
 
-    <buo-property-datetime-filter [initialTimeWindow]="{start: start, end: end}" (timeWindowChange)="handleTimeWindowChange($event)"></buo-property-datetime-filter>
+    <div class="flex flex-col md:flex-row justify-end">
+
+        <div class="w-full sm:max-w-xs md:mr-5">
+            <form [formGroup]="datePickerForm">
+                <input formControlName="window" 
+                    [selectMode]="'range'" 
+                    [max]="maxDate" 
+                    [owlDateTime]="dt1" 
+                    [owlDateTimeTrigger]="dt1" 
+                    placeholder="Time travel..." 
+                    class="form-input block w-full transition duration-150 ease-in-out text-sm">
+                <owl-date-time #dt1></owl-date-time>
+            </form>
+        </div>
+
+        <div class="mt-4 md:mt-0 flex justify-center">
+            <span class="relative z-0 inline-flex">
+                <button *ngFor="let window of customWindows; first as isFirst; last as isLast" type="button" class="inline-flex px-2 py-2 border border-gray-300 text-sm" [ngClass]="{'rounded-l-md': isFirst, 'rounded-r-md': isLast, 'bg-teal-900': window === customWindow, 'text-white': window === customWindow}" (click)="customWindowSelected(window)">
+                    {{customWindowToText(window)}}
+                </button>
+            </span>
+        </div>
+
+    </div>
 
     <!-- if we have no observations for the time period selected show message other load the chart -->
     <div *ngIf="obsTally === 0 && gettingObs === false; else showChart">
