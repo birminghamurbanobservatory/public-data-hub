@@ -139,12 +139,9 @@ export class MapMenuComponent implements OnInit {
 
       // patch any resultTime in the query params in the datepicker
       // only need the lte as the map only ever shows the last hour of observations
-      if (['resultTime__lte'].every(key => key in params)) {
+      if (Object.keys(params).includes('resultTime__lte')) {
         this.form.patchValue({ window: params.resultTime__lte});
         this.setResultsWindow(params.resultTime__lte);
-      } else {
-        // set a default window
-        this.setResultsWindow();
       }
 
       // In order to select the correct option for the <select> box, check to see if the current query parameters match those listed in the available options.
