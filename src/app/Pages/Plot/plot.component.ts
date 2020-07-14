@@ -43,8 +43,6 @@ export class PlotComponent implements OnInit {
 
 
     ngOnInit(): void {
-
-        console.log('Initialising plot component');
         
         this.route.queryParams.subscribe(params => {
 

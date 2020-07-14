@@ -14,7 +14,7 @@ export class DatetimeFilterComponent implements OnInit {
     @Input() initialTimeWindow: {start: Date; end: Date};
 
     /**
-     * Event emitter for start and end dateime window changes
+     * Event emitter for start and end datetime window changes
      */
     @Output() timeWindowChange: EventEmitter<{ start: string, end: string}> = new EventEmitter();
 
