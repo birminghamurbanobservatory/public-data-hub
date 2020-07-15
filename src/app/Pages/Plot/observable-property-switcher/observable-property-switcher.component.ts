@@ -42,12 +42,7 @@ export class ObservablePropertySwitcherComponent implements OnInit, OnChanges {
 
 
   ngOnChanges(changes): void {
-
-    console.log('Observable property switcher where parameters have changed:');
-    console.log(changes.where.currentValue);
-
     this.updateObservablePropertyOptions(changes.where.currentValue);
-
   }
 
 
@@ -65,7 +60,6 @@ export class ObservablePropertySwitcherComponent implements OnInit, OnChanges {
       .pipe(
         catchError((err) => {
           this.getting = false;
-          console.log(err);
           this.observablePropertyOptions = [];
           return throwError(err);
         })
@@ -73,7 +67,6 @@ export class ObservablePropertySwitcherComponent implements OnInit, OnChanges {
       .subscribe(({data: timeseries}) => {
 
         this.getting = false;
-        console.log(`Observable property switcher found ${timeseries.length} matching timeseries`);
 
         // Now we need to find just the unique top level platform IDs
         const uniqPlatStruct = timeseries.reduce((structSoFar, ts) => {
@@ -111,8 +104,6 @@ export class ObservablePropertySwitcherComponent implements OnInit, OnChanges {
 
         this.observablePropertyOptions = sortBy(asArray, 'label');
         
-        console.log(`Of which there are ${this.observablePropertyOptions.length} unique options`);
-
       })
       
 

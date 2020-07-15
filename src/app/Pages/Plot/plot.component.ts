@@ -97,7 +97,6 @@ export class PlotComponent implements OnInit {
 
 
     public handlePlatformSwitch(newPlatformId: string) {
-        console.log(`Handling switch to platform ${newPlatformId}`);
         this.cleanPlotPage();
         this.router.navigate([], {
             queryParams: {
@@ -110,7 +109,6 @@ export class PlotComponent implements OnInit {
 
 
     public handleObservablePropertySwitch({observedProperty, unit}) {
-        console.log(`Handling switch to observable property ${observedProperty} and unit ${unit}.`);
         this.cleanPlotPage();
         this.router.navigate([], {
             queryParams: {
@@ -221,8 +219,6 @@ export class PlotComponent implements OnInit {
 
 
     private buildObservablePropertySwitcherWhere(timeseriesParams: any): any {
-        console.log('here');
-        console.log(timeseriesParams);
         if (this.timeseriesParams.ancestorPlatforms__includes) {
             return {
                 ancestorPlatforms__includes: this.timeseriesParams.ancestorPlatforms__includes

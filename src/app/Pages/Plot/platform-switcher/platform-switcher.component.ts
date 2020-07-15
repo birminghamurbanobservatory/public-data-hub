@@ -42,12 +42,7 @@ export class PlatformSwitcherComponent implements OnInit, OnChanges {
 
 
   ngOnChanges(changes): void {
-
-    console.log('Platform switcher where parameters have changed:');
-    console.log(changes.where.currentValue);
-
     this.updatePlatformOptions(changes.where.currentValue);
-
   }
 
 
@@ -65,7 +60,6 @@ export class PlatformSwitcherComponent implements OnInit, OnChanges {
       .pipe(
         catchError((err) => {
           this.getting = false;
-          console.log(err);
           this.platformOptions = [];
           return throwError(err);
         })
@@ -73,7 +67,6 @@ export class PlatformSwitcherComponent implements OnInit, OnChanges {
       .subscribe(({data: timeseries}) => {
 
         this.getting = false;
-        console.log(`Platform switcher found ${timeseries.length} matching timeseries`);
 
         // Now we need to find just the unique top level platform IDs
         const uniqPlatStruct = timeseries.reduce((structSoFar, ts) => {
@@ -94,8 +87,6 @@ export class PlatformSwitcherComponent implements OnInit, OnChanges {
 
         this.platformOptions = sortBy(asArray, 'label');
         
-        console.log(`Of which there are ${this.platformOptions.length} unique top level platforms`);
-
       })
       
 
