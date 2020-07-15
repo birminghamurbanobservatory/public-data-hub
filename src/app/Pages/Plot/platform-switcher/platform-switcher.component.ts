@@ -56,7 +56,7 @@ export class PlatformSwitcherComponent implements OnInit, OnChanges {
 
       this.getting = true;
 
-      this.timeseriesService.getTimeSeriesByQuery(where, {limit: 300, populate: ['ancestorPlatforms']})
+      this.timeseriesService.getTimeSeriesByQuery(where, {limit: 500, populate: ['ancestorPlatforms']})
       .pipe(
         catchError((err) => {
           this.getting = false;

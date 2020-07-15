@@ -56,7 +56,7 @@ export class ObservablePropertySwitcherComponent implements OnInit, OnChanges {
 
       this.getting = true;
 
-      this.timeseriesService.getTimeSeriesByQuery(where, {limit: 300, populate: ['observedProperty', 'unit']})
+      this.timeseriesService.getTimeSeriesByQuery(where, {limit: 500, populate: ['observedProperty', 'unit']})
       .pipe(
         catchError((err) => {
           this.getting = false;
