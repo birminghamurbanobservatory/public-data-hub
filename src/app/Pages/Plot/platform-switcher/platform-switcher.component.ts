@@ -28,7 +28,7 @@ export class PlatformSwitcherComponent implements OnInit, OnChanges {
   @Output() platformSwitch = new EventEmitter<string>();
 
   public platformOptions: PlatformOption[] = [];
-  public getting = false;
+  public getting = true;
   public selectedPlatformId = new FormControl('');
 
   constructor(

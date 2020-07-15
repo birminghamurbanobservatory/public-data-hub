@@ -8,6 +8,7 @@ import {throwError} from 'rxjs';
 
 
 interface ObservablePropertyOption {
+    jointId: string, // observedProperty id combined with the unit id
     label: string; // might include the symbol of the unit too if more than one for this observed property
     observedPropertyId: string;
     unitId: string;
@@ -27,7 +28,7 @@ export class ObservablePropertySwitcherComponent implements OnInit, OnChanges {
   @Output() observablePropertySwitch = new EventEmitter<{observedProperty: string; unit: string}>();
 
   public observablePropertyOptions: ObservablePropertyOption[] = [];
-  public getting = false;
+  public getting = true;
   public selectedObservableProperty = new FormControl('');
 
   constructor(
@@ -100,6 +101,7 @@ export class ObservablePropertySwitcherComponent implements OnInit, OnChanges {
           uniqPlatStruct[key].forEach((item) => {
             const label = includeUnitInLabel ? `${item.observedPropertyLabel} (${item.unitSymbol})` : item.observedPropertyLabel;
             asArray.push({
+              jointId: `${item.observedPropertyId}-${item.unitId}`,
               label,
               observedPropertyId: item.observedPropertyId,
               unitId: item.unitId
@@ -120,8 +122,10 @@ export class ObservablePropertySwitcherComponent implements OnInit, OnChanges {
 
 
   private watchForObservablePropertySelection() {
-    this.selectedObservableProperty.valueChanges.subscribe((selected) => {
-      if (check.nonEmptyObject(selected)) {
+    this.selectedObservableProperty.valueChanges.subscribe((jointId) => {
+      if (check.nonEmptyString(jointId)) {
+        // I've had to take this slightly weird approach of receiving an id rather than the full object so that the view is able to maintain a memory of which option has been selected.
+        const selected = this.observablePropertyOptions.find((option) => option.jointId === jointId);
         // Emit this selection
         this.observablePropertySwitch.emit({
           observedProperty: selected.observedPropertyId,
