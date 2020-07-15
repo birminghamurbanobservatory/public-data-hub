@@ -35,7 +35,7 @@
 
       <div class="px-4 py-2 sm:p-0">
         <dl>
-          <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5 sm:border-t sm:border-gray-200">
+          <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-4 sm:border-t sm:border-gray-200">
             <dt class="text-sm leading-5 font-medium text-gray-500">
               Sensor
             </dt>
@@ -44,7 +44,7 @@
             </dd>
           </div>
 
-          <div *ngIf="observation.observedProperty" class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+          <div *ngIf="observation.observedProperty" class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-4">
             <dt class="text-sm leading-5 font-medium text-gray-500">
               Observed Property
             </dt>
@@ -53,7 +53,7 @@
             </dd>
           </div>
 
-          <div *ngIf="observation.hasFeatureOfInterest" class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+          <div *ngIf="observation.hasFeatureOfInterest" class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-4">
             <dt class="text-sm leading-5 font-medium text-gray-500">
               Feature of Interest
             </dt>
@@ -62,7 +62,7 @@
             </dd>
           </div>
 
-          <div class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+          <div class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-4">
             <dt class="text-sm leading-5 font-medium text-gray-500">
               Observation time
             </dt>
@@ -73,7 +73,7 @@
 
           <ng-container *ngIf=" observation.aggregation.id !== 'instant' ">
 
-            <div class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+            <div class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-4">
               <dt class="text-sm leading-5 font-medium text-gray-500">
                 Aggregation period
               </dt>
@@ -84,7 +84,7 @@
             </div>
           </ng-container>
 
-          <div *ngIf="observation.hasDeployment" class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+          <div *ngIf="observation.hasDeployment" class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-4">
             <dt class="text-sm leading-5 font-medium text-gray-500">
               Deployment
             </dt>
@@ -93,7 +93,7 @@
             </dd>
           </div>
 
-          <div *ngIf="observation.ancestorPlatforms" class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+          <div *ngIf="observation.ancestorPlatforms" class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-4">
             <dt class="text-sm leading-5 font-medium text-gray-500">
               Platforms
             </dt>
@@ -115,7 +115,7 @@
     </div>
 
     <div class="p-4 bg-gray-100">
-      <div class="mt-4 mb-4 sm:mb-0 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
+      <div class="my-1 mb-4 sm:mb-0 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
 
         <span class="flex w-full rounded-md shadow-sm sm:col-start-1 my-2">
           <a [routerLink]="['/observation', observation.id]" class="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-indigo-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo transition ease-in-out duration-150 sm:text-sm sm:leading-5">
