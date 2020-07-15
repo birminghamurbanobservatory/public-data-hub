@@ -1,0 +1,18 @@
+<div>
+
+  <div *ngIf="getting" class="w-64">
+    <p class="text-teal-900 text-center">
+      <i class="fas fa-spinner fa-spin"></i>
+    </p>
+  </div>
+
+
+  <div *ngIf="platformOptions.length > 0 && !getting" class="w-64">
+    <select [formControl]="selectedPlatformId" class="form-select block w-full pl-3 pr-10 py-2 leading-6 border-gray-300 text-sm leading-5">
+      <option value="">Change platform</option>
+      <option *ngFor="let platform of platformOptions" [ngValue]="platform.id">{{platform.label}}</option>
+    </select>
+  </div>
+
+
+</div>

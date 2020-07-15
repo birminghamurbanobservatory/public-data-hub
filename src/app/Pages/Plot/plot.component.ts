@@ -38,6 +38,8 @@ export class PlotComponent implements OnInit {
     public plotsToShow = [];
     public customWindows = ['6-hours', '24-hours', '3-days'];
     public customWindow: string;
+    public platformSwitcherWhere = {};
+    public observablePropertyWhere = {};
     
     constructor (
         private route: ActivatedRoute,
@@ -94,6 +96,40 @@ export class PlotComponent implements OnInit {
     }
 
 
+    public handlePlatformSwitch(newPlatformId: string) {
+        console.log(`Handling switch to platform ${newPlatformId}`);
+        this.cleanPlotPage();
+        this.router.navigate([], {
+            queryParams: {
+                ancestorPlatforms__includes: newPlatformId
+            },
+            queryParamsHandling: 'merge', // keeps any existing query parameters
+            relativeTo: this.route
+        })
+    }
+
+
+    public handleObservablePropertySwitch({observedProperty, unit}) {
+        console.log(`Handling switch to observable property ${observedProperty} and unit ${unit}.`);
+        this.cleanPlotPage();
+        this.router.navigate([], {
+            queryParams: {
+                observedProperty,
+                unit // assumes there will always be a unit, hopefully this will continue to be the case
+            },
+            queryParamsHandling: 'merge', // keeps any existing query parameters
+            relativeTo: this.route
+        })
+    }
+
+
+    private cleanPlotPage() {
+        // This means that the plot() function will get some new timeseries. Which we don't want when all that has changed is the time frame, but we do want when the top platform has changed, or the observed property and unit.
+        this.timeseries = undefined;
+    }
+
+
+
     listenForDatePickerWindowChanges() {
         this.datePickerForm.valueChanges
         .subscribe(({window}) => {
@@ -148,7 +184,56 @@ export class PlotComponent implements OnInit {
     }
 
 
-    public async plot() {
+    private buildPlatformSwitcherWhere(timeseries: Timeseries[], timeseriesParams: any): any {
+
+        const where = {
+            observedProperty: timeseriesParams.observedProperty,
+            unit: timeseriesParams.unit
+        }
+
+        const {same} = this.compareTimeseries(timeseries);
+
+        const extraProps = ['disciplines', 'hasFeatureOfInterest'];
+
+        extraProps.forEach((prop) => {
+            if (same.includes(prop)) {
+                if (timeseries[0]) {
+                    // We need to account for the fact that timeseries might have populated properties
+                    if (check.nonEmptyString(timeseries[0][prop])) {
+                        where[prop] = timeseries[0][prop];
+                    } else if (check.nonEmptyObject(timeseries[0][prop])) {
+                        where[prop] = timeseries[0][prop].id;
+                    } else if (check.nonEmptyArray(timeseries[0][prop])) {
+                        where[prop] = timeseries[0][prop].map((item) => {
+                            if (check.nonEmptyString(item)) {
+                                return item;
+                            } else {
+                                return item.id;
+                            }
+                        })
+                    }
+                }
+            }
+        })
+
+        return where;
+    }
+
+
+    private buildObservablePropertySwitcherWhere(timeseriesParams: any): any {
+        console.log('here');
+        console.log(timeseriesParams);
+        if (this.timeseriesParams.ancestorPlatforms__includes) {
+            return {
+                ancestorPlatforms__includes: this.timeseriesParams.ancestorPlatforms__includes
+            };
+        } else {
+            return {};
+        }
+    }
+
+
+    private async plot() {
 
         if (!this.timeseries) {
             this.timeseries = await this.getTimeseries();
@@ -157,6 +242,9 @@ export class PlotComponent implements OnInit {
             this.subTitle = titles.subTitle;
             this.timeseriesDifferencesOnly = this.stripTimeseriesDownToJustDifferences(this.timeseries);
             this.selectPlotsToShow();
+
+            this.platformSwitcherWhere = this.buildPlatformSwitcherWhere(this.timeseries, this.timeseriesParams);
+            this.observablePropertyWhere = this.buildObservablePropertySwitcherWhere(this.timeseriesParams);
         }
 
         this.timeseriesDifferencesOnly.forEach((ts, idx) => {
@@ -199,7 +287,7 @@ export class PlotComponent implements OnInit {
             for (let n = 0; n < this.graphDto.tso.length; n++) {
                 this.graphDto.tso[n] = await this.callApi(this.graphDto.tso[n], 0);
                 if (n + 1 === this.graphDto.tso.length) {
-                    console.log('emit')
+                    // console.log('emit')
                     this.gettingObs = false;
                     this.tso$.next(this.graphDto);
                 }                
@@ -250,7 +338,7 @@ export class PlotComponent implements OnInit {
             await this.callApi(call, count)
         }
 
-        console.log(call.id, count)
+        // console.log(call.id, count)
         return call;
     }
 

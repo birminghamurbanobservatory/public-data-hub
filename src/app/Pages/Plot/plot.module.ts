@@ -11,6 +11,8 @@ import { ObservationLoadingModalComponent } from './loading-modal/loading-modal.
 
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from '@danielmoncada/angular-datetime-picker';
 import { OWL_DATE_TIME_LOCALE } from '@danielmoncada/angular-datetime-picker';
+import { PlatformSwitcherComponent } from './platform-switcher/platform-switcher.component';
+import { ObservablePropertySwitcherComponent } from './observable-property-switcher/observable-property-switcher.component';
 
 @NgModule({
 
@@ -27,6 +29,8 @@ import { OWL_DATE_TIME_LOCALE } from '@danielmoncada/angular-datetime-picker';
     declarations: [
         PlotComponent,
         ObservationLoadingModalComponent,
+        PlatformSwitcherComponent,
+        ObservablePropertySwitcherComponent,
     ],
 
     providers: [
