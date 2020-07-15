@@ -7,7 +7,7 @@
   </div>
 
   <div *ngIf="platformOptions.length > 0 && !getting">
-    <select [formControl]="selectedPlatformId" class="form-select block w-full pl-3 pr-10 py-2 leading-6 border-gray-300 text-sm leading-5">
+    <select [formControl]="selectedPlatformId" class="form-select block w-full pl-3 pr-10 py-2 border-gray-300 text-sm leading-5">
       <option value="">Change platform</option>
       <option *ngFor="let platform of platformOptions" [ngValue]="platform.id">{{platform.label}}</option>
     </select>

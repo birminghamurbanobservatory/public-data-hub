@@ -7,7 +7,7 @@
   </div>
 
   <div *ngIf="observablePropertyOptions.length > 0 && !getting">
-    <select [formControl]="selectedObservableProperty" class="form-select block w-full pl-3 pr-10 py-2 leading-6 border-gray-300 text-sm leading-5">
+    <select [formControl]="selectedObservableProperty" class="form-select block w-full pl-3 pr-10 py-2 border-gray-300 text-sm leading-5">
       <option value="">Change property</option>
       <option *ngFor="let obsProp of observablePropertyOptions" [ngValue]="obsProp.jointId">{{obsProp.label}}</option>
     </select>

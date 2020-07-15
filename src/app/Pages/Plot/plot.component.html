@@ -20,17 +20,17 @@
 
 <div *ngIf="!tooVague" class="relative w-full shadow-md bg-gray-50 p-4 sm:rounded-sm">
 
-    <div class="flex flex-col md:flex-row justify-end">
+    <div class="flex flex-wrap justify-center items-center">
 
-        <div class="mx-2">
+        <div class="p-2">
             <buo-platform-switcher [where]=platformSwitcherWhere (platformSwitch)="handlePlatformSwitch($event)"></buo-platform-switcher>
         </div>
 
-        <div class="mx-2">
+        <div class="p-2">
             <buo-observable-property-switcher [where]=observablePropertyWhere (observablePropertySwitch)="handleObservablePropertySwitch($event)"></buo-observable-property-switcher>
         </div>
 
-        <div class="w-full sm:max-w-xs md:mr-5">
+        <div class="w-76 p-2">
             <form [formGroup]="datePickerForm">
                 <input formControlName="window" 
                     [selectMode]="'range'" 
@@ -43,7 +43,7 @@
             </form>
         </div>
 
-        <div class="mt-4 md:mt-0 flex justify-center">
+        <div class="p-2 flex justify-center">
             <span class="relative z-0 inline-flex">
                 <button *ngFor="let window of customWindows; first as isFirst; last as isLast" type="button" class="inline-flex px-2 py-2 border border-gray-300 text-sm" [ngClass]="{'rounded-l-md': isFirst, 'rounded-r-md': isLast, 'bg-teal-900': window === customWindow, 'text-white': window === customWindow}" (click)="customWindowSelected(window)">
                     {{customWindowToText(window)}}
