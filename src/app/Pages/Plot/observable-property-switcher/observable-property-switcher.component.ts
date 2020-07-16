@@ -28,7 +28,7 @@ export class ObservablePropertySwitcherComponent implements OnInit, OnChanges {
   @Output() observablePropertySwitch = new EventEmitter<{observedProperty: string; unit: string}>();
 
   public observablePropertyOptions: ObservablePropertyOption[] = [];
-  public getting = true;
+  public getting = false;
   public selectedObservableProperty = new FormControl('');
 
   constructor(

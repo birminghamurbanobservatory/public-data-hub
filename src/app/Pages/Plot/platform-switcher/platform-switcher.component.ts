@@ -19,8 +19,8 @@ interface PlatformOption {
 export class PlatformSwitcherComponent implements OnInit, OnChanges {
 
   @Input() where: {
-    observedProperty?: string, 
-    unit?: string; 
+    observedProperty?: string,
+    unit?: string;
     disciplines?: string[];
     hasFeatureOfInterest: string;
   };
@@ -28,7 +28,7 @@ export class PlatformSwitcherComponent implements OnInit, OnChanges {
   @Output() platformSwitch = new EventEmitter<string>();
 
   public platformOptions: PlatformOption[] = [];
-  public getting = true;
+  public getting = false;
   public selectedPlatformId = new FormControl('');
 
   constructor(
