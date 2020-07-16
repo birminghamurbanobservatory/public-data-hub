@@ -10,19 +10,32 @@
     </div>
 </header>
 
-<!-- TODO: Make this nicer. At some point you might want to have some <select> boxes allowing the user to select what observed property and unit they want to use -->
+<!-- Get timeseries error -->
+<div *ngIf="getTimeseriesErrorMessage">
+    <p class="text-red-500 text-lg">Error: {{getTimeseriesErrorMessage}}</p>
+</div>
+
+<!-- Too vague error -->
 <div *ngIf="tooVague">
-    <p class="text-red-500">
+    <p class="text-red-500 text-lg">
         Not enough information has been provided in order to draw a plot.
     </p>
 </div>
 
 
-<div *ngIf="!tooVague" class="relative w-full shadow-md bg-gray-50 p-4 sm:rounded-sm">
+<div *ngIf="!tooVague && !getTimeseriesErrorMessage" class="relative w-full shadow-md bg-gray-50 p-4 sm:rounded-sm">
 
-    <div class="flex flex-col md:flex-row justify-end">
+    <div class="flex flex-wrap justify-center items-center">
 
-        <div class="w-full sm:max-w-xs md:mr-5">
+        <div>
+            <buo-platform-switcher [where]=platformSwitcherWhere (platformSwitch)="handlePlatformSwitch($event)"></buo-platform-switcher>
+        </div>
+
+        <div>
+            <buo-observable-property-switcher [where]=observablePropertyWhere (observablePropertySwitch)="handleObservablePropertySwitch($event)"></buo-observable-property-switcher>
+        </div>
+
+        <div class="w-76 p-2">
             <form [formGroup]="datePickerForm">
                 <input formControlName="window" 
                     [selectMode]="'range'" 
@@ -35,7 +48,7 @@
             </form>
         </div>
 
-        <div class="mt-4 md:mt-0 flex justify-center">
+        <div class="p-2 flex justify-center">
             <span class="relative z-0 inline-flex">
                 <button *ngFor="let window of customWindows; first as isFirst; last as isLast" type="button" class="inline-flex px-2 py-2 border border-gray-300 text-sm" [ngClass]="{'rounded-l-md': isFirst, 'rounded-r-md': isLast, 'bg-teal-900': window === customWindow, 'text-white': window === customWindow}" (click)="customWindowSelected(window)">
                     {{customWindowToText(window)}}
@@ -45,26 +58,27 @@
 
     </div>
 
-    <!-- if we have no observations for the time period selected show message other load the chart -->
-    <div *ngIf="obsTally === 0 && gettingObs === false; else showChart">
+    <!-- Get observations error -->
+    <div *ngIf="getObservationsErrorMessage">
         <div class="mt-4 bg-white shadow-inner p-6 text-center border border-gray-200 sm:rounded-md">
-            <p class="text-red-800 font-medium leading-5">No data for the period selected.</p>
+            <p class="text-red-500 font-medium leading-5">{{getObservationsErrorMessage}}</p>
+            <button *ngIf="suggestedWindow" (click)="goToSuggestedWindow()" class="mt-5 bg-transparent hover:bg-teal-500 text-teal-700 font-semibold hover:text-white py-2 px-4 border border-teal-500 hover:border-transparent rounded">Load a period with data</button>
         </div>
     </div>
-    <ng-template #showChart>
-        <div class="mt-4">
-            <!-- column -->
-            <buo-column-chart *ngIf="plotsToShow.includes('column-chart')" [timeseries]="tso$"></buo-column-chart>
-            <!-- air quality line chart -->
-            <buo-air-quality-line-chart *ngIf="plotsToShow.includes('air-quality-line-chart')" [timeseries]="tso$"></buo-air-quality-line-chart>
-            <!-- wind direction line chart -->
-            <buo-wind-direction-line-chart *ngIf="plotsToShow.includes('wind-direction-line-chart')" [timeseries]="tso$"></buo-wind-direction-line-chart>
-            <!-- line chart -->
-            <buo-line-chart *ngIf="plotsToShow.includes('line-chart')" [timeseries]="tso$"></buo-line-chart>
-            <!-- total -->
-            <buo-total *ngIf="plotsToShow.includes('total')" [timeseries]="tso$"></buo-total>
-        </div>
-    </ng-template>
+
+    <div class="mt-4" *ngIf="!getObservationsErrorMessage">
+        <!-- column -->
+        <buo-column-chart *ngIf="plotsToShow.includes('column-chart')" [timeseries]="tso$"></buo-column-chart>
+        <!-- air quality line chart -->
+        <buo-air-quality-line-chart *ngIf="plotsToShow.includes('air-quality-line-chart')" [timeseries]="tso$"></buo-air-quality-line-chart>
+        <!-- wind direction line chart -->
+        <buo-wind-direction-line-chart *ngIf="plotsToShow.includes('wind-direction-line-chart')" [timeseries]="tso$"></buo-wind-direction-line-chart>
+        <!-- line chart -->
+        <buo-line-chart *ngIf="plotsToShow.includes('line-chart')" [timeseries]="tso$"></buo-line-chart>
+        <!-- total -->
+        <buo-total *ngIf="plotsToShow.includes('total')" [timeseries]="tso$"></buo-total>
+    </div>
+
     
     <div *ngIf="timeseriesDifferencesOnly && timeseriesDifferencesOnly.length > 1" class="-mx-2 flex flex-wrap">
        
@@ -81,7 +95,7 @@
                     <dl>
 
                     <!-- Probably don't need this given only one observed property will ever been show at once. -->
-                    <div *ngIf="ts.observedProperty" class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5">
+                    <div *ngIf="ts.observedProperty" class="mb-4 sm:mb-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5">
                         <dt class="text-sm leading-5 font-medium text-gray-500">
                         Observed property
                         </dt>
@@ -91,7 +105,7 @@
                     </div>
 
                     <!-- Probably don't need this given only unit will ever been show at once. -->
-                    <div *ngIf="ts.unit" class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5">
+                    <div *ngIf="ts.unit" class="mb-4 sm:mb-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5">
                         <dt class="text-sm leading-5 font-medium text-gray-500">
                         Unit
                         </dt>
@@ -100,7 +114,7 @@
                         </dd>
                     </div>
 
-                    <div *ngIf="ts.aggregation" class="sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5">
+                    <div *ngIf="ts.aggregation" class="mb-4 sm:mb-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5">
                         <dt class="text-sm leading-5 font-medium text-gray-500">
                         Aggregation
                         </dt>
@@ -109,7 +123,7 @@
                         </dd>
                     </div>
     
-                    <div *ngIf="ts.madeBySensor" class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                    <div *ngIf="ts.madeBySensor" class="mb-4 sm:mb-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
                         <dt class="text-sm leading-5 font-medium text-gray-500">
                         Sensor
                         </dt>
@@ -118,7 +132,7 @@
                         </dd>
                     </div>
     
-                    <div *ngIf="ts.hasDeployment" class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                    <div *ngIf="ts.hasDeployment" class="mb-4 sm:mb-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
                         <dt class="text-sm leading-5 font-medium text-gray-500">
                             Deployment
                         </dt>
@@ -127,7 +141,7 @@
                         </dd>
                     </div>
 
-                    <div *ngIf="ts.hasFeatureOfInterest" class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                    <div *ngIf="ts.hasFeatureOfInterest" class="mb-4 sm:mb-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
                         <dt class="text-sm leading-5 font-medium text-gray-500">
                             Feature of Interest
                         </dt>
@@ -136,7 +150,7 @@
                         </dd>
                     </div>
 
-                    <div *ngIf="ts.ancestorPlatforms" class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                    <div *ngIf="ts.ancestorPlatforms" class="mb-4 sm:mb-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
                         <dt class="text-sm leading-5 font-medium text-gray-500">
                             Platforms
                         </dt>
@@ -148,7 +162,7 @@
                         </dd>
                     </div>
 
-                    <div *ngIf="ts.disciplines" class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                    <div *ngIf="ts.disciplines" class="mb-4 sm:mb-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
                         <dt class="text-sm leading-5 font-medium text-gray-500">
                             Disciplines
                         </dt>
@@ -160,7 +174,7 @@
                         </dd>
                     </div>
 
-                    <div *ngIf="ts.usedProcedures" class="mt-8 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                    <div *ngIf="ts.usedProcedures" class="mb-4 sm:mb-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
                         <dt class="text-sm leading-5 font-medium text-gray-500">
                             Procedures
                         </dt>
