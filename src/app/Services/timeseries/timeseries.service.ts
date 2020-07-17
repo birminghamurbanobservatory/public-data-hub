@@ -39,7 +39,7 @@ export class TimeseriesService {
      * 
      * @param where : query object
      */
-    public getTimeSeriesByQuery(where = {}, options: {populate?: string[]} = {}) {
+    public getTimeSeriesByQuery(where = {}, options: {populate?: string[], limit?: number} = {}) {
 
         const queryParamsObject = Object.assign({}, where, options);
         const qs = this.apiFunctions.queryParamsObjectToString(queryParamsObject);

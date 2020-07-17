@@ -1,21 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
-import {omit, cloneDeep, uniq} from 'lodash';
+import { Observable, Subject, throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import {omit, cloneDeep, uniq, maxBy} from 'lodash';
 import * as check from 'check-types';
 import { TimeseriesService } from '../../Services/timeseries/timeseries.service';
 import { ColourService } from '../../Services/colours/colour.service';
 
 import { Timeseries } from '../../Services/timeseries/timeseries.class';
 import { LastUrlService } from 'src/app/Services/last-url/last-url.service';
+import {sub} from 'date-fns';
+import {FormGroup, FormBuilder, Validators} from '@angular/forms';
+import {findId} from 'src/app/shared/handy-utils';
 
 @Component({
     templateUrl: './plot.component.html'
 })
 export class PlotComponent implements OnInit {
 
+    public datePickerForm: FormGroup;
+    public maxDate = new Date();
     private timeseries: Timeseries[];
     public timeseriesDifferencesOnly: any[];
     public ts$: Observable<Timeseries[]>;
@@ -32,6 +37,14 @@ export class PlotComponent implements OnInit {
     public backUrl: Boolean = false;
     public notCancelled: boolean = true;
     public plotsToShow = [];
+    public customWindows = ['6-hours', '24-hours', '3-days'];
+    public customWindow: string;
+    public platformSwitcherWhere = {};
+    public observablePropertyWhere = {};
+    public getTimeseriesErrorMessage = '';
+    public getObservationsErrorMessage = '';
+    public suggestedWindow = null;
+    public needToRefreshTimeseries = true;
     
     constructor (
         private route: ActivatedRoute,
@@ -39,32 +52,48 @@ export class PlotComponent implements OnInit {
         private timeseriesService: TimeseriesService,
         private colours: ColourService,
         private lastUrlService: LastUrlService,
+        private fb: FormBuilder
     ) {}
 
 
     ngOnInit(): void {
 
-        console.log('Initialising plot component');
+        this.datePickerForm = this.fb.group({
+            window: ['']
+        });
+
+        this.listenForDatePickerWindowChanges();
         
         this.route.queryParams.subscribe(params => {
 
-            this.timeseriesParams = omit(params, ['timeseriesId', 'start', 'end']);
+            this.timeseriesParams = omit(params, ['timeseriesId', 'start', 'end', 'customWindow']);
             if (params.timeseriesId) {
                 this.timeseriesParams.id__in = params.timeseriesId;
             }
             if (!this.timeseriesParams.id__in && (!this.timeseriesParams.observedProperty || !this.timeseriesParams.unit)) {
                 this.tooVague = true;
             }
-            this.end = params.end ? new Date(params.end) : new Date();
-            const defaultDifference = 1000 * 60 * 60 * 6;
-            this.start = params.end ? new Date(params.start) : new Date(this.end.getTime() - defaultDifference);
-            // If the query parameters didn't include start and end dates in the first place, then I don't think it makes sense to reload the page with the default start and end dates applied. 
-            // We'll only add the dates to the URL if the datepicker specifically selects a time frame.
+
+            if (params.customWindow) {
+                this.customWindow = params.customWindow;
+                this.setStartAndEndFromCustomWindow(this.customWindow);
+            } else if (!params.start && !params.end) {
+                this.customWindow = this.customWindows[0];
+                this.setStartAndEndFromCustomWindow(this.customWindow);    
+            } else {
+                this.customWindow = undefined;
+                this.end = params.end ? new Date(params.end) : new Date();
+                const defaultDifference = 1000 * 60 * 60 * 6;
+                this.start = params.end ? new Date(params.start) : new Date(this.end.getTime() - defaultDifference);
+            }
+
+            this.datePickerForm.controls['window'].setValue([this.start, this.end], {emitEvent: false});
 
             if (!this.tooVague) {
                 this.notCancelled = true;
-                this.plot();
+                this.plot(this.needToRefreshTimeseries);
             }
+
         });
 
         // takes us back the correct map view, regardless of changes made here
@@ -72,25 +101,181 @@ export class PlotComponent implements OnInit {
     }
 
 
-    handleTimeWindowChange(timeWindow: { start: string, end: string }) {
-        console.log(`Time window change event has been received by the plot component`);
+    public handlePlatformSwitch(newPlatformId: string) {
+        // If the only query parameter before the switch was the timeseriesId then just updating the platform in the URL won't provide enough query parameters for the page to work, therefore we can re-use the buildPlatformSwitcherWhere function to get the observedProperty and unit we should be using.
+        const where = this.buildPlatformSwitcherWhere(this.timeseries, this.timeseriesParams);
+        this.needToRefreshTimeseries = true;
+
         this.router.navigate([], {
-            queryParams: timeWindow,
+            queryParams: {
+                ancestorPlatforms__includes: newPlatformId,
+                timeseriesId: null, // important to remove this if present
+                observedProperty: where.observedProperty,
+                unit: where.unit
+            },
+            queryParamsHandling: 'merge', // keeps any existing query parameters
+            relativeTo: this.route
+        })
+    }
+
+
+    public handleObservablePropertySwitch({observedProperty, unit}) {
+        // If the only query parameter before the switch was the timeseriesId then just updating the observedProperty and unit in the URL could lead to a LOT of timeseries being found, therefore we can re-use the buildObservablePropertySwitcherWhere function to see if there's an ancestorPlatform we can add to the URL
+        const where = this.buildObservablePropertySwitcherWhere(this.timeseries, this.timeseriesParams);
+        this.needToRefreshTimeseries = true;
+
+        this.router.navigate([], {
+            queryParams: {
+                observedProperty,
+                unit, // assumes there will always be a unit, hopefully this will continue to be the case
+                timeseriesId: null, // important to remove this if present
+                ancestorPlatforms__includes: where.ancestorPlatforms__includes || null
+            },
+            queryParamsHandling: 'merge', // keeps any existing query parameters
+            relativeTo: this.route
+        })
+    }
+
+
+    private listenForDatePickerWindowChanges() {
+
+        this.datePickerForm.valueChanges.subscribe(({window}) => {
+
+            this.needToRefreshTimeseries = false;
+
+            this.router.navigate([], {
+                // N.b. the customWindow query parameter is unset whenever a specific start and end date is used.
+                queryParams: {
+                    start: window[0].toISOString(),
+                    end: window[1].toISOString(),
+                    customWindow: null
+                },
+                queryParamsHandling: 'merge', // keeps any existing query parameters
+                relativeTo: this.route
+            });
+
+        });
+
+    }
+
+
+    public goToSuggestedWindow() {
+
+        this.needToRefreshTimeseries = false;
+
+        this.router.navigate([], {
+            // N.b. the customWindow query parameter is unset whenever a specific start and end date is used.
+            queryParams: {
+                start: this.suggestedWindow.start.toISOString(),
+                end: this.suggestedWindow.end.toISOString(),
+                customWindow: null
+            },
             queryParamsHandling: 'merge', // keeps any existing query parameters
             relativeTo: this.route
         });
+
     }
-    
 
-    public async plot() {
 
-        if (!this.timeseries) {
+    private setStartAndEndFromCustomWindow(customWindow: string) {
+        const [value, increment] = customWindow.split('-');
+        const valueAsNumber = Number(value);
+        const durationObject = {};
+        durationObject[increment] = value;
+        if (check.not.integer(valueAsNumber)) {
+            throw new Error(`Invalid customWindow: ${customWindow}`);
+        }
+        if (!['seconds', 'minutes', 'hours', 'days', 'weeks', 'months', 'years'].includes(increment)) {
+            throw new Error(`Invalid customWindow: ${customWindow}`);
+        }
+        const now = new Date();
+        this.start = sub(now, durationObject);
+        this.end = now;
+    } 
+
+
+    public customWindowToText(customWindow: string) {
+        return `last ${customWindow.replace('-', ' ')}`;
+    }
+
+
+    public customWindowSelected(customWindow: string) {
+
+        this.needToRefreshTimeseries = false;
+
+        this.router.navigate([], {
+            queryParams: {
+                customWindow,
+                start: null, // we want to unset the start and end dates
+                end: null
+            },
+            queryParamsHandling: 'merge', // keeps any existing query parameters
+            relativeTo: this.route
+        });
+
+    }
+
+
+    private buildPlatformSwitcherWhere(timeseries: Timeseries[], timeseriesParams: any): any {
+
+        const where: any = {};
+
+        if (timeseriesParams.observedProperty && timeseriesParams.unit) {
+            where.observedProperty = timeseriesParams.observedProperty;
+            where.unit = timeseriesParams.unit
+        } else if (timeseries.length > 0) {
+            where.observedProperty = findId(timeseries[0].observedProperty);
+            where.unit = findId(timeseries[0].unit);
+        }
+
+        const {same} = this.compareTimeseries(timeseries);
+
+        const extraProps = ['disciplines', 'hasFeatureOfInterest'];
+
+        extraProps.forEach((prop) => {
+            if (same.includes(prop)) {
+                if (timeseries[0]) {
+                    if (check.nonEmptyArray(timeseries[0][prop])) {
+                        where[prop] = timeseries[0][prop].map(findId);
+                    } else if (check.assigned(timeseries[0][prop])) {
+                        where[prop] = findId(timeseries[0][prop]);
+                    }
+                }
+            }
+        })
+
+        return where;
+    }
+
+
+    private buildObservablePropertySwitcherWhere(timeseries: Timeseries[], timeseriesParams: any): any {
+        if (this.timeseriesParams.ancestorPlatforms__includes) {
+            return {
+                ancestorPlatforms__includes: this.timeseriesParams.ancestorPlatforms__includes
+            };
+        } else {
+            const where: any = {};
+            if (timeseries.length === 1 && timeseries[0].ancestorPlatforms) {
+                where.ancestorPlatforms__includes = findId(timeseries[0].ancestorPlatforms[0]);
+            }
+            return where;
+        }
+    }
+
+
+    private async plot(refreshTimeseries = true) {
+
+        // When all that's changed is the timeframe, then there's no need to update the timeseries again.
+        if (refreshTimeseries) {
             this.timeseries = await this.getTimeseries();
             const titles = this.buildTitles(this.timeseries);
             this.title = titles.title;
             this.subTitle = titles.subTitle;
             this.timeseriesDifferencesOnly = this.stripTimeseriesDownToJustDifferences(this.timeseries);
             this.selectPlotsToShow();
+
+            this.platformSwitcherWhere = this.buildPlatformSwitcherWhere(this.timeseries, this.timeseriesParams);
+            this.observablePropertyWhere = this.buildObservablePropertySwitcherWhere(this.timeseries, this.timeseriesParams);
         }
 
         this.timeseriesDifferencesOnly.forEach((ts, idx) => {
@@ -129,14 +314,38 @@ export class PlotComponent implements OnInit {
 
             this.obsTally = 0;
             this.gettingObs = true;
+            this.getObservationsErrorMessage = '';
+            this.suggestedWindow = null;
 
             for (let n = 0; n < this.graphDto.tso.length; n++) {
-                this.graphDto.tso[n] = await this.callApi(this.graphDto.tso[n], 0);
+                try {
+                    this.graphDto.tso[n] = await this.callApi(this.graphDto.tso[n], 0);
+                } catch (err) {
+                    console.error(`Error getting timeseries observations: ${err.message}`);
+                    this.getObservationsErrorMessage = `Error getting observations: ${err.message}`;
+                    this.gettingObs = false;
+                    break;
+                }
                 if (n + 1 === this.graphDto.tso.length) {
-                    console.log('emit')
+                    // console.log('emit')
                     this.gettingObs = false;
                     this.tso$.next(this.graphDto);
-                }                
+                }               
+            }
+
+            if (this.obsTally === 0 && this.getObservationsErrorMessage === '') {
+                this.getObservationsErrorMessage = 'No data for the period selected';
+                const latestTimeseries = maxBy(this.timeseries, 'endDate');
+                let maxEndDate;
+                if (latestTimeseries) {
+                    maxEndDate = new Date(latestTimeseries.endDate);
+                }
+                if (maxEndDate) {
+                    this.suggestedWindow = {
+                        start: sub(maxEndDate, {hours: 3}),
+                        end: maxEndDate
+                    }
+                }
             }
 
         }
@@ -147,11 +356,11 @@ export class PlotComponent implements OnInit {
 
         const options = {
             populate: [
-                'unit', 
+                'unit',
                 'observedProperty', 
                 'disciplines', 
                 'aggregation', 
-                'hasFeatureOfInterest', 
+                'hasFeatureOfInterest',
                 'usedProcedures',
                 'hasDeployment',
                 'ancestorPlatforms',
@@ -159,11 +368,16 @@ export class PlotComponent implements OnInit {
             ]
         }
 
-        // TODO: You may also wish to exclude timeseries whose first and last obs would mean it couldn't possibly occur within the listed timeframe. You would need to include params such as endDate__gt to the where object.
-        // Alternatively you could just now show any timeseries which didn't return any observations.
+        this.getTimeseriesErrorMessage = '';
 
         return this.timeseriesService.getTimeSeriesByQuery(this.timeseriesParams, options)
-        .pipe(map(({data}) => data))
+        .pipe(
+            catchError((err) => {
+                this.getTimeseriesErrorMessage = err.message;
+                return throwError(err);
+            }), 
+            map(({data}) => data)
+        )
         .toPromise()
     }
 
@@ -184,7 +398,7 @@ export class PlotComponent implements OnInit {
             await this.callApi(call, count)
         }
 
-        console.log(call.id, count)
+        // console.log(call.id, count)
         return call;
     }
 

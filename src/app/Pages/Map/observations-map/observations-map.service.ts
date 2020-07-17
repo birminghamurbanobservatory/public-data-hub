@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ObservationService } from 'src/app/observation/observation.service';
+import {sub} from 'date-fns';
 
 @Injectable({
   providedIn: 'platform',
@@ -15,11 +16,14 @@ export class ObservationsMapService {
     // In all cases the observation will need to have a location
     const where = Object.assign({}, queryParams, {
       location: {exists: true},
-      // TODO: Eventually we'll have a datepicker somewhere that allows a user to select a specific time to look at, but until we have this let's limit observations to just the last hour.
-      // resultTime: {
-      //   gt: new Date((new Date().getTime()) - (1000 * 60 * 60)).toISOString()
-      // }
     });
+
+    // Limit observations to within the last hour if a specific time frame hasn't been set
+    if (!queryParams.resultTime__gte || !queryParams.resultTime__lte) {
+      const now = new Date();
+      where.resultTime__gte = sub(now, {hours: 1}).toISOString();
+      where.resultTime__lte = now.toISOString();
+    }
 
     const options = {
       onePer: 'timeseries',
