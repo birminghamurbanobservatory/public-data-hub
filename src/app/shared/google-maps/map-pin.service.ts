@@ -15,6 +15,7 @@ export class MapPinService {
     private colours: ColourService,
   ) {}
 
+
   public observationPin(observation: Observation): MapMarker {
     
     const iconFillColour = this.colours.selectFillColour(observation);
@@ -47,6 +48,7 @@ export class MapPinService {
     };
   }
 
+
   public platformPin(platform: Platform): MapMarker {
     let colour = this.colours.generateHexColour(platform.inDeployment)
     const icon = {
@@ -60,6 +62,7 @@ export class MapPinService {
     return {
       type: 'platform',
       id: platform.id,
+      initiallyHighlighted: platform.initialSelection,
       position: {
         lat: platform.location.forMap.lat,
         lng: platform.location.forMap.lng,
@@ -69,4 +72,5 @@ export class MapPinService {
       }
     };
   }
+
 }

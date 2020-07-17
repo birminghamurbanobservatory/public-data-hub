@@ -45,6 +45,7 @@ export class PlatformsMapComponent implements OnInit, OnDestroy {
    */
   public selectedDeployment$: Subject<string> = new Subject()
 
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -80,16 +81,21 @@ export class PlatformsMapComponent implements OnInit, OnDestroy {
       // if present only display the platforms in that deployment
       const params = this.route.snapshot.queryParams;
 
-      if (['deployment'].every(param => param in params)) {
+      if (Object.keys(params).includes('deployment')) {
         platforms = this.platforms.filter(p => p.inDeployment === params.deployment)
         this.selectedDeployment$.next(params.deployment);
       }
 
-      if (['platform'].every(param => param in params)) {
+      if (Object.keys(params).includes('platform')) {
+        platforms.forEach((platform) => {
+          if (platform.id === params.platform) {
+            platform.initialSelection = true;
+          }
+        })
         this.detailModalService.display(params.platform);
       }
 
-      this.addMarkers(platforms)
+      this.addMarkers(platforms);
     });
 
 

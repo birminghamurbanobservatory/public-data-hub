@@ -14,6 +14,7 @@ export interface Platform {
   updateLocationWithSensor?: string;
   createdAt?: string;
   updatedAt?: string;
+  initialSelection?: boolean; // used to highlight a map pin if platform selected on page load
 }
 
 interface Location {

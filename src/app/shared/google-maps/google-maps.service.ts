@@ -31,6 +31,8 @@ export class GoogleMapService {
   private selectedMarkerSource = new Subject();
   public selectedMarker = this.selectedMarkerSource.asObservable();
 
+  private highlightedMarker: any;
+
   private defaultMapCenter = {lat: 52.480100, lng: -1.885};
 
   private static load() {
@@ -90,7 +92,9 @@ export class GoogleMapService {
     this.spiderfyMap.removeAllMarkers();
 
     pins.forEach((pin, idx) => {
-      let marker = new google.maps.Marker(pin);
+      
+      let marker: any = new google.maps.Marker(pin);
+
       marker.setZIndex(idx); // this to fix the text overlap issue
 
       marker.addListener('spider_format', (status) => {
@@ -109,9 +113,19 @@ export class GoogleMapService {
       });
 
       marker.addListener('spider_click', () => {
+        if (this.highlightedMarker) {
+          this.unhighlightMarker(this.highlightedMarker);
+        }
+        this.highlightMarker(marker);
+        this.highlightedMarker = marker;
         this.map.setCenter(marker.getPosition());
         this.selectedMarkerSource.next(marker);
       });
+
+      if (marker.initiallyHighlighted) {
+        this.highlightMarker(marker);
+        this.highlightedMarker = marker;
+      }
 
       this.spiderfyMap.addMarker(marker, () => {})
     });
@@ -126,4 +140,22 @@ export class GoogleMapService {
 
     return null;
   }
+
+
+  private highlightMarker(marker: any): MapMarker {
+    return this.updateMarkerStrokeWeight(marker, 6);
+  }
+
+  private unhighlightMarker(marker: any): MapMarker {
+    return this.updateMarkerStrokeWeight(marker, 3);
+  }
+
+  private updateMarkerStrokeWeight(marker: any, weight: number): MapMarker {
+    const currentIcon = marker.getIcon();
+    const newIcon = Object.assign({}, currentIcon, {strokeWeight: weight});
+    marker.setIcon(newIcon);
+    return marker;
+  }
+
+
 }

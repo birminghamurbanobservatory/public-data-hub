@@ -57,7 +57,7 @@ export class PlatformDetailModalService {
 
 
   /**
-   * Closes the side panel displaying deployment info
+   * Closes the side panel displaying deployment info.
    * Not strictly necessary but does update url
    */
   public closeModal(): void {
