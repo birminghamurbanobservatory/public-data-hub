@@ -5,15 +5,15 @@ import { Routes, RouterModule } from '@angular/router';
 const routes: Routes = [
   {
     path: 'map',
-    loadChildren: () => import('./Pages/Map/map.module').then(m => m.MapModule),
+    loadChildren: () => import('./map/map.module').then(m => m.MapModule),
   },
   {
     path: 'plot',
-    loadChildren: () => import('./Pages/Plot/plot.module').then(m => m.PlotModule),
+    loadChildren: () => import('./plot/plot.module').then(m => m.PlotModule),
   },
   {
     path: 'observation',
-    loadChildren: () => import('./Pages/Observation/observation.module').then(m => m.ObservationModule),
+    loadChildren: () => import('./observation/observation.module').then(m => m.ObservationModule),
   },
   {
     path: '',
