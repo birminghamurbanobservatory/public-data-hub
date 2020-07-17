@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef, AfterViewInit, Input } from '@angular/core';
-import {GoogleMapService} from './google-maps.service';
+import {GoogleMapService} from './google-map.service';
 
 
 @Component({

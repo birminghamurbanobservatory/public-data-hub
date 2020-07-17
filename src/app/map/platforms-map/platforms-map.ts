@@ -7,7 +7,7 @@ import { Platform } from '../../shared/models/platform.model';
 import { PlatformDetailModalService } from '../platform-detail-modal/platform-detail-modal.service';
 import {MapMarker} from 'src/app/shared/google-maps/map-marker.model';
 import {PlatformService} from 'src/app/shared/services/platform.service';
-import {GoogleMapService} from 'src/app/shared/google-maps/google-maps.service';
+import {GoogleMapService} from 'src/app/shared/google-maps/google-map.service';
 import {DeploymentService} from 'src/app/shared/services/deployment.service';
 import {MapPinService} from 'src/app/shared/google-maps/map-pin.service';
 

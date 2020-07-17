@@ -4,7 +4,7 @@ import { switchMap, filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 
 import {MapPinService} from 'src/app/shared/google-maps/map-pin.service';
-import {GoogleMapService} from 'src/app/shared/google-maps/google-maps.service';
+import {GoogleMapService} from 'src/app/shared/google-maps/google-map.service';
 import {MapMarker} from 'src/app/shared/google-maps/map-marker.model';
 import {ObservationsMapService} from './observations-map.service';
 import {ObservationModalService} from 'src/app/shared/observation-model/observation-modal.service';

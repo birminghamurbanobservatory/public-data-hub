@@ -142,6 +142,14 @@ export class GoogleMapService {
   }
 
 
+  public unhighlightedAnyHighlightedMarker() {
+    if (this.highlightedMarker) {
+      this.unhighlightMarker(this.highlightedMarker);
+      this.highlightedMarker = undefined;
+    }
+  }
+
+
   private highlightMarker(marker: any): MapMarker {
     return this.updateMarkerStrokeWeight(marker, 6);
   }

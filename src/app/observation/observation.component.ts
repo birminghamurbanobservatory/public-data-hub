@@ -7,7 +7,7 @@ import {Observation} from '../shared/models/observation.model';
 import {Timeseries} from '../shared/models/timeseries.model';
 import {ObservationService} from '../shared/services/observation.service';
 import {TimeseriesService} from '../shared/services/timeseries.service';
-import {GoogleMapService} from '../shared/google-maps/google-maps.service';
+import {GoogleMapService} from '../shared/google-maps/google-map.service';
 import {MapPinService} from '../shared/google-maps/map-pin.service';
 
 
