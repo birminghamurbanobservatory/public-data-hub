@@ -91,6 +91,8 @@ export class GoogleMapService {
 
     this.spiderfyMap.removeAllMarkers();
 
+    let initiallyHighlightedMarkerPostion;
+
     pins.forEach((pin, idx) => {
       
       let marker: any = new google.maps.Marker(pin);
@@ -118,19 +120,20 @@ export class GoogleMapService {
         }
         this.highlightMarker(marker);
         this.highlightedMarker = marker;
-        this.map.setCenter(marker.getPosition());
+        this.setMapCenter(marker.getPosition());
         this.selectedMarkerSource.next(marker);
       });
 
       if (marker.initiallyHighlighted) {
         this.highlightMarker(marker);
+        initiallyHighlightedMarkerPostion = marker.getPosition();
         this.highlightedMarker = marker;
       }
 
       this.spiderfyMap.addMarker(marker, () => {})
     });
 
-    this.setMapCenter(this.defaultMapCenter); // hack to make the spiderfy markers show the '+' when toggle observed properties
+    this.setMapCenter(initiallyHighlightedMarkerPostion || this.defaultMapCenter); // hack to make the spiderfy markers show the '+' when toggle observed properties
   }
 
   private setLabel(text: string, color: string) {

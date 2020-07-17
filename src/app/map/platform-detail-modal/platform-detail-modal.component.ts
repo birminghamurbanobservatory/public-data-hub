@@ -9,7 +9,6 @@ import {Observation} from 'src/app/shared/models/observation.model';
 import {windDirectionDegreeToText} from 'src/app/shared/utils/weather-funcs';
 import {ObservationModalService} from 'src/app/shared/observation-model/observation-modal.service';
 import {PlatformDetailModalService} from './platform-detail-modal.service';
-import {GoogleMapService} from 'src/app/shared/google-maps/google-map.service';
 
 
 
@@ -41,7 +40,6 @@ export class PlatformDetailModalComponent implements OnInit {
   constructor(
     private observationModalService: ObservationModalService,
     private detailModalService: PlatformDetailModalService,
-    private googleMapService: GoogleMapService
   ) {}
 
   ngOnInit(): void {
@@ -65,7 +63,6 @@ export class PlatformDetailModalComponent implements OnInit {
    * Not strictly necessary but does update url
    */
   public close(): void {
-    this.googleMapService.unhighlightedAnyHighlightedMarker();
     this.detailModalService.closeModal();
   }
 

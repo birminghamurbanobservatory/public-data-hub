@@ -8,6 +8,7 @@ import {PlatformService} from 'src/app/shared/services/platform.service';
 import {ObservationService} from 'src/app/shared/services/observation.service';
 import {DeploymentService} from 'src/app/shared/services/deployment.service';
 import {Deployment} from 'src/app/shared/models/deployment.model';
+import {GoogleMapService} from 'src/app/shared/google-maps/google-map.service';
 
 
 @Injectable()
@@ -28,7 +29,8 @@ export class PlatformDetailModalService {
   private router: Router,
   private platformService: PlatformService,
   private observationService: ObservationService,
-  private deploymentService: DeploymentService
+  private deploymentService: DeploymentService,
+  private googleMapService: GoogleMapService
   ) {}
 
 
@@ -61,12 +63,17 @@ export class PlatformDetailModalService {
    * Not strictly necessary but does update url
    */
   public closeModal(): void {
+
+    this.googleMapService.unhighlightedAnyHighlightedMarker();
+
     this.router.navigate([], {
     relativeTo: this.route,
     queryParams: { platform: null },
     queryParamsHandling: 'merge',
     });
+
     this.showModalSource$.next(false);
+
   }
   
 

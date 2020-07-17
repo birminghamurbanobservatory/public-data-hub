@@ -4,6 +4,7 @@ import {FormControl, FormGroup, FormBuilder, Validators} from '@angular/forms';
 import { isMatch } from 'lodash';
 
 import * as moment from 'moment';
+import {PlatformDetailModalService} from '../platform-detail-modal/platform-detail-modal.service';
 
 @Component({
   selector: 'buo-map-menu',
@@ -127,6 +128,7 @@ export class MapMenuComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private fb: FormBuilder,
+    private platformDetailModalService: PlatformDetailModalService
   ) {}
 
 
@@ -196,6 +198,8 @@ export class MapMenuComponent implements OnInit {
     .subscribe((selectedOptionId) => {
 
       const selectedOption = this.options.find((option) => option.id === selectedOptionId);
+
+      this.platformDetailModalService.closeModal();
       
       if (selectedOptionId === '-top-level-platforms-') {
         this.showPlatforms();
