@@ -44,6 +44,7 @@ export class PlotComponent implements OnInit {
     public getTimeseriesErrorMessage = '';
     public getObservationsErrorMessage = '';
     public suggestedWindow = null;
+    public needToRefreshTimeseries = true;
     
     constructor (
         private route: ActivatedRoute,
@@ -90,7 +91,7 @@ export class PlotComponent implements OnInit {
 
             if (!this.tooVague) {
                 this.notCancelled = true;
-                this.plot();
+                this.plot(this.needToRefreshTimeseries);
             }
 
         });
@@ -103,7 +104,8 @@ export class PlotComponent implements OnInit {
     public handlePlatformSwitch(newPlatformId: string) {
         // If the only query parameter before the switch was the timeseriesId then just updating the platform in the URL won't provide enough query parameters for the page to work, therefore we can re-use the buildPlatformSwitcherWhere function to get the observedProperty and unit we should be using.
         const where = this.buildPlatformSwitcherWhere(this.timeseries, this.timeseriesParams);
-        this.cleanPlotPage();
+        this.needToRefreshTimeseries = true;
+
         this.router.navigate([], {
             queryParams: {
                 ancestorPlatforms__includes: newPlatformId,
@@ -120,7 +122,8 @@ export class PlotComponent implements OnInit {
     public handleObservablePropertySwitch({observedProperty, unit}) {
         // If the only query parameter before the switch was the timeseriesId then just updating the observedProperty and unit in the URL could lead to a LOT of timeseries being found, therefore we can re-use the buildObservablePropertySwitcherWhere function to see if there's an ancestorPlatform we can add to the URL
         const where = this.buildObservablePropertySwitcherWhere(this.timeseries, this.timeseriesParams);
-        this.cleanPlotPage();
+        this.needToRefreshTimeseries = true;
+
         this.router.navigate([], {
             queryParams: {
                 observedProperty,
@@ -134,31 +137,32 @@ export class PlotComponent implements OnInit {
     }
 
 
-    private cleanPlotPage() {
-        // This means that the plot() function will get some new timeseries. Which we don't want when all that has changed is the time frame, but we do want when the top platform has changed, or the observed property and unit.
-        this.timeseries = undefined;
-    }
-
-
-
     private listenForDatePickerWindowChanges() {
-        this.datePickerForm.valueChanges
-        .subscribe(({window}) => {
+
+        this.datePickerForm.valueChanges.subscribe(({window}) => {
+
+            this.needToRefreshTimeseries = false;
+
             this.router.navigate([], {
-            // N.b. the customWindow query parameter is unset whenever a specific start and end date is used.
-            queryParams: {
-                start: window[0].toISOString(),
-                end: window[1].toISOString(),
-                customWindow: null
-            },
-            queryParamsHandling: 'merge', // keeps any existing query parameters
-            relativeTo: this.route
+                // N.b. the customWindow query parameter is unset whenever a specific start and end date is used.
+                queryParams: {
+                    start: window[0].toISOString(),
+                    end: window[1].toISOString(),
+                    customWindow: null
+                },
+                queryParamsHandling: 'merge', // keeps any existing query parameters
+                relativeTo: this.route
+            });
+
         });
-        });
+
     }
 
 
     public goToSuggestedWindow() {
+
+        this.needToRefreshTimeseries = false;
+
         this.router.navigate([], {
             // N.b. the customWindow query parameter is unset whenever a specific start and end date is used.
             queryParams: {
@@ -169,6 +173,7 @@ export class PlotComponent implements OnInit {
             queryParamsHandling: 'merge', // keeps any existing query parameters
             relativeTo: this.route
         });
+
     }
 
 
@@ -195,6 +200,8 @@ export class PlotComponent implements OnInit {
 
 
     public customWindowSelected(customWindow: string) {
+
+        this.needToRefreshTimeseries = false;
 
         this.router.navigate([], {
             queryParams: {
@@ -256,9 +263,10 @@ export class PlotComponent implements OnInit {
     }
 
 
-    private async plot() {
+    private async plot(refreshTimeseries = true) {
 
-        if (!this.timeseries) {
+        // When all that's changed is the timeframe, then there's no need to update the timeseries again.
+        if (refreshTimeseries) {
             this.timeseries = await this.getTimeseries();
             const titles = this.buildTitles(this.timeseries);
             this.title = titles.title;
