@@ -24,3 +24,9 @@ https://tailwindcss.com/docs/extracting-components */
   @apply text-sm; /* size */
 }
 
+
+/* The linkify plugin adds this class to the links it find in text */
+.linkified {
+  @apply text-blue-500
+}
+

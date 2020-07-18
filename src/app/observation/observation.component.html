@@ -139,7 +139,7 @@
           </dt>
           <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
             <p>{{ obs.hasDeployment.label }}</p>
-            <small class="-mt-1 text-gray-500">{{ obs.hasDeployment.description }}</small>
+            <small class="-mt-1 text-gray-500" [innerHTML]="obs.hasDeployment.description | linkify"></small>
           </dd>
         </div>
 
@@ -174,7 +174,7 @@
             <ul>
               <li *ngFor="let procedure of obs.usedProcedures">
                 <p>{{ procedure.label || procedure.id }}</p>
-                <small class="-mt-1 text-gray-500">{{ procedure.description }}</small>
+                <small class="-mt-1 text-gray-500" [innerHTML]="procedure.description | linkify"></small>
               </li>
             </ul>
           </dd>
