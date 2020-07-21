@@ -1,24 +1,19 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {HTTP_INTERCEPTORS} from '@angular/common/http';
-import {ApiErrorInterceptor} from './shared/api-error-interceptor.interceptor';
+
 
 const routes: Routes = [
   {
     path: 'map',
-    loadChildren: () => import('./Pages/Map/map.module').then(m => m.MapModule),
-  },
-  {
-    path: 'platform-detail',
-    loadChildren: () => import('./Pages/PlatformDetail/platform-detail.module').then(m => m.PlatformDetailModule),
+    loadChildren: () => import('./map/map.module').then(m => m.MapModule),
   },
   {
     path: 'plot',
-    loadChildren: () => import('./Pages/Plot/plot.module').then(m => m.PlotModule),
+    loadChildren: () => import('./plot/plot.module').then(m => m.PlotModule),
   },
   {
     path: 'observation',
-    loadChildren: () => import('./Pages/Observation/observation.module').then(m => m.ObservationModule),
+    loadChildren: () => import('./observation/observation.module').then(m => m.ObservationModule),
   },
   {
     path: '',
@@ -35,14 +30,6 @@ const routes: Routes = [
 
   exports: [
     RouterModule,
-  ],
-
-  providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: ApiErrorInterceptor,
-      multi: true
-    }
   ]
 
 })
