@@ -21,7 +21,7 @@ export class PlotComponent implements OnInit {
 
   public datePickerForm: FormGroup;
   public maxDate = new Date();
-  private timeseries: Timeseries[];
+  public timeseries: Timeseries[];
   public timeseriesDifferencesOnly: any[];
   public ts$: Observable<Timeseries[]>;
   public tso$: Subject<any> = new Subject()

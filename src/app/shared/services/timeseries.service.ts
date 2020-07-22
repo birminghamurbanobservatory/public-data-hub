@@ -6,6 +6,8 @@ import { ApiFunctionsService } from './api-functions';
 import { map } from 'rxjs/operators';
 import { Collection } from '../models/collection.model';
 import {deeplyRenameKeys} from '../utils/handy-utils';
+import {Observable} from 'rxjs';
+import {Timeseries} from '../models/timeseries.model';
 
 
 @Injectable({
@@ -83,10 +85,12 @@ export class TimeseriesService {
 
   formatTimeseriesForApp(asJsonLd): any {
     // @id and @type are super-annoying to work with, so let's change them to id and type
-    const forApp = deeplyRenameKeys(asJsonLd, {
+    const forApp: any = deeplyRenameKeys(asJsonLd, {
       '@id': 'id',
       '@type': 'type'
     });
+    forApp.startDate = new Date(forApp.startDate);
+    forApp.endDate = new Date(forApp.endDate);
     return forApp;
   }
 
