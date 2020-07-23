@@ -19,8 +19,8 @@ export class LastUrlService implements OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  get lastUrl(): Boolean {
-    return this.url? true : false;
+  get lastUrl(): string {
+    return this.url;
   }
 
   public back(): void {
@@ -33,13 +33,9 @@ export class LastUrlService implements OnDestroy {
       filter((e: any) => e instanceof RoutesRecognized),
       pairwise()
     ).subscribe((e: any) => {
-      const url = this.router.url;
-      const segments = url.split('/');
-      if (segments[1] === 'map') {
-        this.url = url;
-      }
+      this.url = this.router.url;
     });
-
-
   }
+
+  
 }

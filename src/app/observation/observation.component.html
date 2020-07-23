@@ -1,12 +1,19 @@
 <div class="mt-10 container mx-auto">
   <div class="bg-white shadow overflow-hidden  sm:rounded-lg" *ngIf="(observation$ | async) as obs">
-    <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
-      <h3 class="text-xl leading-6 font-medium text-gray-900">
-        Observation Information
-      </h3>
-      <p class="mt-1 max-w-2xl text-sm leading-5 text-gray-500">
-        In-depth information about a single observation.
-      </p>
+    <div class="px-4 py-5 border-b border-gray-200 sm:px-6 flex">
+      <div>
+        <button *ngIf="backUrl" (click)="back()" type="button" class="mr-4 text-white text-2xl h-12 w-12 bg-teal-700 rounded-full flex items-center justify-center hover:text-white hover:bg-teal-800 focus:outline-none focus:bg-teal-800">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+      </div>
+      <div>
+        <h3 class="text-xl leading-6 font-medium text-gray-900">
+          Observation Information
+        </h3>
+        <p class="mt-1 max-w-2xl text-sm leading-5 text-gray-500">
+          In-depth information about a single observation.
+        </p>
+      </div>
     </div>
     <div class="px-4 py-5 sm:p-0">
       <dl>

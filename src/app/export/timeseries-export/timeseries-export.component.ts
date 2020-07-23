@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Timeseries} from 'src/app/shared/models/timeseries.model';
 import {switchMap, catchError, takeUntil} from 'rxjs/operators';
 import {TimeseriesService} from 'src/app/shared/services/timeseries.service';
@@ -11,6 +11,7 @@ import * as check from 'check-types';
 import {pick, last, concat, omit, round} from 'lodash';
 import {FormBuilder} from '@angular/forms';
 import {sub} from 'date-fns';
+import {LastUrlService} from 'src/app/shared/services/last-url.service';
 
 @Component({
   selector: 'buo-timeseries-export',
@@ -31,11 +32,14 @@ export class TimeseriesExportComponent implements OnInit, OnDestroy {
   public percentThroughExportPeriod = 0;
   public loopNumber = 0;
   public showMoreInfo = false;
+  public backUrl: string;
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private timeseriesService: TimeseriesService,
     private fb: FormBuilder,
+    private lastUrlService: LastUrlService,
   ) { }
 
   ngOnInit(): void {
@@ -80,6 +84,9 @@ export class TimeseriesExportComponent implements OnInit, OnDestroy {
     window.onunload = () => {
       this.cleanUpFileStream()
     }
+
+    // Crucially this will be undefined if the last page was external to this app, and it won't be updated as query parameters are changed on this page.
+    this.backUrl = this.lastUrlService.lastUrl;
 
   }
 
@@ -293,6 +300,11 @@ export class TimeseriesExportComponent implements OnInit, OnDestroy {
     if (this.writer) {
       this.writer.abort();
     }
+  }
+
+
+  public back(): void {
+    this.router.navigateByUrl(this.backUrl);
   }
 
 

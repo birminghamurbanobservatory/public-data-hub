@@ -2,13 +2,20 @@
   <div class="bg-white shadow sm:rounded-lg">
 
     <!-- main title -->
-    <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
-      <h1 class="text-2xl font-bold text-teal-900">
-        Timeseries download
-      </h1>
-      <p class="mt-1 text-sm text-gray-500">
-        Download observations from a single timeseries as a CSV file (comma separated values). This common file format can be read by other software (e.g. Microsoft Excel) for further analysis.
-      </p>
+    <div class="px-4 py-5 border-b border-gray-200 sm:px-6 flex">
+      <div>
+        <button *ngIf="backUrl" (click)="back()" type="button" class="mr-4 text-white text-2xl h-12 w-12 bg-teal-700 rounded-full flex items-center justify-center hover:text-white hover:bg-teal-800 focus:outline-none focus:bg-teal-800">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-teal-900">
+          Timeseries download
+        </h1>
+        <p class="mt-1 text-sm text-gray-500">
+          Download observations from a single timeseries as a CSV file (comma separated values). This common file format can be read by other software (e.g. Microsoft Excel) for further analysis.
+        </p>
+      </div>
     </div>
 
     <!-- main content -->
