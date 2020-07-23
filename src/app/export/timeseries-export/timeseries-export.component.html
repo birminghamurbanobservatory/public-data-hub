@@ -7,7 +7,7 @@
         Timeseries download
       </h1>
       <p class="mt-1 text-sm text-gray-500">
-        Download observations from a single timeseries as an CSV file (comma separated values). This common file format can be read by other software (e.g. Microsoft Excel) for further analysis.
+        Download observations from a single timeseries as a CSV file (comma separated values). This common file format can be read by other software (e.g. Microsoft Excel) for further analysis.
       </p>
     </div>
 
@@ -228,9 +228,9 @@
                   Disciplines
                 </dt>
                 <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                  <ul class="list-disc">
+                  <ul class="list-disc list-inside">
                     <li *ngFor="let discipline of timeseries.disciplines">
-                      <p>{{ discipline.label }}</p>
+                      {{discipline.label}}
                     </li>
                   </ul>
                 </dd>
@@ -241,9 +241,9 @@
                   Procedures
                 </dt>
                 <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
-                  <ul class="list-disc">
+                  <ul class="list-disc list-inside">
                     <li *ngFor="let procedure of timeseries.usedProcedures">
-                      <p>{{ procedure.label || procedure.id }}</p>
+                      {{ procedure.label || procedure.id }}
                     </li>
                   </ul>
                 </dd>
