@@ -44,7 +44,7 @@ export class WindDirectionLineChartComponent implements AfterViewInit {
     }));
 
     return {
-      type: 'line',
+      type: 'scatter', // use scatter rather than line to prevent weird jumps between 0 and 360.
       xValueType: "dateTime",
       markerType: 'circle',
       markerSize: 5,
