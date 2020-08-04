@@ -76,7 +76,7 @@
                   <div class="text-sm leading-5 font-medium text-indigo-600 truncate capitalize">
                     {{ obs.observedProperty.label }}
                   </div>
-                  <div class="flex items-center text-sm leading-5 text-gray-500">
+                  <div class="flex items-center text-sm leading-5" [ngClass]="isOld(obs.resultTime) ? 'text-red-400' : 'text-gray-500'">
                     <i class="far fa-clock"></i>
                     <span class="ml-1 truncate">
                       <buo-time-tag [datetime]="obs.resultTime" format="from"></buo-time-tag>
@@ -99,14 +99,14 @@
   
               </div>
   
-                <!-- default row -->
+              <!-- default row -->
               <div *ngSwitchDefault class="flex-1 flex flex-wrap">
   
                 <div class="mb-2 mr-6 flex-1">
                   <div class="text-sm leading-5 font-medium text-indigo-600 truncate capitalize">
                     {{ obs.observedProperty.label }}
                   </div>
-                  <div class="flex items-center text-sm leading-5 text-gray-500">
+                  <div class="flex items-center text-sm leading-5" [ngClass]="isOld(obs.resultTime) ? 'text-red-400' : 'text-gray-500'">
                     <i class="far fa-clock"></i>
                     <span class="ml-1 truncate">
                       <buo-time-tag [datetime]="obs.resultTime" format="from"></buo-time-tag>
