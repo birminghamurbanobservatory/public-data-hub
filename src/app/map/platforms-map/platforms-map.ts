@@ -45,6 +45,7 @@ export class PlatformsMapComponent implements OnInit, OnDestroy {
    */
   public selectedDeployment$: Subject<string> = new Subject()
 
+  private currentlySelectedDeployment: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -58,6 +59,11 @@ export class PlatformsMapComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
+
+    // Need this bit so
+    this.selectedDeployment$.subscribe((deploymentId: string) => {
+      this.currentlySelectedDeployment = deploymentId;
+    })
 
     // get the deployments for the legend
     this.deployments$ = this.deploymentsService.getDeployments();
@@ -140,11 +146,13 @@ export class PlatformsMapComponent implements OnInit, OnDestroy {
   /**
    * Changes the displayed map markers when item in the deployments legend toggled
    * 
-   * @param evt : checkbox click
+   * @param deploymentId : ID of deployment clicked
    */
-  public checkboxChange(evt) {
+  public deploymentClicked(deploymentId) {
 
-    const value = evt.target.checked ? evt.target.value : null;
+    console.log(deploymentId);
+
+    const value = deploymentId === this.currentlySelectedDeployment ? null : deploymentId;
 
     const show = value ? this.platforms.filter(p => p.inDeployment === value) 
                        : this.platforms;
