@@ -14,9 +14,8 @@ export class ObservationsMapService {
 
   public getObservations(queryParams) {
 
-    // In all cases the observation will need to have a location
     const where = Object.assign({}, queryParams, {
-      location: {exists: true},
+      location: {exists: true}, // In all cases the observation will need to have a location
     });
 
     // Limit observations to within the last hour if a specific time frame hasn't been set

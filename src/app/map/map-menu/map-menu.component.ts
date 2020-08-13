@@ -38,10 +38,9 @@ export class MapMenuComponent implements OnInit {
         unit: 'degree-celsius',
         disciplines__includes: 'meteorology',
         // include hasFeatureofInterest too?
-        flags__exists: 'false', // give as a string otherwise _.isMatch below won't work
         aggregation__in: 'instant,average',
         duration__lt: '3630', // allows for averages up to about an hour 
-
+        flags__exists: 'false', // give as a string otherwise _.isMatch below won't work
       }
     },
     {
@@ -52,7 +51,8 @@ export class MapMenuComponent implements OnInit {
         disciplines__includes: 'meteorology',
         unit: 'percent',
         aggregation__in: 'instant,average',
-        duration__lt: '3630' // allows for averages up to about an hour 
+        duration__lt: '3630', // allows for averages up to about an hour 
+        flags__exists: 'false' // give as a string otherwise _.isMatch below won't work
       }
     },
     {
@@ -63,7 +63,8 @@ export class MapMenuComponent implements OnInit {
         disciplines__includes: 'meteorology',
         unit: 'metre-per-second',
         aggregation__in: 'instant,average',
-        duration__lt: '3630' // allows for averages up to about an hour
+        duration__lt: '3630', // allows for averages up to about an hour
+        flags__exists: 'false' // give as a string otherwise _.isMatch below won't work
       }
     },
     {
@@ -74,7 +75,8 @@ export class MapMenuComponent implements OnInit {
         disciplines__includes: 'meteorology',
         unit: 'millimetre-per-hour',
         aggregation__in: 'instant,average',
-        duration__lt: '3630' // allows for averages up to about an hour 
+        duration__lt: '3630', // allows for averages up to about an hour 
+        flags__exists: 'false' // give as a string otherwise _.isMatch below won't work
       }
     },
     {
@@ -83,7 +85,8 @@ export class MapMenuComponent implements OnInit {
       queryParams: {
         observedProperty: 'lightning-count',
         aggregation__in: 'count',
-        duration__lt: '3630' // allows for averages up to about an hour 
+        duration__lt: '3630', // allows for averages up to about an hour 
+        flags__exists: 'false' // give as a string otherwise _.isMatch below won't work
       }
     },
     {
@@ -94,8 +97,9 @@ export class MapMenuComponent implements OnInit {
         disciplines__includes: 'atmospheric-chemistry',
         unit: 'microgram-per-cubic-metre',
         aggregation__in: 'instant,average',
-        duration__lt: '3630' // allows for averages up to about an hour 
+        duration__lt: '3630', // allows for averages up to about an hour 
         // TODO: include hasFeatureOfInterst: 'earth-atmosphere' too?
+        flags__exists: 'false' // give as a string otherwise _.isMatch below won't work
       }
     },
     {
@@ -106,7 +110,8 @@ export class MapMenuComponent implements OnInit {
         disciplines__includes: 'atmospheric-chemistry',
         unit: 'microgram-per-cubic-metre',
         aggregation__in: 'instant,average',
-        duration__lt: '3630' // allows for averages up to about an hour 
+        duration__lt: '3630', // allows for averages up to about an hour 
+        flags__exists: 'false' // give as a string otherwise _.isMatch below won't work
       }
     },
     {
@@ -117,7 +122,8 @@ export class MapMenuComponent implements OnInit {
         disciplines__includes: 'atmospheric-chemistry',
         unit: 'microgram-per-cubic-metre',
         aggregation__in: 'instant,average',
-        duration__lt: '3630' // allows for averages up to about an hour 
+        duration__lt: '3630', // allows for averages up to about an hour 
+        flags__exists: 'false' // give as a string otherwise _.isMatch below won't work
       }
     }
   ];
