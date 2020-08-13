@@ -22,7 +22,7 @@ export class ObservationsMapComponent implements OnInit, OnDestroy, AfterViewIni
 
   private mapSubscription: Subscription;
   public deployments: any[] = [];
-  private observations: Observation[] = [];
+  public observations: Observation[] = [];
   private unsubscribe$ = new Subject();
 
   constructor(
