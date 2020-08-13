@@ -52,7 +52,7 @@ export class PlatformsMapComponent implements OnInit, OnDestroy {
     private map: GoogleMapService,
     private pins: MapPinService,
     private platformService: PlatformService,
-    private deployments: DeploymentService,
+    private deploymentsService: DeploymentService,
     private detailModalService: PlatformDetailModalService,
   ) {}
 
@@ -60,7 +60,7 @@ export class PlatformsMapComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     // get the deployments for the legend
-    this.deployments$ = this.deployments.getDeployments();
+    this.deployments$ = this.deploymentsService.getDeployments();
 
     // retrieve and display top level platform on the map by default
     this.platformService.getPlatforms({
