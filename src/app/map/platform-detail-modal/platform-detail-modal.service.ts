@@ -73,7 +73,6 @@ export class PlatformDetailModalService {
     });
 
     this.showModalSource$.next(false);
-
   }
   
 

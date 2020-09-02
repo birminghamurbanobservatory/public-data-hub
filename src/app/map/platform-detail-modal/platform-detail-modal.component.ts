@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {style, animate, transition, trigger} from '@angular/animations';
 import { Observable } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, delay } from 'rxjs/operators';
 
 import {Platform} from 'src/app/shared/models/platform.model';
 import {Deployment} from 'src/app/shared/models/deployment.model';
@@ -47,6 +47,7 @@ export class PlatformDetailModalComponent implements OnInit {
 
     this.detailModalService.showModal$.pipe(
       filter(show => show === true),
+      delay(2000),
       ).subscribe(() => {
         this.observations$ = this.detailModalService.observations;
         this.platform$ = this.detailModalService.platformDetail;
