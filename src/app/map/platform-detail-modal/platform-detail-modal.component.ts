@@ -47,7 +47,6 @@ export class PlatformDetailModalComponent implements OnInit {
 
     this.detailModalService.showModal$.pipe(
       filter(show => show === true),
-      delay(2000),
       ).subscribe(() => {
         this.observations$ = this.detailModalService.observations;
         this.platform$ = this.detailModalService.platformDetail
