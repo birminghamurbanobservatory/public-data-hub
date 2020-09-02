@@ -36,7 +36,7 @@ export class PlatformDetailModalService {
 
   // retrieve the platform details
   public get platformDetail() {
-  return this.platformService.getPlatform(this.platformId);
+    return this.platformService.getPlatform(this.platformId);
   }   
     
 
