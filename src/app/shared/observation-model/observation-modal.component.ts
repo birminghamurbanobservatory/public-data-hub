@@ -1,7 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import {style, animate, transition, trigger} from '@angular/animations';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, tap, switchMap, delay } from 'rxjs/operators';
 
 import { ObservationModalService } from './observation-modal.service';
 import {Observation} from '../models/observation.model';
@@ -32,10 +32,10 @@ import {Observation} from '../models/observation.model';
 export class ObservationModalComponent implements OnInit {
 
   public showModal: Boolean = false;
-  public observation: Observation;
-  public timeseries;
-  public firstObservation: Observation;
-  public deployment$;
+  public observation: Observation | null;
+  // public timeseries;
+  // public firstObservation: Observation;
+  // public deployment$;
   private destroy$: Subject<boolean> = new Subject<boolean>();
 
   constructor(
@@ -44,13 +44,23 @@ export class ObservationModalComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.observationModalService.observationInfo()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((observation) => {
-        console.log(observation);
-        this.observation = observation;
-        this.showModal = true;
-      });
+    this.observationModalService.observation
+    .pipe(
+      tap(() => this.showModal = true),
+      tap(() => this.observation = null),
+      delay(2000),
+      takeUntil(this.destroy$),
+      switchMap((id: string) => this.observationModalService.observationInfo(id))
+    )
+    .subscribe((obs) => this.observation = obs);
+    
+    // this.observationModalService.observationInfo()
+    //   .pipe(takeUntil(this.destroy$))
+    //   .subscribe((observation) => {
+    //     console.log(observation);
+    //     this.observation = observation;
+    //     this.showModal = true;
+    //   });
 
   }
 
