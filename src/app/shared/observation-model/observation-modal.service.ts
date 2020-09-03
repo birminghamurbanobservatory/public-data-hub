@@ -28,17 +28,8 @@ export class ObservationModalService {
   }
 
   public observationInfo(id: string): Observable<Observation> {
-    
-    // return this.observation
-    //   .pipe(
-    //     switchMap((id: string) => this.observationService.getObservation(id, {
-    //       populate: ['unit', 'madeBySensor', 'hasDeployment', 'observedProperty', 'aggregation', 'hasFeatureOfInterest', 'ancestorPlatforms']
-    //     }))
-    //   )
-
       return this.observationService.getObservation(id, {
         populate: ['unit', 'madeBySensor', 'hasDeployment', 'observedProperty', 'aggregation', 'hasFeatureOfInterest', 'ancestorPlatforms']
       });
-
   }
 }

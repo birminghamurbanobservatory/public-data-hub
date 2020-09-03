@@ -33,9 +33,6 @@ export class ObservationModalComponent implements OnInit {
 
   public showModal: Boolean = false;
   public observation: Observation | null;
-  // public timeseries;
-  // public firstObservation: Observation;
-  // public deployment$;
   private destroy$: Subject<boolean> = new Subject<boolean>();
 
   constructor(
@@ -53,15 +50,6 @@ export class ObservationModalComponent implements OnInit {
       switchMap((id: string) => this.observationModalService.observationInfo(id))
     )
     .subscribe((obs) => this.observation = obs);
-    
-    // this.observationModalService.observationInfo()
-    //   .pipe(takeUntil(this.destroy$))
-    //   .subscribe((observation) => {
-    //     console.log(observation);
-    //     this.observation = observation;
-    //     this.showModal = true;
-    //   });
-
   }
 
   ngOnDestroy(): void {
