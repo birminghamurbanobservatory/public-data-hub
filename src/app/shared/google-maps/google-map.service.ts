@@ -120,7 +120,6 @@ export class GoogleMapService {
         }
         this.highlightMarker(marker);
         this.highlightedMarker = marker;
-        this.setMapCenter(marker.getPosition());
         this.selectedMarkerSource.next(marker);
       });
 

@@ -1,16 +1,18 @@
 <div *ngIf="showModal$ | async" class="absolute left-0 top-0 bottom-0 bg-white w-full md:w-2/4 lg:w-2/5 xl:w-2/5 z-50 shadow-md overflow-x-hidden overflow-y-scroll" [@slideInOut]>
-  <div *ngIf="platform$ | async as platform">
 
-    <div class="px-4 py-5 border-b border-gray-200 flex justify-between items-center">
-      <h3 class="text-lg leading-6 font-medium text-gray-900">
-        Platform Information
-      </h3>
-      <span class="inline-flex rounded-full shadow-sm">
-        <button type="button" (click)="close()" class="inline-flex justify-center items-center h-8 w-8 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150">
-          <i class="fas fa-times"></i>
-        </button>
-      </span>
-    </div>
+  <div class="px-4 py-5 border-b border-gray-200 flex justify-between items-center">
+    <h3 class="text-lg leading-6 font-medium text-gray-900">
+      Platform Information
+    </h3>
+    <span class="inline-flex rounded-full shadow-sm">
+      <button type="button" (click)="close()" class="inline-flex justify-center items-center h-8 w-8 border border-gray-300 text-sm leading-5 font-medium rounded-full text-gray-700 bg-white hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150">
+        <i class="fas fa-times"></i>
+      </button>
+    </span>
+  </div>
+
+
+  <div *ngIf="platform$ | async as platform; else loading">
   
     <div class="px-4 py-5">
       <dl class="grid grid-cols-1 col-gap-4 row-gap-4">
@@ -61,90 +63,150 @@
       </h3>
     </div>
   
-    <ul *ngFor="let obs of (observations$ | async)">
-      <li class="border-b border-gray-200">
-        <a (click)="showObservationModal(obs)" [routerLink]="[]" class="block hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition duration-150 ease-in-out">
-  
-          <div class="flex justify-between items-center pl-4 pr-2 pt-4 pb-2">
-            
-            <ng-container [ngSwitch]="obs.observedProperty.id">
-  
-              <!-- wind direction -->
-              <div *ngSwitchCase="'wind-direction'" class="flex-1 flex flex-wrap">
-  
-                <div class="mb-2 mr-6 flex-1">
-                  <div class="text-sm leading-5 font-medium text-indigo-600 truncate capitalize">
-                    {{ obs.observedProperty.label }}
+    <ng-container *ngIf="observations$ | async as observations; else obsLoading">
+
+      <ul *ngFor="let obs of observations">
+        <li class="border-b border-gray-200">
+          <button type="button" (click)="showObservationModal(obs)" class="block w-full hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition duration-150 ease-in-out">
+    
+            <div class="flex justify-between items-center pl-4 pr-2 pt-4 pb-2">
+              
+              <ng-container [ngSwitch]="obs.observedProperty.id">
+    
+                <!-- wind direction -->
+                <div *ngSwitchCase="'wind-direction'" class="flex-1 flex flex-wrap">
+    
+                  <div class="mb-2 mr-6 flex-1">
+                    <div class="text-sm leading-5 font-medium text-indigo-600 truncate capitalize">
+                      {{ obs.observedProperty.label }}
+                    </div>
+                    <div class="flex items-center text-sm leading-5" [ngClass]="isOld(obs.resultTime) ? 'text-red-400' : 'text-gray-500'">
+                      <i class="far fa-clock"></i>
+                      <span class="ml-1 truncate">
+                        <buo-time-tag [datetime]="obs.resultTime" format="from"></buo-time-tag>
+                      </span>
+                    </div>
                   </div>
-                  <div class="flex items-center text-sm leading-5" [ngClass]="isOld(obs.resultTime) ? 'text-red-400' : 'text-gray-500'">
-                    <i class="far fa-clock"></i>
-                    <span class="ml-1 truncate">
-                      <buo-time-tag [datetime]="obs.resultTime" format="from"></buo-time-tag>
-                    </span>
+    
+                  <div>
+                    <div class="flex items-center">
+                      <span class="text-2xl leading-5 font-light text-gray-600">
+                        {{ windDirectionDegreeToText(obs.hasResult.value) }}
+                      </span>
+                      <sup class="font-bold text-xs text-gray-400">{{ obs.hasResult.value }}{{ obs.hasResult.unit.symbol }}</sup>
+                    </div>
+                    <div class="flex items-center text-sm leading-5 text-gray-400 sm:mt-0">
+                      <span *ngIf="obs.aggregation !== 'instant', else instant" [duration]="obs.phenomenonTime.duration" [aggregation]="obs.aggregation"></span>
+                      <ng-template #instant>instant reading</ng-template>
+                    </div> 
+                  </div>
+    
+                </div>
+    
+                <!-- default row -->
+                <div *ngSwitchDefault class="flex-1 flex flex-wrap">
+    
+                  <div class="mb-2 mr-6 flex-1">
+                    <div class="text-sm text-left leading-5 font-medium text-indigo-600 truncate capitalize">
+                      {{ obs.observedProperty.label }}
+                    </div>
+                    <div class="flex items-center text-sm leading-5" [ngClass]="isOld(obs.resultTime) ? 'text-red-400' : 'text-gray-500'">
+                      <i class="far fa-clock"></i>
+                      <span class="ml-1 truncate">
+                        <buo-time-tag [datetime]="obs.resultTime" format="from"></buo-time-tag>
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div class="flex justify-end items-center">
+                      <span class="text-2xl leading-5 font-light text-gray-600">
+                        {{ obs.hasResult.value }}
+                      </span>
+                      <sup class="font-bold text-xs text-gray-400">{{ obs.hasResult.unit.symbol }}</sup>
+                    </div>
+                    <div class="flex justify-end text-sm leading-5 text-gray-400">
+                      <span *ngIf="obs.aggregation !== 'instant'; else instant" [duration]="obs.phenomenonTime.duration" [aggregation]="obs.aggregation"></span>
+                      <ng-template #instant>instant reading</ng-template>
+                    </div>
                   </div>
                 </div>
-  
-                <div>
-                  <div class="flex items-center">
-                    <span class="text-2xl leading-5 font-light text-gray-600">
-                      {{ windDirectionDegreeToText(obs.hasResult.value) }}
-                    </span>
-                    <sup class="font-bold text-xs text-gray-400">{{ obs.hasResult.value }}{{ obs.hasResult.unit.symbol }}</sup>
-                  </div>
-                  <div class="flex items-center text-sm leading-5 text-gray-400 sm:mt-0">
-                    <span *ngIf="obs.aggregation !== 'instant', else instant" [duration]="obs.phenomenonTime.duration" [aggregation]="obs.aggregation"></span>
-                    <ng-template #instant>instant reading</ng-template>
-                  </div> 
-                </div>
-  
+    
+              </ng-container>
+    
+              <div class="ml-5 flex-shrink-0">
+                <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                </svg>
               </div>
-  
-              <!-- default row -->
-              <div *ngSwitchDefault class="flex-1 flex flex-wrap">
-  
-                <div class="mb-2 mr-6 flex-1">
-                  <div class="text-sm leading-5 font-medium text-indigo-600 truncate capitalize">
-                    {{ obs.observedProperty.label }}
-                  </div>
-                  <div class="flex items-center text-sm leading-5" [ngClass]="isOld(obs.resultTime) ? 'text-red-400' : 'text-gray-500'">
-                    <i class="far fa-clock"></i>
-                    <span class="ml-1 truncate">
-                      <buo-time-tag [datetime]="obs.resultTime" format="from"></buo-time-tag>
-                    </span>
-                  </div>
-                </div>
-                
-                <div>
-                  <div class="flex justify-end items-center">
-                    <span class="text-2xl leading-5 font-light text-gray-600">
-                      {{ obs.hasResult.value }}
-                    </span>
-                    <sup class="font-bold text-xs text-gray-400">{{ obs.hasResult.unit.symbol }}</sup>
-                  </div>
-                  <div class="flex justify-end text-sm leading-5 text-gray-400">
-                    <span *ngIf="obs.aggregation !== 'instant'; else instant" [duration]="obs.phenomenonTime.duration" [aggregation]="obs.aggregation"></span>
-                    <ng-template #instant>instant reading</ng-template>
-                  </div>
-                </div>
-              </div>
-  
-            </ng-container>
-  
-            <div class="ml-5 flex-shrink-0">
-              <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
-              </svg>
+    
             </div>
+    
+          </button>
+        </li>
+      </ul>
+      <div *ngIf="!observations.length" class="px-4 py-5 text-sm leading-5 text-gray-900">
+        This platform has not made any observations yet. 
+      </div>
+    </ng-container>
+
   
+    <!-- observations skelton -->
+    <ng-template #obsLoading>
+      <div class="border-b border-gray-200 animate-pulse" *ngFor="let n of [1, 2, 3, 4]">
+        <div class="flex justify-between items-center pl-4 pr-2 pt-4 pb-2">
+          <div class="flex-1 flex flex-wrap">
+  
+            <div class="mb-2 mr-6 flex-1">
+              <span class="text-sm leading-5 font-medium text-transparent bg-gray-100 truncate rounded capitalize">
+                Lorem, ipsum dolor.
+              </span>
+              <div class="mt-1 flex items-center text-sm leading-5">
+                <span class="truncate text-transparent bg-gray-100 rounded">
+                  Lorem, ipsum.
+                </span>
+              </div>
+            </div>
+            
+            <div>
+              <div class="flex justify-end items-center">
+                <span class="text-2xl leading-5 font-light text-transparent bg-gray-100 rounded w-16">
+                  Lorem.
+                </span>
+              </div>
+              <div class="mt-1 flex justify-end text-sm leading-5 text-transparent rounded bg-gray-100">
+                Lorem, ipsum.
+              </div>
+            </div>
           </div>
-  
-        </a>
-      </li>
-    </ul>
-  
-    <div *ngIf="!(observations$ | async)?.length" class="px-4 py-5 text-sm leading-5 text-gray-900">
-      This platform has not made any observations yet. 
-    </div>
+          
+          <div class="ml-5 flex-shrink-0">
+            <svg class="h-5 w-5 text-gray-200" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </ng-template>
   
   </div>
+
+  <!-- basic platform information skeleton -->
+  <ng-template #loading>
+    <div class="px-4 py-5">
+      <dl class="grid grid-cols-1 col-gap-4 row-gap-4">
+    
+        <div class="animate-pulse" *ngFor="let n of [1, 2, 3, 4]">
+          <dt class="text-sm leading-5 font-medium text-transparent bg-gray-100 w-24 rounded">
+            lorem ipsum
+          </dt>
+          <dd class="mt-1 text-sm leading-5 text-transparent bg-gray-100 max-w-sm rounded">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          </dd>
+        </div>
+  
+      </dl>
+    </div>
+  </ng-template>
+
 </div>

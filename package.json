@@ -35,7 +35,7 @@
     "ng2-tooltip-directive": "^2.9.20",
     "rxjs": "~6.5.4",
     "streamsaver": "^2.0.4",
-    "tailwindcss": "^1.4.6",
+    "tailwindcss": "^1.7.0",
     "ts-overlapping-marker-spiderfier": "^1.0.3",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
