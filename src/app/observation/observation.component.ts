@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
@@ -9,6 +9,7 @@ import {ObservationService} from '../shared/services/observation.service';
 import {TimeseriesService} from '../shared/services/timeseries.service';
 import {GoogleMapService} from '../shared/google-maps/google-map.service';
 import {MapPinService} from '../shared/google-maps/map-pin.service';
+import {LastUrlService} from '../shared/services/last-url.service';
 
 
 @Component({
@@ -19,19 +20,28 @@ export class ObservationComponent implements OnInit, AfterViewInit {
 
   public observation$: Observable<Observation>; 
   public timeseries$: Observable<Timeseries>; 
+  public backUrl: string;
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private obsService: ObservationService,
     private timeseriesService: TimeseriesService,
     private mapService: GoogleMapService,
     private pinsService: MapPinService,
+    private lastUrlService: LastUrlService,
   ) {}
 
   ngOnInit(): void {
     this.observation$ = this.route.paramMap.pipe(
       switchMap((params: Params) => this.getObservation(params.get('id')))
     );
+
+    // Crucially this will be undefined if the last page was external to this app, and it won't be updated as query parameters are changed on this page.
+    const doNotGoBackTo = ['/download'];
+    if (this.lastUrlService.lastUrl && doNotGoBackTo.every((urlSectionToAvoid) => !this.lastUrlService.lastUrl.includes(urlSectionToAvoid))) {
+      this.backUrl = this.lastUrlService.lastUrl;
+    }
   }
 
   ngAfterViewInit(): void {
@@ -50,4 +60,9 @@ export class ObservationComponent implements OnInit, AfterViewInit {
       populate: ['ancestorPlatforms', 'madeBySensor', 'unit', 'observedProperty', 'disciplines', 'aggregation', 'hasFeatureOfInterest', 'usedProcedures', 'hasDeployment']
     });
   }
+
+  public back(): void {
+    this.router.navigateByUrl(this.backUrl);
+  }
+
 }

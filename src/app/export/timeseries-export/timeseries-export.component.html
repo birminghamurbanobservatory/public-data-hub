@@ -1,0 +1,268 @@
+<div class="mt-10 container mx-auto">
+  <div class="bg-white shadow sm:rounded-lg">
+
+    <!-- main title -->
+    <div class="px-4 py-5 border-b border-gray-200 sm:px-6 flex">
+      <div>
+        <button *ngIf="backUrl" (click)="back()" type="button" class="mr-4 text-white text-2xl h-12 w-12 bg-teal-700 rounded-full flex items-center justify-center hover:text-white hover:bg-teal-800 focus:outline-none focus:bg-teal-800">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-teal-900">
+          Timeseries download
+        </h1>
+        <p class="mt-1 text-sm text-gray-500">
+          Download observations from a single timeseries as a CSV file (comma separated values). This common file format can be read by other software (e.g. Microsoft Excel) for further analysis.
+        </p>
+      </div>
+    </div>
+
+    <!-- main content -->
+    <div class="px-4 py-5 sm:px-6">
+
+      <!-- Error message - when getting initial timeseries info -->
+      <p *ngIf="getTimeseriesErrorMessage" class="text-red-500 text-lg text-center">Error: {{getTimeseriesErrorMessage}}</p>
+
+      <div *ngIf="!timeseries && !getTimeseriesErrorMessage">
+        <p class="text-teal-900 text-center">
+          <i class="fas fa-spinner fa-spin"></i>
+        </p>
+      </div>
+
+      <div *ngIf="timeseries">
+
+        <div>
+          <h2 class="text-xl font-bold text-teal-900">Download options</h2>
+
+          <form [formGroup]="exportForm" (ngSubmit)=export(exportForm.value)>
+
+            <div class="flex flex-wrap justify-center items-center my-4">
+              <p>Time window:</p>
+              <div class="w-76 p-2 flex justify-center">
+                <input formControlName="window" 
+                  [selectMode]="'range'" 
+                  [min]="timeseries.startDate" 
+                  [max]="timeseries.endDate" 
+                  [owlDateTime]="dt1" 
+                  [owlDateTimeTrigger]="dt1" 
+                  placeholder="Time travel..." 
+                  class="form-input block w-full transition duration-150 ease-in-out text-sm">
+                <owl-date-time #dt1></owl-date-time>
+              </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row md:justify-around">
+
+              <div class="block my-2">
+                <input class="mr-2 leading-tight" type="checkbox" formControlName="includeLocation">
+                <label class="text-gray-500 font-bold">
+                  <span class="text-sm">
+                    Include locational information?
+                    <span tooltip="e.g. latitude, longitude, height" placement="top">
+                      <i class="fas fa-info-circle"></i>
+                    </span>
+                  </span>
+                </label> 
+              </div>
+
+              <div class="block my-2">
+                <input class="mr-2 leading-tight" type="checkbox" formControlName="includeFlaggedObs">
+                <label class="text-gray-500 font-bold">
+                  <span class="text-sm">
+                    Include flagged observations?
+                    <span tooltip="Observations that are flagged are typically erroneous" placement="top">
+                      <i class="fas fa-info-circle"></i>
+                    </span> 
+                  </span>
+                </label> 
+              </div>
+
+            </div>
+
+
+            <!-- buttons -->
+            <div class="flex justify-center my-4">
+
+              <button *ngIf="!exporting" type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mx-2 rounded">
+                Download
+              </button>
+
+              <button *ngIf="exporting" type="button" (click)="abortExport()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 mx-2 rounded" [ngClass]="{'opacity-50 cursor-not-allowed': !exporting}">
+                Abort
+              </button>
+
+            </div>
+          
+          </form>
+        </div>
+
+        <!-- Error message when getting obs -->
+        <div *ngIf="getObservationsErrorMessage" class="my-3">
+          <p class="text-red-500 text-lg text-center">Error: {{getObservationsErrorMessage}}</p>
+        </div>
+
+        <div *ngIf="exporting">
+
+          <div class="w-full my-4">
+            <div class="shadow w-full bg-grey-light">
+              <div class="bg-blue-500 text-xs leading-none py-1 text-center text-white" [ngStyle]="{'width': percentThroughExportPeriod + '%'}">{{percentThroughExportPeriod}}%</div>
+            </div>
+          </div>
+
+          <p class="text-center my-2">No. observations so far: {{obsTally}}</p>
+
+        </div>
+
+        <!-- more info about timeseries -->
+        <div class="border border-gray-300 rounded mt-12">
+          <!-- more info header -->
+          <div (click)="toggleMoreInfo()" class="flex justify-between bg-gray-200 hover:bg-gray-300 p-2">
+            <h2 class="text-xl font-bold text-teal-900">Timeseries details</h2>
+            <p  class="text-2xl leading-none p-1">
+              <span *ngIf="!showMoreInfo"><i  class="fa fa-chevron-down"></i></span>
+              <span *ngIf="showMoreInfo"><i class="fa fa-chevron-up"></i></span>
+            </p>
+          </div>
+          <!-- more info content -->
+          <div *ngIf="showMoreInfo" class="p-2">
+
+            <div *ngIf="timeseries">
+
+              <div class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 sm:py-5">
+                <dt class="text-sm leading-5 font-medium text-pink-500">
+                  ID
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                  <p>{{ timeseries.id }}</p>
+                </dd>
+              </div>
+
+              <div class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                <dt class="text-sm leading-5 font-medium text-pink-500">
+                  Start
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                  <p>{{ timeseries.startDate | date: 'medium' }}</p>
+                </dd>
+              </div>
+
+              <div class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                <dt class="text-sm leading-5 font-medium text-pink-500">
+                  End
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                  <p>{{ timeseries.endDate | date: 'medium' }}</p>
+                </dd>
+              </div>
+
+
+              <p class="mt-6 mb-3 sm:mx-6 font-medium">A <i>timeseries</i> is a series of observations through time which all have a set of common properties. Here are the common properties for this timeseries:</p>
+
+              <div *ngIf="timeseries.aggregation" class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                <dt class="text-sm leading-5 font-medium text-pink-500">
+                  Aggregation type
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                  <p>{{ timeseries.aggregation.label }}</p>
+                </dd>
+              </div>
+
+              <div *ngIf="timeseries.observedProperty" class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                <dt class="text-sm leading-5 font-medium text-pink-500">
+                  Observed Property
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                  <p>{{ timeseries.observedProperty.label }}</p>
+                </dd>
+              </div>
+
+              <div *ngIf="timeseries.unit" class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                <dt class="text-sm leading-5 font-medium text-pink-500">
+                  Unit
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                  <p>{{ timeseries.unit.label }}</p>
+                </dd>
+              </div>
+
+              <div *ngIf="timeseries.madeBySensor" class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                <dt class="text-sm leading-5 font-medium text-pink-500">
+                  Sensor
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                  <p>{{ timeseries.madeBySensor.label }}</p>
+                </dd>
+              </div>
+
+              <div *ngIf="timeseries.ancestorPlatforms" class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                <dt class="text-sm leading-5 font-medium text-pink-500">
+                  Platform Hierarchy
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                  <ul>
+                    <li *ngFor="let platform of timeseries.ancestorPlatforms; index as i; last as isLast" [ngClass]="[i > 0 ? 'ml-' + i*2 : '']">
+                      <span class="text-lg text-gray-600" *ngIf="!isLast; else last">&#8226;</span>
+                      <ng-template #last>
+                        <span class="text-gray-600">&#8627;</span>
+                      </ng-template>
+                      <span class="ml-1">{{ platform.label }}</span>
+                    </li>   
+                  </ul>
+                </dd>
+              </div>
+
+              <div *ngIf="timeseries.hasDeployment" class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                <dt class="text-sm leading-5 font-medium text-pink-500">
+                  Deployment
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                  <p>{{ timeseries.hasDeployment.label }}</p>
+                </dd>
+              </div>
+
+              <div *ngIf="timeseries.hasFeatureOfInterest" class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                <dt class="text-sm leading-5 font-medium text-pink-500">
+                  Feature of interest
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                  <p>{{ timeseries.hasFeatureOfInterest.label }}</p>
+                </dd>
+              </div>
+
+              <div *ngIf="timeseries.disciplines" class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                <dt class="text-sm leading-5 font-medium text-pink-500">
+                  Disciplines
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                  <ul class="list-disc list-inside">
+                    <li *ngFor="let discipline of timeseries.disciplines">
+                      {{discipline.label}}
+                    </li>
+                  </ul>
+                </dd>
+              </div>
+
+              <div *ngIf="timeseries.usedProcedures" class="mt-4 sm:mt-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:border-t sm:border-gray-200 sm:px-6 sm:py-5">
+                <dt class="text-sm leading-5 font-medium text-pink-500">
+                  Procedures
+                </dt>
+                <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
+                  <ul class="list-disc list-inside">
+                    <li *ngFor="let procedure of timeseries.usedProcedures">
+                      {{ procedure.label || procedure.id }}
+                    </li>
+                  </ul>
+                </dd>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>

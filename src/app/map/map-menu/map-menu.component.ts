@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {FormControl, FormGroup, FormBuilder, Validators} from '@angular/forms';
 import { isMatch } from 'lodash';
+import {sub} from 'date-fns';
 
-import * as moment from 'moment';
 import {PlatformDetailModalService} from '../platform-detail-modal/platform-detail-modal.service';
 
 @Component({
@@ -13,11 +13,12 @@ import {PlatformDetailModalService} from '../platform-detail-modal/platform-deta
 export class MapMenuComponent implements OnInit {
 
   public showDatePicker: Boolean = false;
+  public hasTimeTravelled = false;
 
   /**
    * Most recent datetime the user can select in the picker
    */
-  public maxDate: string = moment().toISOString();
+  public maxDate: string = new Date().toISOString();
 
   /**
    * Form for the date time picker
@@ -37,10 +38,9 @@ export class MapMenuComponent implements OnInit {
         unit: 'degree-celsius',
         disciplines__includes: 'meteorology',
         // include hasFeatureofInterest too?
-        flags__exists: 'false', // give as a string otherwise _.isMatch below won't work
         aggregation__in: 'instant,average',
         duration__lt: '3630', // allows for averages up to about an hour 
-
+        flags__exists: 'false', // give as a string otherwise _.isMatch below won't work
       }
     },
     {
@@ -51,7 +51,8 @@ export class MapMenuComponent implements OnInit {
         disciplines__includes: 'meteorology',
         unit: 'percent',
         aggregation__in: 'instant,average',
-        duration__lt: '3630' // allows for averages up to about an hour 
+        duration__lt: '3630', // allows for averages up to about an hour 
+        flags__exists: 'false' // give as a string otherwise _.isMatch below won't work
       }
     },
     {
@@ -62,7 +63,8 @@ export class MapMenuComponent implements OnInit {
         disciplines__includes: 'meteorology',
         unit: 'metre-per-second',
         aggregation__in: 'instant,average',
-        duration__lt: '3630' // allows for averages up to about an hour
+        duration__lt: '3630', // allows for averages up to about an hour
+        flags__exists: 'false' // give as a string otherwise _.isMatch below won't work
       }
     },
     {
@@ -73,7 +75,8 @@ export class MapMenuComponent implements OnInit {
         disciplines__includes: 'meteorology',
         unit: 'millimetre-per-hour',
         aggregation__in: 'instant,average',
-        duration__lt: '3630' // allows for averages up to about an hour 
+        duration__lt: '3630', // allows for averages up to about an hour 
+        flags__exists: 'false' // give as a string otherwise _.isMatch below won't work
       }
     },
     {
@@ -82,7 +85,8 @@ export class MapMenuComponent implements OnInit {
       queryParams: {
         observedProperty: 'lightning-count',
         aggregation__in: 'count',
-        duration__lt: '3630' // allows for averages up to about an hour 
+        duration__lt: '3630', // allows for averages up to about an hour 
+        flags__exists: 'false' // give as a string otherwise _.isMatch below won't work
       }
     },
     {
@@ -93,8 +97,9 @@ export class MapMenuComponent implements OnInit {
         disciplines__includes: 'atmospheric-chemistry',
         unit: 'microgram-per-cubic-metre',
         aggregation__in: 'instant,average',
-        duration__lt: '3630' // allows for averages up to about an hour 
+        duration__lt: '3630', // allows for averages up to about an hour 
         // TODO: include hasFeatureOfInterst: 'earth-atmosphere' too?
+        flags__exists: 'false' // give as a string otherwise _.isMatch below won't work
       }
     },
     {
@@ -105,7 +110,8 @@ export class MapMenuComponent implements OnInit {
         disciplines__includes: 'atmospheric-chemistry',
         unit: 'microgram-per-cubic-metre',
         aggregation__in: 'instant,average',
-        duration__lt: '3630' // allows for averages up to about an hour 
+        duration__lt: '3630', // allows for averages up to about an hour 
+        flags__exists: 'false' // give as a string otherwise _.isMatch below won't work
       }
     },
     {
@@ -116,7 +122,8 @@ export class MapMenuComponent implements OnInit {
         disciplines__includes: 'atmospheric-chemistry',
         unit: 'microgram-per-cubic-metre',
         aggregation__in: 'instant,average',
-        duration__lt: '3630' // allows for averages up to about an hour 
+        duration__lt: '3630', // allows for averages up to about an hour 
+        flags__exists: 'false' // give as a string otherwise _.isMatch below won't work
       }
     }
   ];
@@ -133,6 +140,7 @@ export class MapMenuComponent implements OnInit {
 
 
   ngOnInit() {
+
     this.form = this.fb.group({
       window: ['', [Validators.required]]
     });
@@ -143,7 +151,8 @@ export class MapMenuComponent implements OnInit {
       // only need the lte as the map only ever shows the last hour of observations
       if (Object.keys(params).includes('resultTime__lte')) {
         this.form.patchValue({ window: params.resultTime__lte});
-        this.setResultsWindow(params.resultTime__lte);
+        this.setResultsWindow(new Date(params.resultTime__lte));
+        this.hasTimeTravelled = true;
       }
 
       // In order to select the correct option for the <select> box, check to see if the current query parameters match those listed in the available options.
@@ -173,7 +182,7 @@ export class MapMenuComponent implements OnInit {
 
     this.form.valueChanges
     .subscribe(({window}) => {
-      this.setResultsWindow(window)
+      this.setResultsWindow(new Date(window))
 
       const option = this.options.find((option) => option.id === this.selectedOption.value);
       const params = Object.assign({}, option.queryParams, this.resultsWindow)
@@ -184,13 +193,13 @@ export class MapMenuComponent implements OnInit {
   }
 
   
-  private setResultsWindow(dt: Date = null) {
-    const datetime = dt ? moment(dt) : moment();
+  private setResultsWindow(datetime: Date = new Date()) {
     this.resultsWindow = {
       resultTime__lte: datetime.toISOString(),
-      resultTime__gte: datetime.subtract(1, 'hour').toISOString(),
+      resultTime__gte: sub(datetime, {hours: 1}).toISOString() 
     }
   }
+
 
   listenToOptionChanges() {
 
@@ -204,11 +213,24 @@ export class MapMenuComponent implements OnInit {
       if (selectedOptionId === '-top-level-platforms-') {
         this.showPlatforms();
       } else {
-        const params = Object.assign({}, selectedOption.queryParams, this.resultsWindow);
+        let params = Object.assign({}, selectedOption.queryParams);
+        if (this.hasTimeTravelled) {
+          params = Object.assign(params, this.resultsWindow);
+        }
+        console.log(params);
         this.showObservations(params);
       }
 
     });
+  }
+
+  public jumpToNow() {
+    const option = this.options.find((option) => option.id === this.selectedOption.value);
+    const params = Object.assign({}, option.queryParams);
+    this.hasTimeTravelled = false;
+    this.form.controls['window'].setValue('', {emitEvent: false})
+    this.setResultsWindow();
+    this.showObservations(params);
   }
 
   public showPlatforms() {

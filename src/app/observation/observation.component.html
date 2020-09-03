@@ -1,12 +1,19 @@
 <div class="mt-10 container mx-auto">
   <div class="bg-white shadow overflow-hidden  sm:rounded-lg" *ngIf="(observation$ | async) as obs">
-    <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
-      <h3 class="text-xl leading-6 font-medium text-gray-900">
-        Observation Information
-      </h3>
-      <p class="mt-1 max-w-2xl text-sm leading-5 text-gray-500">
-        In-depth information about a single observation.
-      </p>
+    <div class="px-4 py-5 border-b border-gray-200 sm:px-6 flex">
+      <div>
+        <button *ngIf="backUrl" (click)="back()" type="button" class="mr-4 text-white text-2xl h-12 w-12 bg-teal-700 rounded-full flex items-center justify-center hover:text-white hover:bg-teal-800 focus:outline-none focus:bg-teal-800">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+      </div>
+      <div>
+        <h3 class="text-xl leading-6 font-medium text-gray-900">
+          Observation Information
+        </h3>
+        <p class="mt-1 max-w-2xl text-sm leading-5 text-gray-500">
+          In-depth information about a single observation.
+        </p>
+      </div>
     </div>
     <div class="px-4 py-5 sm:p-0">
       <dl>
@@ -125,9 +132,9 @@
           </dt>
           <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
             <ul>
-              <li *ngFor="let discipline of obs.disciplines">
+              <li *ngFor="let discipline of obs.disciplines" class="mb-3">
                 <p>{{ discipline.label }}</p>
-                <small class="-mt-1 text-gray-500">{{ discipline.description }}</small>
+                <small class="text-gray-500">{{ discipline.description }}</small>
               </li>
             </ul>
           </dd>
@@ -172,9 +179,9 @@
           </dt>
           <dd class="mt-1 text-sm leading-5 text-gray-900 sm:mt-0 sm:col-span-2">
             <ul>
-              <li *ngFor="let procedure of obs.usedProcedures">
+              <li *ngFor="let procedure of obs.usedProcedures" class="mb-3">
                 <p>{{ procedure.label || procedure.id }}</p>
-                <small class="-mt-1 text-gray-500" [innerHTML]="procedure.description | linkify"></small>
+                <small class="text-gray-500" [innerHTML]="procedure.description | linkify"></small>
               </li>
             </ul>
           </dd>
@@ -188,8 +195,12 @@
             <p>This observation is part of a series of observations that run from</p>
             <p>{{timeseries.startDate | date: 'medium'}} to</p>
             <p>{{timeseries.endDate | date: 'medium'}}</p>
-            <a [routerLink]="['/plot']" [queryParams]="{timeseriesId: timeseries.id}" class="mt-4 inline-flex justify-between items-center pl-3 pr-2 py-1 border border-blue-300 text-xs leading-4 font-medium rounded-md text-blue-700 bg-transparent hover:text-blue-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-blue-800 active:bg-blue-50 transition ease-in-out duration-150">
+            <a [routerLink]="['/plot']" [queryParams]="{timeseriesId: timeseries.id}" class="mt-4 mr-4 inline-flex justify-between items-center pl-3 pr-2 py-1 border border-blue-300 text-xs leading-4 font-medium rounded-md text-blue-700 bg-transparent hover:text-blue-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-blue-800 active:bg-blue-50 transition ease-in-out duration-150">
               <span>Plot Timeseries</span>
+              <i class="ml-4 fas fa-chevron-right"></i>
+            </a> 
+            <a [routerLink]="['/download', timeseries.id]" class="mt-4 inline-flex justify-between items-center pl-3 pr-2 py-1 border border-blue-300 text-xs leading-4 font-medium rounded-md text-blue-700 bg-transparent hover:text-blue-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:text-blue-800 active:bg-blue-50 transition ease-in-out duration-150">
+              <span>Download Timeseries</span>
               <i class="ml-4 fas fa-chevron-right"></i>
             </a> 
           </dd>

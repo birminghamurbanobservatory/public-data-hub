@@ -8,6 +8,13 @@ import {ObservationModalComponent} from './observation-model/observation-modal.c
 import {RouterModule} from '@angular/router';
 import {GoogleMapComponent} from './google-maps/google-maps.component';
 import {LinkifyPipe} from './pipes/linkify.pipe';
+import { TooltipModule } from 'ng2-tooltip-directive';
+import { TooltipOptions } from 'ng2-tooltip-directive';
+ 
+// Set some detaults for the tooltip
+const MyDefaultTooltipOptions: TooltipOptions = {
+  theme: 'light'
+};
 
 
 @NgModule({
@@ -16,6 +23,7 @@ import {LinkifyPipe} from './pipes/linkify.pipe';
     // These are modules that the component(s) in the declarations array need
     CommonModule,
     RouterModule,
+    TooltipModule.forRoot(MyDefaultTooltipOptions as TooltipOptions)
   ],
 
   declarations: [
@@ -33,7 +41,8 @@ import {LinkifyPipe} from './pipes/linkify.pipe';
     DurationDirective,
     ObservationModalComponent,
     GoogleMapComponent,
-    LinkifyPipe
+    LinkifyPipe,
+    TooltipModule
   ]
 
 })

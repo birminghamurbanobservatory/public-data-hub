@@ -16,6 +16,10 @@ const routes: Routes = [
     loadChildren: () => import('./observation/observation.module').then(m => m.ObservationModule),
   },
   {
+    path: 'download',
+    loadChildren: () => import('./export/export.module').then(m => m.ExportModule),
+  },
+  {
     path: '',
     redirectTo: '/map/platforms',
     pathMatch: 'full',

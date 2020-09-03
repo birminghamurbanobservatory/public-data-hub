@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared/shared.module';
-import { TooltipModule } from 'ng2-tooltip-directive';
 import { MapRoutingModule } from './map-routing.module';
 import { MapComponent } from './map.component';
 import { MapMenuComponent } from './map-menu/map-menu.component';
@@ -17,7 +16,6 @@ import { PlatformDetailModalService } from './platform-detail-modal/platform-det
   imports: [
     SharedModule,
     MapRoutingModule,
-    TooltipModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
   ],

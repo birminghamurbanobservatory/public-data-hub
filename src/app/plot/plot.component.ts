@@ -21,7 +21,7 @@ export class PlotComponent implements OnInit {
 
   public datePickerForm: FormGroup;
   public maxDate = new Date();
-  private timeseries: Timeseries[];
+  public timeseries: Timeseries[];
   public timeseriesDifferencesOnly: any[];
   public ts$: Observable<Timeseries[]>;
   public tso$: Subject<any> = new Subject()
@@ -34,7 +34,7 @@ export class PlotComponent implements OnInit {
   public obsTally = 0;
   public title = '';
   public subTitle = '';
-  public backUrl: Boolean = false;
+  public backUrl: string;
   public notCancelled: boolean = true;
   public plotsToShow = [];
   public customWindows = ['6-hours', '24-hours', '3-days'];
@@ -96,8 +96,11 @@ export class PlotComponent implements OnInit {
 
     });
 
-    // takes us back the correct map view, regardless of changes made here
-    this.backUrl = this.lastUrlService.lastUrl;
+    // Crucially this will be undefined if the last page was external to this app, and it won't be updated as query parameters are changed on this page.
+    const doNotGoBackTo = ['/download'];
+    if (this.lastUrlService.lastUrl && doNotGoBackTo.every((urlSectionToAvoid) => !this.lastUrlService.lastUrl.includes(urlSectionToAvoid))) {
+      this.backUrl = this.lastUrlService.lastUrl;
+    }
   }
 
 
@@ -592,6 +595,6 @@ export class PlotComponent implements OnInit {
    * can return to the map view they were last on
    */
   public back(): void {
-    this.lastUrlService.back();
+    this.router.navigateByUrl(this.backUrl);
   }
 }

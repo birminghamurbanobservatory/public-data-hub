@@ -70,4 +70,9 @@ export class PlatformDetailModalComponent implements OnInit {
     this.observationModalService.observationSelected(obs.id);
   }
 
+  public isOld(resultTime: Date): boolean { 
+    const hours = 1;
+    return new Date(resultTime).getTime() < (Date.now() - 1000 * 60 * 60 * hours) ;
+  }
+
 }

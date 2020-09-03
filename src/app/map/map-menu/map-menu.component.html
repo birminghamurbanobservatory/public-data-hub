@@ -12,6 +12,7 @@
         <owl-date-time #dt1></owl-date-time>
       </form>
     </div>
+    <button (click)="jumpToNow()" *ngIf="hasTimeTravelled" class="text-white hover:text-gray-200 text-xs float-right focus:outline-none">Return to the present</button>
   </div>
   <div class="ml-4">
     <label for="map-type" class="sr-only">map type</label>
