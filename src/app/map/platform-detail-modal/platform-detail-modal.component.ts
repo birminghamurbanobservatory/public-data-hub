@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {style, animate, transition, trigger} from '@angular/animations';
 import { Observable } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, delay, tap } from 'rxjs/operators';
 
 import {Platform} from 'src/app/shared/models/platform.model';
 import {Deployment} from 'src/app/shared/models/deployment.model';
@@ -49,13 +49,15 @@ export class PlatformDetailModalComponent implements OnInit {
       filter(show => show === true),
       ).subscribe(() => {
         this.observations$ = this.detailModalService.observations;
-        this.platform$ = this.detailModalService.platformDetail;
-        this.platform$.subscribe(platform => {
-          if (platform.inDeployment) {
-            this.deployment$ = this.detailModalService.deployment(platform)
-          }
-        });
-      })
+        this.platform$ = this.detailModalService.platformDetail
+        .pipe(
+          tap((platform) => {
+            if (platform.inDeployment) {
+              this.deployment$ = this.detailModalService.deployment(platform)
+            }
+          })
+        )
+      });
   }
 
   /**
