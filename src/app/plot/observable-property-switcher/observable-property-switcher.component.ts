@@ -103,7 +103,13 @@ export class ObservablePropertySwitcherComponent implements OnInit, OnChanges {
           })
         })
 
-        this.observablePropertyOptions = sortBy(asArray, 'label');
+        // There's some observable properties that we can't properly plot yet, let's ensure these aren't shown as options
+        const unsupportedObservedProperties = ['location'];
+        const asArraySupportedOnly = asArray.filter((option) => {
+          return !unsupportedObservedProperties.includes(option.observedPropertyId);
+        }); 
+
+        this.observablePropertyOptions = sortBy(asArraySupportedOnly, 'label');
         
       })
       
