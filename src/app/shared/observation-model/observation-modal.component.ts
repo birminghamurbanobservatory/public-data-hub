@@ -45,7 +45,6 @@ export class ObservationModalComponent implements OnInit {
     .pipe(
       tap(() => this.showModal = true),
       tap(() => this.observation = null),
-      delay(200), // not too sure why this is here, it used to be 2000.
       takeUntil(this.destroy$),
       switchMap((id: string) => this.observationModalService.observationInfo(id))
     )
