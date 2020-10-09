@@ -519,7 +519,7 @@ export class PlotComponent implements OnInit {
 
         } else if (check.nonEmptyString(ts[key])) {
           idStruct[key].push(ts[key]);
-        } else if (check.nonEmptyObject) {
+        } else if (check.nonEmptyObject(ts[key])) {
           idStruct[key].push(ts[key].id);
         }
 
