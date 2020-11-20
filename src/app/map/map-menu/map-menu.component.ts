@@ -90,6 +90,19 @@ export class MapMenuComponent implements OnInit {
       }
     },
     {
+      id: 'road-surface-temperature',
+      name: 'Road Temperature',
+      queryParams: {
+        observedProperty: 'road-surface-temperature',
+        unit: 'degree-celsius',
+        disciplines__includes: 'meteorology',
+        // include hasFeatureofInterest too?
+        aggregation__in: 'instant,average',
+        duration__lt: '3630', // allows for averages up to about an hour 
+        flags__exists: 'false', // give as a string otherwise _.isMatch below won't work
+      }
+    },
+    {
       id: 'pm-10',
       name: 'PM₁₀',
       queryParams: {
