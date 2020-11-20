@@ -64,6 +64,10 @@ export class ColourService {
       return this.selectColorFromColorMap(this.greenPinkColorMap, observation.hasResult.value, 0, 30);
     }
 
+    if (observation.observedProperty === 'road-surface-temperature' && observation.hasResult.unit === 'degree-celsius') {
+      return this.selectColorFromColorMap(this.jetColorMap, observation.hasResult.value, -20, 40);
+    }
+
     if (observation.observedProperty === 'pm10-mass-concentration' && observation.hasResult.unit === 'microgram-per-cubic-metre') {
       // National air quality objective is a 40 µg/m3 annual mean
       return this.selectColorFromColorMap(this.greenRedColorMap, observation.hasResult.value, 0, 45);
