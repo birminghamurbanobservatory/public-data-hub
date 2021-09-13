@@ -11,5 +11,5 @@ Once you've committed any changes to the code run `npm version major/minor/patch
 
 Then build the application using `ng build --prod` or `npm run build`.
 
-Then to deployment to firebase use: `npm run deploy`.
+Then to deploy to firebase use: `npm run deploy`.
 
