@@ -262,7 +262,7 @@ export class TimeseriesExportComponent implements OnInit, OnDestroy {
       });
       fields.push({
         label: 'latitude',
-        value: 'location.geometry.coordinates[0]'
+        value: 'location.geometry.coordinates[1]'
       })
       fields.push({
         label: 'height (m)',
